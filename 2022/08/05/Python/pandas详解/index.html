@@ -1,0 +1,1128 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>pandas详解 | BillySturateの秘密基地</title><meta name="keywords" content="Python,pandas"><meta name="author" content="BillySturate"><meta name="copyright" content="BillySturate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="pandas详解"><meta name="application-name" content="pandas详解"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="bookmark" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="192x192" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="512x512" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1136x640.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_640x1136.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2688x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1792x828.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1125x2436.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_828x1792.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2436x1125.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1242x2208.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2208x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1334x750.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_750x1334.png"><link rel="apple-touch-startup-image" media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2732x2048.png"><meta name="description" content="视频教程 1.pandas的常用数据类型1.Series 一维，带标签数组 2.DataFrame 二维，Series容器 2.pandas之Series创建  3.pandas之Series切片和索引 4.pandas之Series的索引和值 5.pandas之读取外部数据我们的这组数据存在csv中，我们直接使用pd. read_csv即可 和我们想象的有些差别，我们以为他会是一个Series类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pandas详解">
+<meta property="og:url" content="https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="BillySturateの秘密基地">
+<meta property="og:description" content="视频教程 1.pandas的常用数据类型1.Series 一维，带标签数组 2.DataFrame 二维，Series容器 2.pandas之Series创建  3.pandas之Series切片和索引 4.pandas之Series的索引和值 5.pandas之读取外部数据我们的这组数据存在csv中，我们直接使用pd. read_csv即可 和我们想象的有些差别，我们以为他会是一个Series类">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img2.baidu.com/it/u=2848555277,2083604793&fm=253&fmt=auto&app=138&f=JPEG?w=711&h=313">
+<meta property="article:published_time" content="2022-08-05T10:13:54.000Z">
+<meta property="article:modified_time" content="2023-01-28T12:48:27.213Z">
+<meta property="article:author" content="BillySturate">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="pandas">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2.baidu.com/it/u=2848555277,2083604793&fm=253&fmt=auto&app=138&f=JPEG?w=711&h=313"><link rel="shortcut icon" href="https://bu.dusays.com/2023/04/28/644be5a78f9f9.png"><link rel="canonical" href="https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  navMusic: false,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#3b70fc","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pandas详解',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-01-28 20:48:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/"><div class="title">BillySturateの秘密基地</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><center id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></center></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="darkmode_navswitch"><a class="darkmode_switchbutton" type="button" href="javascript:void(0);" title="Switch Between Light And Dark Mode" onclick="rm.switchDarkMode()"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke" style="font-size: 1.3rem"></i></a></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pandas详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-08-05T10:13:54.000Z" title="Created 2022-08-05 18:13:54">2022-08-05</time><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-01-28T12:48:27.213Z" title="Updated 2023-01-28 20:48:27">2023-01-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python/">Python</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">4.2k</span><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>18min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pandas详解"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img2.baidu.com/it/u=2848555277,2083604793&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=711&amp;h=313"></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hx411d7jb?spm_id_from=333.337.search-card.all.click&vd_source=2896408aa1ddac57180818bd00dd8b57">视频教程</a></p>
+<h2 id="1-pandas的常用数据类型"><a href="#1-pandas的常用数据类型" class="headerlink" title="1.pandas的常用数据类型"></a>1.pandas的常用数据类型</h2><p>1.Series 一维，带标签数组</p>
+<p>2.DataFrame 二维，Series容器</p>
+<h2 id="2-pandas之Series创建"><a href="#2-pandas之Series创建" class="headerlink" title="2.pandas之Series创建"></a>2.pandas之Series创建</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/bb43d34acca640a49f6235918cdc9d91.png#pic_center"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/234e646df7ca4617a62cb02967d66d7d.png#pic_center" alt="图片2"></p>
+<h2 id="3-pandas之Series切片和索引"><a href="#3-pandas之Series切片和索引" class="headerlink" title="3.pandas之Series切片和索引"></a>3.pandas之Series切片和索引</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/a317d112aac84680ba7668555d2d12a5.png#pic_center" alt="图片3"></p>
+<h2 id="4-pandas之Series的索引和值"><a href="#4-pandas之Series的索引和值" class="headerlink" title="4.pandas之Series的索引和值"></a>4.pandas之Series的索引和值</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/eb431cfe4c154698ad432933016f986d.png#pic_center" alt="图片4"></p>
+<h2 id="5-pandas之读取外部数据"><a href="#5-pandas之读取外部数据" class="headerlink" title="5.pandas之读取外部数据"></a>5.pandas之读取外部数据</h2><p>我们的这组数据存在csv中，我们直接使用pd. read_csv即可</p>
+<p>和我们想象的有些差别，我们以为他会是一个Series类型，但是他是一个DataFrame，那么接下来我们就来了解这种数据类型</p>
+<p>&#x3D;&#x3D;小示例：&#x3D;&#x3D;</p>
+<p>现在假设我们有一个组关于狗的名字的统计数据，那么为了观察这组数据的情况，我们应该怎么做呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">df = pd.read_csv(&#x27;./dogNames2.csv&#x27;)</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<p>&#x3D;&#x3D;效果展示&#x3D;&#x3D;</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/68be90dd4ba5438998639c7eec18efe3.png#pic_center" alt="图片5"></p>
+<h2 id="6-pandas之DataFrame"><a href="#6-pandas之DataFrame" class="headerlink" title="6.pandas之DataFrame"></a>6.pandas之DataFrame</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/be5b901ba4fb47cea1bd2ec48f9ae57e.png#pic_center" alt="图片6"></p>
+<p><strong>DataFrame对象既有行索引，又有列索引</strong></p>
+<p>行索引，表明不同行，横向索引，叫index，0轴，axis&#x3D;0</p>
+<p>列索引，表名不同列，纵向索引，叫columns，1轴，axis&#x3D;1</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/9ca03dc5756543d0b8912fdf772ef66a.png#pic_center" alt="图片7"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/52b5430936d04a96b1506fe210c93b5b.png#pic_center" alt="图片8"></p>
+<p>那么回到之前我们读取的狗名字统计的数据上，我们尝试一下刚刚的方法</p>
+<p>那么问题来了：</p>
+<p>很多同学肯定想知道使用次数最高的前几个名字是什么呢？</p>
+<p><code>df.sort_values(by=&quot;Count_AnimalName&quot;,ascending=*False*)</code></p>
+<p>&#x3D;&#x3D;dataframe排序&#x3D;&#x3D;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">df = pd.read_csv(&#x27;./dogNames2.csv&#x27;)</span><br><span class="line"># print(df)</span><br><span class="line"># print(&#x27;*&#x27;*100)</span><br><span class="line"># print(df.head())</span><br><span class="line"># print(&#x27;*&#x27;*100)</span><br><span class="line"># print(df.info())</span><br><span class="line"># print(&#x27;*&#x27;*100)</span><br><span class="line"># print(df.describe())</span><br><span class="line"></span><br><span class="line"># 以Count_AnimalName来排序（默认升序）</span><br><span class="line"># df = df.sort_values(by=&#x27;Count_AnimalName&#x27;)</span><br><span class="line"># ascending=True 为升序，False为倒序</span><br><span class="line">df = df.sort_values(by=&#x27;Count_AnimalName&#x27;,ascending=False)</span><br><span class="line">print(df.head(10))</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-pandas之取行或者列"><a href="#7-pandas之取行或者列" class="headerlink" title="7.pandas之取行或者列"></a>7.pandas之取行或者列</h2><p>刚刚我们知道了如何给数据按照某一行或者列排序，那么现在我们想单独研究使用次数前100的数据，应该如何做？</p>
+<p><code>df_sorted = df.sort_values(by=&quot;Count_AnimalName&quot;)</code></p>
+<p><code>df_sorted[:100]</code></p>
+<p>那么问题来了：</p>
+<p>我们具体要选择某一列该怎么选择呢？<code>df[&quot; Count_AnimalName &quot;]</code></p>
+<p>我们要同时选择行和列改怎么办？<code>df[:100][&quot; Count_AnimalName &quot;]</code></p>
+<h2 id="8-pandas之loc"><a href="#8-pandas之loc" class="headerlink" title="8.pandas之loc"></a>8.pandas之loc</h2><p>还有更多的经过pandas优化过的选择方式：</p>
+<p>1.df.loc 通过<strong>标签</strong>索引行数据</p>
+<p>2.df.iloc 通过<strong>位置</strong>获取行数据</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4b62f336e82e420dac4b8bd321307195.png#pic_center" alt="图片9"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/9110f21838ff4e9d8834322a3ae3730b.png#pic_center" alt="图片10"></p>
+<h2 id="9-pandas之布尔索引"><a href="#9-pandas之布尔索引" class="headerlink" title="9.pandas之布尔索引"></a>9.pandas之布尔索引</h2><p>回到之前狗的名字的问题上，假如我们想找到所有的使用次数超过800的狗的名字，应该怎么选择？</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/41bbcc62c40c42ed9f26ec43fd426cf9.png#pic_center" alt="图片11"></p>
+<p>回到之前狗的名字的问题上，假如我们想找到所有的使用次数超过700并且名字的字符串的长度大于4的狗的名字，应该怎么选择？</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/e9560f381945448db72ee3e53ed7c2b6.png#pic_center" alt="图片12"></p>
+<h2 id="10-pandas之字符串方法"><a href="#10-pandas之字符串方法" class="headerlink" title="10.pandas之字符串方法"></a>10.pandas之字符串方法</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4c472eb7157b44a19c24e1e0d4dd2670.png#pic_center" alt="图片13"></p>
+<h2 id="11-缺失数据的处理"><a href="#11-缺失数据的处理" class="headerlink" title="11.缺失数据的处理"></a>11.缺失数据的处理</h2><p>观察下面这组数据</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/e5e6a7182e0c45a9ac32234186f9d287.png#pic_center" alt="图片14"></p>
+<p>我们的数据缺失通常有两种情况：</p>
+<p>一种就是空，None等，在pandas是NaN(和np.nan一样)另一种是我们让其为0，蓝色框中</p>
+<p>对于NaN的数据，在numpy中我们是如何处理的？</p>
+<p>在pandas中我们处理起来非常容易</p>
+<p>判断数据是否为NaN：<code>pd.isnull(df),pd.notnull(df)</code></p>
+<p>处理方式1：删除NaN所在的行列<code>dropna (axis=0, how=&#39;any&#39;, inplace=False)</code></p>
+<p>处理方式2：填充数据，<code>t.fillna(t.mean()),t.fiallna(t.median()),t.fillna(0)</code></p>
+<p>处理为0的数据：<code>t[t==0]=np.nan</code></p>
+<p>当然并不是每次为0的数据都需要处理</p>
+<p>计算平均值等情况，nan是不参与计算的，但是0会</p>
+<p>&#x3D;&#x3D;示例&#x3D;&#x3D;</p>
+<p>假设现在我们有一组从2006年到2016年1000部最流行的电影数据，我们想知道这些电影数据中评分的平均分，导演的人数等信息，我们应该怎么获取？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd, numpy as np</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(&#x27;IMDB-Movie-Data.csv&#x27;)</span><br><span class="line">print(type(df))</span><br><span class="line">print(df.info())</span><br><span class="line">print(df.head())</span><br><span class="line">print(df[&#x27;Rating&#x27;].values)</span><br><span class="line">print(df[&#x27;Rating&#x27;].describe())</span><br><span class="line"># df[&#x27;Rating&#x27;].mean()为numpy类型的数据，不能使用字符串拼接，需要先转换为字符串</span><br><span class="line"># 电影评分平均值</span><br><span class="line">print(&#x27;电影平均分：&#x27; + str(df[&#x27;Rating&#x27;].mean()))</span><br><span class="line"># 导演的人数</span><br><span class="line"># df[&#x27;Director&#x27;].tolist()  #  python tolist()方法:将数组或者矩阵转换成列表</span><br><span class="line"># set(df[&#x27;Director&#x27;].tolist()) # 使用set() 将数组去重并转换为set集合，集合是一个无序的不重复元素序列</span><br><span class="line">print(&#x27;导演人数：&#x27;, len(set(df[&#x27;Director&#x27;].tolist())))</span><br><span class="line"># 别一种方法：df[&#x27;Director&#x27;].unique()可以将df[&#x27;Director&#x27;]去重，并返回</span><br><span class="line">print(&#x27;导演人数：&#x27;, len(df[&#x27;Director&#x27;].unique()))</span><br><span class="line"># 由于每一部电影的演员有多人，所以先使用split(&#x27;,&#x27;)以逗号分隔，让每组数据的字符串重组为数组</span><br><span class="line">print(&#x27;所有演员二维数据：&#x27;)</span><br><span class="line">print(df[&#x27;Actors&#x27;].str.split(&#x27;,&#x27;).tolist())</span><br><span class="line">temp_list = df[&#x27;Actors&#x27;].str.split(&#x27;,&#x27;).tolist()</span><br><span class="line"># 将二维数组展开</span><br><span class="line">nums = [i for j in temp_list for i in j]</span><br><span class="line">print(&#x27;所有演员一维数组：&#x27;)</span><br><span class="line">print(nums)</span><br><span class="line"># 数组去重,并取总数</span><br><span class="line">actors = len(set(nums))  # 使用set集合的特点去重</span><br><span class="line">actors2 = len(pd.Series(nums).unique())  # 使用pandas的unique方法去重</span><br><span class="line">print(&#x27;去重后演员的总人数：&#x27;, actors, actors2)</span><br><span class="line"># 电影时长的最大最小值：</span><br><span class="line">max_runtime = df[&#x27;Runtime (Minutes)&#x27;].max()</span><br><span class="line">max_runtime_index = df[&#x27;Runtime (Minutes)&#x27;].argmax()</span><br><span class="line">min_runtime = df[&#x27;Runtime (Minutes)&#x27;].min()</span><br><span class="line">min_runtime_index = df[&#x27;Runtime (Minutes)&#x27;].argmin()</span><br><span class="line">runtime_median = df[&#x27;Runtime (Minutes)&#x27;].median()</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/7a158f5466e84d30bc4962abb4d77a75.png#pic_center" alt="图片15"></p>
+<p>&#x3D;&#x3D;示例&#x3D;&#x3D;</p>
+<p>对于这一组电影数据，如果我们希望统计电影分类(genre)的情况，应该如何处理数据？</p>
+<p>思路：重新构造一个全为0的数组，列名为分类，如果某一条数据中分类出现过，就让0变为1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(&#x27;IMDB-Movie-Data.csv&#x27;)</span><br><span class="line">print(df[&#x27;Genre&#x27;])</span><br><span class="line">temp_list = df[&#x27;Genre&#x27;].str.split(&#x27;,&#x27;).tolist()</span><br><span class="line">print(temp_list)</span><br><span class="line"># 利用set展开二维列表并去重</span><br><span class="line">genre_list = list(set([i for j in temp_list for i in j]))</span><br><span class="line">print(genre_list)</span><br><span class="line"># 构造全为0的DataFrame:df一样的行数，分类总数的列数，索引为分类数据genre_list</span><br><span class="line"># np.zeros((a,b))里面传的是元组</span><br><span class="line">zeros_df = pd.DataFrame(np.zeros((df.shape[0], len(genre_list))), columns=genre_list)</span><br><span class="line">print(zeros_df)</span><br><span class="line">for i in range(df.shape[0]):</span><br><span class="line">    zeros_df.loc[i, temp_list[i]] = 1</span><br><span class="line"># 显示所有列</span><br><span class="line">pd.set_option(&#x27;display.max_columns&#x27;, None)</span><br><span class="line"># 显示所有列</span><br><span class="line"># pd.set_option(&#x27;display.max_columns&#x27;, None)</span><br><span class="line"># #显示所有行</span><br><span class="line"># pd.set_option(&#x27;display.max_rows&#x27;, None)</span><br><span class="line"># #设置value的显示长度为100，默认为50</span><br><span class="line"># pd.set_option(&#x27;max_colwidth&#x27;,100)</span><br><span class="line">print(zeros_df.head(1))</span><br><span class="line"># 统计每个分类的电影的数量和</span><br><span class="line">genre_count = zeros_df.sum(axis=0)</span><br><span class="line">print(genre_count)</span><br><span class="line"># 排序</span><br><span class="line">genre_count = genre_count.sort_values()</span><br><span class="line"># 画柱状图</span><br><span class="line">_x = genre_count.index</span><br><span class="line">_y = genre_count.values</span><br><span class="line">plt.figure(figsize=(20, 8), dpi=80)</span><br><span class="line">plt.bar(range(len(_x)), _y)</span><br><span class="line">plt.xticks(range(len(_x)), _x)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/378e9f5eeb7d4373940e2aa3f7131f91.png#pic_center" alt="图片16"></p>
+<h2 id="12-数据合并之join"><a href="#12-数据合并之join" class="headerlink" title="12.数据合并之join"></a>12.数据合并之join</h2><p>join:默认情况下他是把行索引相同的数据合并到一起</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/a2b0d6d56c47431baf76ad4ab8f1c9fa.png#pic_center" alt="图片17"></p>
+<h2 id="13-数据合并之merge"><a href="#13-数据合并之merge" class="headerlink" title="13.数据合并之merge"></a>13.数据合并之merge</h2><p>merge:按照指定的列把数据按照一定的方式合并到一起</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/1ba88efd40d944d3a995597ec1d810a4.png#pic_center" alt="图片18"></p>
+<p>&#x3D;&#x3D;示例：&#x3D;&#x3D;</p>
+<p>现在我们有一组关于全球星巴克店铺的统计数据，如果我想知道美国的星巴克数量和中国的哪个多，或者我想知道中国每个省份星巴克的数量的情况，那么应该怎么办？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(&#x27;starbucks_store_worldwide.csv&#x27;)</span><br><span class="line"># print(df)</span><br><span class="line"># print(df.info())</span><br><span class="line"># df_country = df.groupby(&#x27;Country&#x27;)  # 生成一个DataFrameGroupBy object</span><br><span class="line"># print(df_country)</span><br><span class="line"># # 显示所有列</span><br><span class="line"># pd.set_option(&#x27;display.max_columns&#x27;, None)</span><br><span class="line"># # 遍历</span><br><span class="line"># # for i in df_country:</span><br><span class="line"># #     print(i) # 遍历后的每一个数据都是一个元组</span><br><span class="line">#</span><br><span class="line"># # 由于遍历后的每一个值都是元组，所以还可以这样遍历</span><br><span class="line"># for i, j in df_country:</span><br><span class="line">#     print(i, j, type(j))  # i为国家信息，j为一个DataFrame,其中所有的country字段均为i</span><br><span class="line">#     print(&#x27;*&#x27; * 100)</span><br><span class="line">#</span><br><span class="line"># # 调用聚合方法</span><br><span class="line"># print(df_country.count())  # count()可以统计每个字段的总数</span><br><span class="line"># print(df_country[&#x27;City&#x27;].count())  # 单独统计一个字段的总数</span><br><span class="line"># #</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">平均值，中位数等方法也可以使用，但这里使用没有意义，因为都是字符串</span><br><span class="line">count:分组中非NA值的数量</span><br><span class="line">sum:非NA的和</span><br><span class="line">mean:非NA值的平均值 </span><br><span class="line">median:非NA值的算术中位数</span><br><span class="line">std、var: 无偏（分母为n-a)标准差和方差</span><br><span class="line">min,max:非NA值的最小值和最大值 &quot;&quot;&quot;</span><br><span class="line"># country_count = df_country[&#x27;City&#x27;].count()</span><br><span class="line"># # 美国和中国的星巴克店铺数量</span><br><span class="line"># print(&#x27;美国：&#x27;, country_count[&#x27;US&#x27;])</span><br><span class="line"># print(&#x27;中国：&#x27;, country_count[&#x27;CN&#x27;])</span><br><span class="line"></span><br><span class="line"># 统计中国每个省份的星巴克</span><br><span class="line">china_data = df[df[&#x27;Country&#x27;] == &#x27;CN&#x27;]  # 取出中国的星巴克数据，这里可以不需要分组，直接取数据</span><br><span class="line"># print(china_data)</span><br><span class="line"># print(china_data.info())</span><br><span class="line"># province_data = china_data.groupby(&#x27;State/Province&#x27;).count()[&#x27;Brand&#x27;]</span><br><span class="line"># print(province_data)</span><br><span class="line"># groupby可以传入多个条件来分组</span><br><span class="line">print(df[&#x27;Brand&#x27;])</span><br><span class="line">china_data_group = df.groupby(</span><br><span class="line">    by=[df[&#x27;Country&#x27;], df[&#x27;State/Province&#x27;]]).count()  # 返回一个Series,列索引有两个，一个是country,一个是State/Province</span><br><span class="line">print(china_data_group)</span><br><span class="line">print(china_data_group[&#x27;Brand&#x27;])</span><br><span class="line"></span><br><span class="line"># 以下三种写法，结果相同</span><br><span class="line">group1 = df.groupby(by=[df[&#x27;Country&#x27;], df[&#x27;State/Province&#x27;]]).count()[&#x27;Brand&#x27;]</span><br><span class="line">group2 = df[&#x27;Brand&#x27;].groupby(by=[df[&#x27;Country&#x27;], df[&#x27;State/Province&#x27;]]).count()</span><br><span class="line">group3 = df.groupby(by=[df[&#x27;Country&#x27;], df[&#x27;State/Province&#x27;]])[&#x27;Brand&#x27;].count()</span><br><span class="line">print(group1, type(group1))</span><br><span class="line">print(&#x27;*&#x27; * 100)</span><br><span class="line">print(group2, type(group2))</span><br><span class="line">print(&#x27;*&#x27; * 100)</span><br><span class="line">print(group3, type(group3))</span><br><span class="line"># 取值可以为DataFrame,需要使用一个小技巧</span><br><span class="line">group4 = df[[&#x27;Brand&#x27;]].groupby(by=[df[&#x27;Country&#x27;], df[&#x27;State/Province&#x27;]]).count()</span><br><span class="line">print(&#x27;*&#x27; * 100)</span><br><span class="line">print(group4, type(group4))</span><br><span class="line">print(group1.index)</span><br></pre></td></tr></table></figure>
+
+<h2 id="14-分组和聚合"><a href="#14-分组和聚合" class="headerlink" title="14.分组和聚合"></a>14.分组和聚合</h2><p><code>grouped = df.groupby(by=&quot;columns_name&quot;)</code></p>
+<p>grouped是一个DataFrameGroupBy对象，是可迭代的</p>
+<p>grouped中的每一个元素是一个元组</p>
+<p>元组里面是（索引(分组的值)，分组之后的DataFrame）</p>
+<p>DataFrameGroupBy对象有很多经过优化的方法</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/139e675a90e1446098f585c5279e346c.png#pic_center" alt="图片19"></p>
+<p>如果我们需要对国家和省份进行分组统计，应该怎么操作呢？</p>
+<p><code>grouped = df.groupby(by=[df[&quot;Country&quot;],df[&quot;State/Province&quot;]])</code></p>
+<p>很多时候我们只希望对获取分组之后的某一部分数据，或者说我们只希望对某几列数据进行分组，这个时候我们应该怎么办呢？</p>
+<p>获取分组之后的某一部分数据：</p>
+<p> <code>df.groupby(by=[&quot;Country&quot;,&quot;State/Province&quot;])[&quot;Country&quot;].count()</code></p>
+<p>对某几列数据进行分组：</p>
+<p><code>df[&quot;Country&quot;].groupby(by=[df[&quot;Country&quot;],df[&quot;State/Province&quot;]]).count()</code></p>
+<p>观察结果，由于只选择了一列数据，所以结果是一个Series类型</p>
+<p>如果我想返回一个DataFrame类型呢？</p>
+<p><code>t1 = df[[&quot;Country&quot;]].groupby(by=[df[&quot;Country&quot;],df[&quot;State/Province&quot;]]).count()</code><br><code>t2 = df.groupby(by=[&quot;Country&quot;,&quot;State/Province&quot;])[[&quot;Country&quot;]].count()</code></p>
+<p>以上的两条命令结果一样</p>
+<p>和之前的结果的区别在于当前返回的是一个DataFrame类型</p>
+<p>简单的索引操作：</p>
+<p>•获取index：<code>df.index</code></p>
+<p>•指定index ：<code>df.index = [&#39;x&#39;,&#39;y&#39;]</code></p>
+<p>•重新设置index : <code>df.reindex(list(&quot;abcedf&quot;))</code></p>
+<p>•指定某一列作为index ：<code>df.set_index(&quot;Country&quot;,drop=False)</code></p>
+<p>•返回index的唯一值：<code>df.set_index(&quot;Country&quot;).index.unique()</code></p>
+<h2 id="15-Series复合索引"><a href="#15-Series复合索引" class="headerlink" title="15.Series复合索引"></a>15.Series复合索引</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/65d81c0cc1934479aeb8cee008889f63.png#pic_center" alt="图片20"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/40eeea952b1340a594e96bb67792006c.png#pic_center" alt="图片21"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/89c065dd558b4334bddd49b9ddab9b90.png#pic_center" alt="图片22"></p>
+<p>&#x3D;&#x3D;示例&#x3D;&#x3D;</p>
+<p>现在我们有2015到2017年25万条911的紧急电话的数据，请统计出出这些数据中不同类型的紧急情况的次数，如果我们还想统计出不同月份不同类型紧急电话的次数的变化情况，应该怎么做呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd, numpy as np</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(&#x27;911.csv&#x27;)</span><br><span class="line"># 显示所有列</span><br><span class="line">pd.set_option(&#x27;display.max_columns&#x27;, None)</span><br><span class="line"># print(df.head())</span><br><span class="line"># print(df.info())</span><br><span class="line"># print(df[&#x27;title&#x27;].str.split(&#x27;:&#x27;))</span><br><span class="line"># print(df[&#x27;title&#x27;].str.split(&#x27;:&#x27;)[0]) # 不能取到数据</span><br><span class="line"># to_list()将序列转换为数组</span><br><span class="line">temp_list = df[&#x27;title&#x27;].str.split(&#x27;:&#x27;).to_list()</span><br><span class="line"># temp_list = df[&#x27;title&#x27;].str.split(&#x27;:&#x27;).tolist()</span><br><span class="line">print(temp_list)</span><br><span class="line"># 遍历并取出第一项数据并去重</span><br><span class="line">cate_list = list(set([i[0] for i in temp_list]))</span><br><span class="line">print(cate_list)</span><br><span class="line"># 构造一个DataFrame,三列，与df同行，数据全为0</span><br><span class="line">zeros_df = pd.DataFrame(np.zeros((df.shape[0], len(cate_list))), columns=cate_list)</span><br><span class="line">print(zeros_df)</span><br><span class="line"># 　由于df数据量太大，如果直接遍历，会消耗很长时间</span><br><span class="line"># for i in range(df.shape[0]):</span><br><span class="line">#     zeros_df.loc[i,temp_list[i][0]] = 1</span><br><span class="line">#</span><br><span class="line"># print(zeros_df)</span><br><span class="line"></span><br><span class="line"># 遍历cate_list,只需要循环三次</span><br><span class="line">for cate in cate_list:</span><br><span class="line">    # df[&#x27;title&#x27;].str.contains(cate)返回的是一个布尔型数组，行数与zeros_df相同，列数为三列，</span><br><span class="line">    # 包含cate的那一列为True,具体可见5.62布尔索引章节</span><br><span class="line">    zeros_df[cate][df[&#x27;title&#x27;].str.contains(cate)] = 1</span><br><span class="line"></span><br><span class="line"># print(zeros_df)</span><br><span class="line"></span><br><span class="line"># 统计邮寄类型的数量</span><br><span class="line">sum_ret = zeros_df.sum(axis=0)</span><br><span class="line">print(sum_ret)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd, numpy as np</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(&#x27;911.csv&#x27;)</span><br><span class="line"># #显示所有行</span><br><span class="line">pd.set_option(&#x27;display.max_rows&#x27;, None)</span><br><span class="line">print(df.head())</span><br><span class="line">print(df.info())</span><br><span class="line"></span><br><span class="line"># to_list()将序列转换为数组</span><br><span class="line">temp_list = df[&#x27;title&#x27;].str.split(&#x27;:&#x27;).to_list()</span><br><span class="line"></span><br><span class="line"># print(temp_list)</span><br><span class="line"># 遍历并取出第一项的分类</span><br><span class="line">cate_list = [i[0] for i in temp_list]</span><br><span class="line"># print(cate_list)</span><br><span class="line">cate_df = pd.DataFrame(np.array(cate_list).reshape((df.shape[0]), 1), columns=[&#x27;cate&#x27;])</span><br><span class="line">print(cate_df)</span><br><span class="line"># 添加一列，列索引为cate</span><br><span class="line">df[&#x27;cate&#x27;] = cate_df</span><br><span class="line"># print(df[&#x27;cate&#x27;])</span><br><span class="line">print(df.groupby(by=&#x27;cate&#x27;).count()[&#x27;title&#x27;])</span><br></pre></td></tr></table></figure>
+
+<h2 id="16-pandas中的时间序列"><a href="#16-pandas中的时间序列" class="headerlink" title="16.pandas中的时间序列"></a>16.pandas中的时间序列</h2><p>&#x3D;&#x3D;生成一段时间范围&#x3D;&#x3D;</p>
+<p><code>pd.date_range(start=None, end=None, periods=None, freq=&#39;D&#39;)</code></p>
+<p>start和end以及freq配合能够生成start和end范围内以频率freq的一组时间索引</p>
+<p>start和periods以及freq配合能够生成从start开始的频率为freq的periods个时间索引</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/94cf1dc007ba4c459281320984f69db1.png#pic_center" alt="图片23"></p>
+<p>&#x3D;&#x3D;关于频率的更多缩写&#x3D;&#x3D;</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4615b163445f4fd8a3e88cdf7cfc452a.png#pic_center" alt="图片24"></p>
+<p>&#x3D;&#x3D;在DataFrame中使用时间序列&#x3D;&#x3D;</p>
+<p><code>index=pd.date_range(&quot;20170101&quot;,periods=10)</code></p>
+<p><code>df = pd.DataFrame(np.random.rand(10),index=index)</code></p>
+<p>回到最开始的911数据的案例中，我们可以使用pandas提供的方法把时间字符串转化为时间序列</p>
+<p><code>df[&quot;timeStamp&quot;] = pd.to_datetime(df[&quot;timeStamp&quot;],format=&quot;&quot;)</code></p>
+<p>format参数大部分情况下可以不用写，但是对于pandas无法格式化的时间字符串，我们可以使用该参数，比如包含中文</p>
+<p>那么问题来了：</p>
+<p>我们现在要统计每个月或者每个季度的次数怎么办呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">import pandas as pd</span><br><span class="line">df = pd.read_csv(&#x27;911.csv&#x27;)</span><br><span class="line">#显示所有列</span><br><span class="line">pd.set_option(&#x27;display.max_columns&#x27;, None)</span><br><span class="line"># #显示所有行</span><br><span class="line">pd.set_option(&#x27;display.max_rows&#x27;, None)</span><br><span class="line">print(df.info())</span><br><span class="line">print(df.head())</span><br><span class="line"># 将时间字符串转换为时间类型数据datetime64，以便进一步处理</span><br><span class="line">print(pd.to_datetime(df[&#x27;timeStamp&#x27;]).head())</span><br><span class="line"># 重新赋值df[&#x27;timeStamp&#x27;]</span><br><span class="line">df[&#x27;timeStamp&#x27;] = pd.to_datetime(df[&#x27;timeStamp&#x27;])</span><br><span class="line"># 将列timeStamp转换为行索引</span><br><span class="line">df.set_index(&#x27;timeStamp&#x27;,inplace=True)</span><br><span class="line">print(df.head())</span><br><span class="line"></span><br><span class="line"># 统计出911数据中不同月份电话次数</span><br><span class="line">count_by_month = df.resample(&#x27;M&#x27;).count()[&#x27;title&#x27;]</span><br><span class="line">print(count_by_month)</span><br><span class="line"></span><br><span class="line">_x = count_by_month.index</span><br><span class="line">_y = count_by_month.values</span><br><span class="line">print(_x)</span><br><span class="line">print(_y)</span><br><span class="line">_x = [i.strftime(&#x27;%Y%m%d&#x27;) for i in _x]</span><br><span class="line">plt.figure(figsize=(20,8), dpi=80)</span><br><span class="line">plt.plot(_x,_y)</span><br><span class="line"># plt.plot(range(len(_x)),_y)</span><br><span class="line">plt.xticks(_x,rotation=45)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="17-pandas重采样"><a href="#17-pandas重采样" class="headerlink" title="17.pandas重采样"></a>17.pandas重采样</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b7551d9e0d7a43e09dd27e6fbc66121d.png#pic_center" alt="图片25"></p>
+<p>&#x3D;&#x3D;示例&#x3D;&#x3D;</p>
+<p>1.统计出911数据中不同月份电话次数的变化情况</p>
+<p>2.统计出911数据中不同月份不同类型的电话的次数的变化情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">from matplotlib import pyplot as plt</span><br><span class="line">import pandas as pd,numpy as np</span><br><span class="line">df = pd.read_csv(&#x27;911.csv&#x27;)</span><br><span class="line"># 重新赋值df[&#x27;timeStamp&#x27;]</span><br><span class="line">df[&#x27;timeStamp&#x27;] = pd.to_datetime(df[&#x27;timeStamp&#x27;])</span><br><span class="line">#添加列，表示分类</span><br><span class="line">temp_list = df[&quot;title&quot;].str.split(&quot;: &quot;).tolist()</span><br><span class="line">cate_list = [i[0] for i in temp_list]</span><br><span class="line"># 创建列</span><br><span class="line">df[&quot;cate&quot;] = pd.DataFrame(np.array(cate_list).reshape((df.shape[0],1)))</span><br><span class="line"># 将时间列转化为索引</span><br><span class="line">df.set_index(&quot;timeStamp&quot;,inplace=True)</span><br><span class="line">print(df.head(1))</span><br><span class="line">dk = df.groupby(&#x27;cate&#x27;)</span><br><span class="line">print(dk)</span><br><span class="line">plt.figure(figsize=(20, 8), dpi=80)</span><br><span class="line">for group_name,group_data in dk:</span><br><span class="line">    print(group_name,group_data)</span><br><span class="line">    # 对不同的分类都进行绘图</span><br><span class="line">    count_by_month = group_data.resample(&quot;M&quot;).count()[&quot;title&quot;]</span><br><span class="line">    # 画图</span><br><span class="line">    _x = count_by_month.index</span><br><span class="line">    print(_x)</span><br><span class="line">    _y = count_by_month.values</span><br><span class="line">    print(_y)</span><br><span class="line">    _x = [i.strftime(&quot;%Y%m%d&quot;) for i in _x]</span><br><span class="line"></span><br><span class="line">    plt.plot(range(len(_x)), _y, label=group_name)</span><br><span class="line"></span><br><span class="line">plt.xticks(range(len(_x)), _x, rotation=45)</span><br><span class="line">plt.legend(loc=&quot;best&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>现在我们有北上广、深圳、和沈阳5个城市空气质量数据，请绘制出5个城市的PM2.5随时间的变化情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># coding=utf-8</span><br><span class="line">import pandas as pd</span><br><span class="line">from matplotlib import pyplot as plt</span><br><span class="line"></span><br><span class="line">file_path = &quot;./PM2.5/BeijingPM20100101_20151231.csv&quot;</span><br><span class="line"></span><br><span class="line">df = pd.read_csv(file_path)</span><br><span class="line">print(df.head())</span><br><span class="line">print(df.info())</span><br><span class="line"># 把分开的时间字符串通过periodIndex的方法转化为pandas的时间类型</span><br><span class="line">period = pd.PeriodIndex(year=df[&quot;year&quot;], month=df[&quot;month&quot;], day=df[&quot;day&quot;], hour=df[&quot;hour&quot;], freq=&quot;H&quot;)</span><br><span class="line"># 增加一列df[&quot;datetime&quot;]</span><br><span class="line">df[&quot;datetime&quot;] = period</span><br><span class="line">print(df.head(10))</span><br><span class="line">#</span><br><span class="line"># 把datetime 设置为索引</span><br><span class="line">df.set_index(&quot;datetime&quot;, inplace=True)</span><br><span class="line">#</span><br><span class="line"># 进行降采样,如果按日来排序，数据图不好看，按月份太稀疏，按日太绸</span><br><span class="line">df = df.resample(&quot;7D&quot;).mean()</span><br><span class="line">print(df.head())</span><br><span class="line"># 处理缺失数据，删除缺失数据</span><br><span class="line">print(df[&quot;PM_US Post&quot;])</span><br><span class="line"># dropna()该函数主要用于滤除缺失数据。</span><br><span class="line"># 如果是Series,则返回一个仅含非空数据和索引值的Series，默认丢弃含有缺失值的行。</span><br><span class="line"># 美国数据</span><br><span class="line">data = df[&quot;PM_US Post&quot;].dropna()  # 使用降采样后，会计算均值，这里再使用dropna()过滤空值意义不大</span><br><span class="line"># 中国数据</span><br><span class="line">data_china = df[&quot;PM_Nongzhanguan&quot;]</span><br><span class="line"></span><br><span class="line">print(data_china.head(100))</span><br><span class="line">#画图</span><br><span class="line"></span><br><span class="line">_x = data.index</span><br><span class="line">_x = [i.strftime(&quot;%Y%m%d&quot;) for i in _x]</span><br><span class="line"># 取中国PM2.5数据</span><br><span class="line">_x_china = [i.strftime(&quot;%Y%m%d&quot;) for i in data_china.index]</span><br><span class="line">print(len(_x_china),len(_x_china))</span><br><span class="line">_y = data.values</span><br><span class="line">_y_china = data_china.values</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(20,8),dpi=80)</span><br><span class="line"></span><br><span class="line">plt.plot(range(len(_x)),_y,label=&quot;US_POST&quot;,alpha=0.7)</span><br><span class="line">plt.plot(range(len(_x_china)),_y_china,label=&quot;CN_POST&quot;,alpha=0.7)</span><br><span class="line"></span><br><span class="line">plt.xticks(range(0,len(_x_china),10),list(_x_china)[::10],rotation=45)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=&quot;best&quot;)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul><a class="reward-main-btn" href="/about/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=pandas详解&amp;url=https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/&amp;pic=https://img2.baidu.com/it/u=2848555277,2083604793&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=711&amp;h=313" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Python/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Python<span class="tagsPageCount">4</span></a><a class="post-meta__box__tags" href="/tags/pandas/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>pandas<span class="tagsPageCount">1</span></a></div></div></div></div></div><div class="post-copyright"><i class="anzhiyufont anzhiyu-icon-copyright"></i><div class="post-copyright__author"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/">原创</a><a class="post-copyright-title"><span>pandas详解</span></a></div><div class="post-copyright-info-box"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"></span><a class="link" href="https://billysturate.github.io">BillySturate</a></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a class="link" href="https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/">https://billysturate.github.io/2022/08/05/Python/pandas%E8%AF%A6%E8%A7%A3/</a></span><span class="copy-button" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-copy"></i></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/04/C++/C++const%E4%BF%AE%E9%A5%B0%E6%8C%87%E9%92%88%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5/"><img class="prev-cover" src="https://img0.baidu.com/it/u=3039925465,4153686313&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=747&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">const修饰指针的三种情况详解</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/11/Linux/Vim_Vi%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/"><img class="next-cover" src="https://img0.baidu.com/it/u=2929208504,126491023&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=900&amp;h=499" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Vim/Vi常用命令总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/07/25/Python/Matplotlib%E8%AF%A6%E8%A7%A3/" title="Matplotlib详解"><img class="cover" src="https://img2.baidu.com/it/u=3895562755,944936517&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-07-25</div><div class="title">Matplotlib详解</div></div></a></div><div><a href="/2022/07/28/Python/Numpy/" title="Numpy详解"><img class="cover" src="https://img0.baidu.com/it/u=223919320,3404755119&fm=253&fmt=auto&app=138&f=GIF?w=815&h=476" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-07-28</div><div class="title">Numpy详解</div></div></a></div><div><a href="/2022/08/02/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/%E7%96%B2%E6%80%81%E6%A3%80%E6%B5%8B/" title="基于多信息融合的疲劳驾驶检测系统"><img class="cover" src="https://img1.baidu.com/it/u=1139591281,3989633589&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-02</div><div class="title">基于多信息融合的疲劳驾驶检测系统</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="author-info-top"> <div class="card-info-avatar"></div></div><div class="author-info__sayhi" id="author-info__sayhi"></div><h1 class="author-info__name">BillySturate</h1><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">产品、设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="banner-button-group"><a class="banner-button" onclick="pjax.loadUrl(&quot;/about/&quot;)"><span class="banner-button-text">了解更多</span><i class="anzhiyufont anzhiyu-icon-arrow-circle-right" style="font-size: 1.5rem"></i></a></div><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/BillySturate" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=billysturate@gmail.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><a class="social-icon faa-parent animated-hover" href="https://www.instagram.com/billysturate/" target="_blank" title="Instagram"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-instagram1"></use></svg></a><a class="social-icon faa-parent animated-hover" href="https://blog.csdn.net/qq_59084325" target="_blank" title="CSDN"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-csdn"></use></svg></a><a class="social-icon faa-parent animated-hover" href="tencent://Message/?Uin=1679510521&amp;amp;websiteName=local.edu.com:8888=&amp;amp;Menu=yes" target="_blank" title="QQ"><i class="anzhiyufont anzhiyu-icon-qq"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-pandas%E7%9A%84%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">1.pandas的常用数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-pandas%E4%B9%8BSeries%E5%88%9B%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">2.pandas之Series创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-pandas%E4%B9%8BSeries%E5%88%87%E7%89%87%E5%92%8C%E7%B4%A2%E5%BC%95"><span class="toc-number">3.</span> <span class="toc-text">3.pandas之Series切片和索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-pandas%E4%B9%8BSeries%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8C%E5%80%BC"><span class="toc-number">4.</span> <span class="toc-text">4.pandas之Series的索引和值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-pandas%E4%B9%8B%E8%AF%BB%E5%8F%96%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE"><span class="toc-number">5.</span> <span class="toc-text">5.pandas之读取外部数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-pandas%E4%B9%8BDataFrame"><span class="toc-number">6.</span> <span class="toc-text">6.pandas之DataFrame</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-pandas%E4%B9%8B%E5%8F%96%E8%A1%8C%E6%88%96%E8%80%85%E5%88%97"><span class="toc-number">7.</span> <span class="toc-text">7.pandas之取行或者列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-pandas%E4%B9%8Bloc"><span class="toc-number">8.</span> <span class="toc-text">8.pandas之loc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-pandas%E4%B9%8B%E5%B8%83%E5%B0%94%E7%B4%A2%E5%BC%95"><span class="toc-number">9.</span> <span class="toc-text">9.pandas之布尔索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-pandas%E4%B9%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%96%B9%E6%B3%95"><span class="toc-number">10.</span> <span class="toc-text">10.pandas之字符串方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%BC%BA%E5%A4%B1%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-number">11.</span> <span class="toc-text">11.缺失数据的处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6%E4%B9%8Bjoin"><span class="toc-number">12.</span> <span class="toc-text">12.数据合并之join</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6%E4%B9%8Bmerge"><span class="toc-number">13.</span> <span class="toc-text">13.数据合并之merge</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E5%88%86%E7%BB%84%E5%92%8C%E8%81%9A%E5%90%88"><span class="toc-number">14.</span> <span class="toc-text">14.分组和聚合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-Series%E5%A4%8D%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-number">15.</span> <span class="toc-text">15.Series复合索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-pandas%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97"><span class="toc-number">16.</span> <span class="toc-text">16.pandas中的时间序列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-pandas%E9%87%8D%E9%87%87%E6%A0%B7"><span class="toc-number">17.</span> <span class="toc-text">17.pandas重采样</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/25/63d09dc1f25be.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VSCode去掉拷贝来的代码前的行号"/></a><div class="content"><a class="title" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号">VSCode去掉拷贝来的代码前的行号</a><time datetime="2022-09-12T09:13:54.000Z" title="Created 2022-09-12 17:13:54">2022-09-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=3708672204,273493161&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=690&amp;h=388" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【HTML基础】基础认知 + HTML标签"/></a><div class="content"><a class="title" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签">【HTML基础】基础认知 + HTML标签</a><time datetime="2022-09-08T10:13:54.000Z" title="Created 2022-09-08 18:13:54">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=4017388245,646616071&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=550&amp;h=306" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之线程同步"/></a><div class="content"><a class="title" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步">Linux系统编程之线程同步</a><time datetime="2022-09-07T10:13:54.000Z" title="Created 2022-09-07 18:13:54">2022-09-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之守护进程、线程"/></a><div class="content"><a class="title" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程">Linux系统编程之守护进程、线程</a><time datetime="2022-09-05T10:13:54.000Z" title="Created 2022-09-05 18:13:54">2022-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之信号"/></a><div class="content"><a class="title" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号">Linux系统编程之信号</a><time datetime="2022-09-01T10:13:54.000Z" title="Created 2022-09-01 18:13:54">2022-09-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By BillySturate</div><div id="workboard"><img class="workSituationImg boardsign" src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://anzhiy.cn/" style="margin-inline:5px" data-title="本站使用AnZhiYu主题" title="本站使用AnZhiYu主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pan.anzhiy.cn/d/anzhiyu/svg/Theme-AnZhiYu-2E67D3.svg" alt="本站使用AnZhiYu主题"/></a><a class="github-badge" target="_blank" href="https://www.dogecloud.com/" style="margin-inline:5px" data-title="本站使用多吉云为静态资源提供CDN加速" title="本站使用多吉云为静态资源提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/CDN-多吉云-3693F3.svg" alt="本站使用多吉云为静态资源提供CDN加速"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title="本站项目由Github托管"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div></footer><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg"/><div class="loading-image-dot"></div><div id="loading-percentage">0%</div></div></div><script>const loadingPercentage = document.getElementById("loading-percentage");
+let loadingPercentageTimer = setInterval(function() {
+  var progressBar = document.querySelector(".pace-progress");
+  if (!progressBar) return
+  var currentValue = progressBar.getAttribute("data-progress-text");
+  if (currentValue !== loadingPercentage.textContent) {
+    loadingPercentage.textContent = currentValue;
+    if (currentValue === "100%") {
+      clearInterval(loadingPercentageTimer);
+    }
+  }
+}, 100);
+const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/progress_bar/progress_bar.css"/><script async="async" src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">37</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="center-console" type="button" title="中控台"><i class="anzhiyufont anzhiyu-icon-fish"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="console"><div class="close-btn" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-xmark" style="font-size: 35px;"></i></div><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="wechat" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="alipay" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> <span>Newest Comments</span></span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 1.45em; color: rgb(167, 69, 127)">C++<sup>8</sup></a><a href="/tags/CMake/" style="font-size: 1.15em; color: rgb(42, 164, 78)">CMake<sup>1</sup></a><a href="/tags/GCC/" style="font-size: 1.15em; color: rgb(186, 148, 169)">GCC<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.15em; color: rgb(47, 11, 63)">HTML<sup>1</sup></a><a href="/tags/IPC/" style="font-size: 1.15em; color: rgb(120, 67, 149)">IPC<sup>1</sup></a><a href="/tags/Json/" style="font-size: 1.21em; color: rgb(63, 139, 10)">Json<sup>3</sup></a><a href="/tags/Linux/" style="font-size: 1.33em; color: rgb(106, 172, 169)">Linux<sup>5</sup></a><a href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" style="font-size: 1.39em; color: rgb(152, 64, 55)">Linux系统编程<sup>7</sup></a><a href="/tags/Markdown/" style="font-size: 1.15em; color: rgb(58, 200, 124)">Markdown<sup>1</sup></a><a href="/tags/Matplotlib/" style="font-size: 1.15em; color: rgb(188, 30, 198)">Matplotlib<sup>1</sup></a><a href="/tags/Numpy/" style="font-size: 1.15em; color: rgb(106, 164, 100)">Numpy<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.27em; color: rgb(189, 69, 165)">Python<sup>4</sup></a><a href="/tags/Qt/" style="font-size: 1.27em; color: rgb(83, 39, 1)">Qt<sup>4</sup></a><a href="/tags/Robocup3d/" style="font-size: 1.15em; color: rgb(71, 73, 113)">Robocup3d<sup>1</sup></a><a href="/tags/SSH/" style="font-size: 1.15em; color: rgb(164, 152, 189)">SSH<sup>1</sup></a><a href="/tags/Shell/" style="font-size: 1.15em; color: rgb(169, 159, 176)">Shell<sup>1</sup></a><a href="/tags/VSCode/" style="font-size: 1.21em; color: rgb(54, 184, 98)">VSCode<sup>3</sup></a><a href="/tags/Vim-Vi/" style="font-size: 1.15em; color: rgb(103, 184, 30)">Vim/Vi<sup>1</sup></a><a href="/tags/gdb/" style="font-size: 1.15em; color: rgb(174, 9, 86)">gdb<sup>1</sup></a><a href="/tags/opencv/" style="font-size: 1.15em; color: rgb(124, 194, 161)">opencv<sup>1</sup></a><a href="/tags/pandas/" style="font-size: 1.15em; color: rgb(157, 46, 190)">pandas<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 1.15em; color: rgb(116, 155, 108)">人工智能<sup>1</sup></a><a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 1.15em; color: rgb(63, 34, 127)">信号<sup>1</sup></a><a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(171, 35, 103)">守护进程<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6IO/" style="font-size: 1.15em; color: rgb(25, 55, 5)">文件IO<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" style="font-size: 1.15em; color: rgb(97, 47, 156)">文件描述符<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.15em; color: rgb(21, 159, 35)">算法<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.15em; color: rgb(35, 87, 101)">线程<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" style="font-size: 1.15em; color: rgb(91, 13, 20)">线程同步<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4/" style="font-size: 1.15em; color: rgb(95, 146, 26)">虚拟地址空间<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 1.15em; color: rgb(83, 189, 65)">计算机视觉<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(112, 108, 127)">进程<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history" onclick="anzhiyu.hideConsole()"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/09/"><span class="card-archive-list-date">September 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">August 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/07/"><span class="card-archive-list-date">July 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/06/"><span class="card-archive-list-date">June 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" onclick="rm.switchDarkMode()" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script><div><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/utils.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/main.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/instant.page@5.1.1/instantpage.js" type="module"></script><script src="https://npm.elemecdn.com/vanilla-lazyload@17.3.1/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  console.log(1)
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("06/01/2022 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2022 By 安知鱼",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 BillySturate 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("06/01/2022 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+      img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+      img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "visitor@anzhiy.cn";</script><script>//动态标题
+let leaveTitle = 'w(ﾟДﾟ)w 不要走！再看看嘛！';
+let backTitle = '♪(^∇^*)欢迎肥来！';
+let OriginTitile = document.title
+let titleTime
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    //离开当前页面时标签显示内容
+    document.title = leaveTitle
+    clearTimeout(titleTime)
+  } else {
+    //返回当前页面时标签显示内容
+    document.title = backTitle + OriginTitile
+    //两秒后变回正常标题
+    titleTime = setTimeout(function () {
+      document.title = OriginTitile
+    }, 2000)
+  }
+})</script><script data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/catalog-bar/catalog-bar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/categoryBar/categoryBar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script>// 初始化函数
+let rm = {};
+
+//禁止图片拖拽
+let imgElements = document.getElementsByTagName("img");
+for (let i = 0; i < imgElements.length; i++) {
+  imgElements[i].addEventListener("dragstart", function (event) {
+    event.preventDefault();
+  });
+}
+
+// 显示菜单
+rm.showRightMenu = function (isTrue, x = 0, y = 0) {
+  console.info(x, y)
+  let rightMenu = document.getElementById("rightMenu");
+  rightMenu.style.top = x + "px";
+  rightMenu.style.left = y + "px";
+  if (isTrue) {
+    rightMenu.style.display = "block";
+    stopMaskScroll();
+  } else {
+    rightMenu.style.display = "none";
+  }
+};
+
+// 隐藏菜单
+rm.hideRightMenu = function () {
+  rm.showRightMenu(false);
+  let rightMenuMask = document.querySelector("#rightmenu-mask");
+  rightMenuMask.style.display = "none";
+};
+
+// 尺寸
+let rmWidth = document.getElementById("rightMenu").offsetWidth;
+let rmHeight = document.getElementById("rightMenu").offsetHeight;
+
+// 重新定义尺寸
+rm.reloadrmSize = function () {
+  rightMenu.style.visibility = "hidden";
+  rightMenu.style.display = "block";
+  // 获取宽度和高度
+  rmWidth = document.getElementById("rightMenu").offsetWidth;
+  rmHeight = document.getElementById("rightMenu").offsetHeight;
+  rightMenu.style.visibility = "visible";
+};
+
+// 获取点击的href
+let domhref = "";
+let domImgSrc = "";
+let globalEvent = null;
+
+// 监听右键初始化
+window.oncontextmenu = function (event) {
+  if (document.body.clientWidth > 768) {
+    let pageX = event.clientX + 10; //加10是为了防止显示时鼠标遮在菜单上
+    let pageY = event.clientY;
+
+    //其他额外菜单
+    const $rightMenuOther = document.querySelector(".rightMenuOther");
+    const $rightMenuPlugin = document.querySelector(".rightMenuPlugin");
+    const $rightMenuCopyText = document.querySelector("#menu-copytext");
+    const $rightMenuPasteText = document.querySelector("#menu-pastetext");
+    const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
+    const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
+    const $rightMenuCopyLink = document.querySelector("#menu-copylink");
+    const $rightMenuCopyImg = document.querySelector("#menu-copyimg");
+    const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
+    const $rightMenuSearch = document.querySelector("#menu-search");
+    const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
+    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
+    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
+    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
+    const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
+
+    let href = event.target.href;
+    let imgsrc = event.target.currentSrc;
+
+    // 判断模式 扩展模式为有事件
+    let pluginMode = false;
+    $rightMenuOther.style.display = "block";
+    globalEvent = event;
+
+    // 检查是否需要复制 是否有选中文本
+    if (selectTextNow && window.getSelection()) {
+      pluginMode = true;
+      $rightMenuCopyText.style.display = "block";
+      $rightMenuCommentText.style.display = "block";
+      $rightMenuSearch.style.display = "block";
+      $rightMenuSearchBaidu.style.display = "block";
+    } else {
+      $rightMenuCopyText.style.display = "none";
+      $rightMenuCommentText.style.display = "none";
+      $rightMenuSearchBaidu.style.display = "none";
+      $rightMenuSearch.style.display = "none";
+    }
+
+    //检查是否右键点击了链接a标签
+    if (href) {
+      pluginMode = true;
+      $rightMenuNewWindow.style.display = "block";
+      $rightMenuCopyLink.style.display = "block";
+      domhref = href;
+    } else {
+      $rightMenuNewWindow.style.display = "none";
+      $rightMenuCopyLink.style.display = "none";
+    }
+
+    //检查是否需要复制图片
+    if (imgsrc) {
+      pluginMode = true;
+      $rightMenuCopyImg.style.display = "block";
+      $rightMenuDownloadImg.style.display = "block";
+      $rightMenuNewWindowImg.style.display = "block";
+      document.getElementById("rightMenu").style.width="12rem"
+      domImgSrc = imgsrc;
+    } else {
+      $rightMenuCopyImg.style.display = "none";
+      $rightMenuDownloadImg.style.display = "none";
+      $rightMenuNewWindowImg.style.display = "none";
+    }
+
+    // 判断是否为输入框
+    if (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "textarea") {
+      pluginMode = true;
+      $rightMenuPasteText.style.display = "block";
+    } else {
+      $rightMenuPasteText.style.display = "none";
+    }
+    const navMusicEl = document.querySelector("#nav-music");
+    //判断是否是音乐
+    if (navMusicEl && navMusicEl.contains(event.target)) {
+      pluginMode = true;
+      $rightMenuMusicToggle.style.display = "block";
+      $rightMenuMusicBack.style.display = "block";
+      $rightMenuMusicForward.style.display = "block";
+      $rightMenuMusicPlaylist.style.display = "block";
+      $rightMenuMusicCopyMusicName.style.display = "block";
+    } else {
+      $rightMenuMusicToggle.style.display = "none";
+      $rightMenuMusicBack.style.display = "none";
+      $rightMenuMusicForward.style.display = "none";
+      $rightMenuMusicPlaylist.style.display = "none";
+      $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 如果不是扩展模式则隐藏扩展模块
+    if (pluginMode) {
+      $rightMenuOther.style.display = "none";
+      $rightMenuPlugin.style.display = "block";
+    } else {
+      $rightMenuPlugin.style.display = "none";
+    }
+
+    rm.reloadrmSize();
+
+    // 鼠标默认显示在鼠标右下方，当鼠标靠右或靠下时，将菜单显示在鼠标左方\上方
+    if (pageX + rmWidth > window.innerWidth) {
+      pageX -= rmWidth + 10;
+    }
+    if (pageY + rmHeight > window.innerHeight) {
+      pageY -= pageY + rmHeight - window.innerHeight;
+    }
+
+    rm.showRightMenu(true, pageY, pageX);
+    document.getElementById("rightmenu-mask").style.display = "flex";
+    return false;
+  }
+};
+
+// 下载图片状态
+rm.downloadimging = false;
+
+// 复制图片到剪贴板
+rm.writeClipImg = function (imgsrc) {
+  console.log("按下复制");
+  rm.hideRightMenu();
+  anzhiyu.snackbarShow("正在下载中，请稍后", false, 10000);
+  if (rm.downloadimging == false) {
+    rm.downloadimging = true;
+    setTimeout(function () {
+      copyImage(imgsrc);
+      anzhiyu.snackbarShow("复制成功！图片已添加盲水印，请遵守版权协议");
+      rm.downloadimging = false;
+    }, "10000");
+  }
+};
+
+function imageToBlob(imageURL) {
+  const img = new Image();
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob(
+        blob => {
+          // here the image is a blob
+          resolve(blob);
+        },
+        "image/png",
+        0.75
+      );
+    };
+  });
+}
+
+async function copyImage(imageURL) {
+  const blob = await imageToBlob(imageURL);
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+rm.switchDarkMode = function () {
+  // Switch Between Light And Dark Mode
+  const nowMode = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  if (nowMode === "light") {
+    activateDarkMode();
+    saveToLocal.set("theme", "dark", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night);
+    document.querySelector(".menu-darkmode-text").textContent = "浅色模式";
+  } else {
+    activateLightMode();
+    saveToLocal.set("theme", "light", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day);
+    document.querySelector(".menu-darkmode-text").textContent = "深色模式";
+  }
+  // handle some cases
+  typeof runMermaid === "function" && window.runMermaid();
+  rm.hideRightMenu();
+  anzhiyu.darkModeStatus();
+};
+
+rm.copyUrl = function (id) {
+  const input = document.createElement("input"); // Create a new <input> element
+  input.id = "copyVal"; // Set the id of the new element to "copyVal"
+  document.body.appendChild(input); // Append the new element to the end of the <body> element
+  
+  const text = id;
+  input.value = text;
+  input.select();
+  input.setSelectionRange(0, input.value.length);
+  document.execCommand("copy");
+  
+  input.remove(); // Remove the <input> element from the DOM
+};
+
+function stopMaskScroll() {
+  if (document.getElementById("rightmenu-mask")) {
+    let xscroll = document.getElementById("rightmenu-mask");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+  if (document.getElementById("rightMenu")) {
+    let xscroll = document.getElementById("rightMenu");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+}
+
+rm.rightmenuCopyText = function (txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt);
+  }
+  rm.hideRightMenu();
+};
+
+rm.copyPageUrl = function () {
+  var url = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+rm.sharePage = function () {
+  var content = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+// 复制当前选中文本
+var selectTextNow = "";
+document.onmouseup = document.ondblclick = selceText;
+
+function selceText() {
+  var txt;
+  if (document.selection) {
+    txt = document.selection.createRange().text;
+  } else {
+    txt = window.getSelection().toString();
+  }
+  selectTextNow = txt !== "" ? txt : "";
+}
+
+// 读取剪切板
+rm.readClipboard = function () {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText().then(clipText => rm.insertAtCaret(globalEvent.target, clipText));
+  }
+};
+
+// 粘贴文本到焦点
+rm.insertAtCaret = function (elemt, value) {
+  const startPos = elemt.selectionStart,
+    endPos = elemt.selectionEnd;
+  if (document.selection) {
+    elemt.focus();
+    var sel = document.selection.createRange();
+    sel.text = value;
+    elemt.focus();
+  } else {
+    if (startPos || startPos == "0") {
+      var scrollTop = elemt.scrollTop;
+      elemt.value = elemt.value.substring(0, startPos) + value + elemt.value.substring(endPos, elemt.value.length);
+      elemt.focus();
+      elemt.selectionStart = startPos + value.length;
+      elemt.selectionEnd = startPos + value.length;
+      elemt.scrollTop = scrollTop;
+    } else {
+      elemt.value += value;
+      elemt.focus();
+    }
+  }
+};
+
+//粘贴文本
+rm.pasteText = function () {
+  const result = rm.readClipboard() || "";
+  rm.hideRightMenu();
+};
+
+//引用到评论
+rm.rightMenuCommentText = function (txt) {
+  rm.hideRightMenu();
+  const postCommentDom = document.getElementById("post-comment");
+  var domTop = postCommentDom.offsetTop;
+  window.scrollTo(0, domTop - 80);
+  if (txt == "undefined" || txt == "null") txt = "好棒！";
+  function setText() {
+    setTimeout(() => {
+      var input = document.getElementsByClassName("el-textarea__inner")[0];
+      if (!input) setText();
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("input", true, true);
+      let inputValue = replaceAll(txt, "\n", "\n> ");
+      input.value = "> " + inputValue + "\n\n";
+      input.dispatchEvent(evt);
+      input.focus();
+      input.setSelectionRange(-1, -1);
+      if (document.getElementById("comment-tips")) {
+        document.getElementById("comment-tips").classList.add("show");
+      }
+    }, 100);
+  }
+  setText();
+};
+
+//替换所有内容
+function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
+}
+
+// 百度搜索
+rm.searchBaidu = function () {
+  anzhiyu.snackbarShow("即将跳转到百度搜索", false, 2000);
+  setTimeout(function () {
+    window.open("https://www.baidu.com/s?wd=" + selectTextNow);
+  }, "2000");
+  rm.hideRightMenu();
+};
+
+//分享链接
+rm.copyLink = function () {
+  rm.rightmenuCopyText(domhref);
+  anzhiyu.snackbarShow("已复制链接地址");
+};
+
+function addRightMenuClickEvent() {
+  // 添加点击事件
+  document.getElementById("menu-backward").addEventListener("click", function () {
+  window.history.back();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-forward").addEventListener("click", function () {
+    window.history.forward();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-refresh").addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  document.getElementById("menu-top").addEventListener("click", function () {
+    anzhiyu.scrollToDest(0, 500);
+    rm.hideRightMenu();
+  });
+
+  const menuLinks = document.querySelectorAll(".menu-link");
+  menuLinks.forEach(function (link) {
+    link.addEventListener("click", rm.hideRightMenu);
+  });
+
+  document.getElementById("menu-darkmode").addEventListener("click", rm.switchDarkMode);
+
+  document.getElementById("menu-home") && document.getElementById("menu-home").addEventListener("click", function () {
+    window.location.href = window.location.origin;
+  });
+
+  document.getElementById("menu-randomPost").addEventListener("click", function () {
+    toRandomPost();
+  });
+
+  document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
+
+  document.getElementById("rightmenu-mask").addEventListener("click", rm.hideRightMenu);
+
+  document.getElementById("rightmenu-mask").addEventListener("contextmenu", function (event) {
+    rm.hideRightMenu();
+    event.preventDefault(); // Prevent the default context menu from appearing
+  });
+
+  document.getElementById("menu-copy").addEventListener("click", rm.copyPageUrl);
+
+  document.getElementById("menu-pastetext").addEventListener("click", rm.pasteText);
+
+  document.getElementById("menu-copytext").addEventListener("click", function () {
+    rm.rightmenuCopyText(selectTextNow);
+    anzhiyu.snackbarShow("复制成功，复制和转载请标注本文地址");
+  });
+
+  document.getElementById("menu-commenttext").addEventListener("click", function () {
+    rm.rightMenuCommentText(selectTextNow);
+  });
+
+  document.getElementById("menu-newwindow").addEventListener("click", function () {
+    window.open(domhref);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copylink").addEventListener("click", rm.copyLink);
+
+  document.getElementById("menu-downloadimg").addEventListener("click", function () {
+    anzhiyu.downloadImage(domImgSrc, "anzhiyu");
+  });
+
+  document.getElementById("menu-newwindowimg").addEventListener("click", function () {
+    window.open(domImgSrc);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copyimg").addEventListener("click", function () {
+    rm.writeClipImg(domImgSrc);
+  });
+
+  document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
+
+  //音乐
+  document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
+
+  document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
+
+  document.getElementById("menu-music-forward").addEventListener("click", anzhiyu.musicSkipForward);
+
+  document.getElementById("menu-music-copyMusicName").addEventListener("click", function () {
+    rm.rightmenuCopyText(anzhiyu.musicGetName());
+    anzhiyu.snackbarShow("复制歌曲名称成功", false, 3000);
+  });
+
+}
+
+addRightMenuClickEvent();</script><script data-pjax>var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+var pageHeaderEl = document.getElementById("page-header");
+var navMusicEl = document.getElementById("nav-music");
+var consoleEl = document.getElementById("console");
+// 已随机的歌曲
+var selectRandomSong = [];
+// 音乐默认声音大小
+var musicVolume = 0.8;
+// 是否切换了周杰伦音乐列表
+var changeMusicListFlag = false;
+// 当前默认播放列表
+var defaultPlayMusicList = [];
+
+document.getElementById("page-name").innerText = document.title.split(" | 安知鱼")[0];
+anzhiyu.initIndexEssay();
+anzhiyu.changeTimeInEssay();
+anzhiyu.removeBodyPaceClass();
+anzhiyu.qrcodeCreate();
+anzhiyu.changeTimeInAlbumDetail();
+anzhiyu.reflashEssayWaterFall();
+anzhiyu.sayhi();
+anzhiyu.stopImgRightDrag();
+anzhiyu.addNavBackgroundInit();
+anzhiyu.setValueToBodyType();
+
+anzhiyu.getCustomPlayList();
+anzhiyu.addEventListenerConsoleMusicList(false);</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.6/icon/ali_iconfont_css.css"><script async src="https://at.alicdn.com/t/c/font_4044712_5zffwsx4hy7.js?spm=a313x.7781069.1998910419.53&amp;file=font_4044712_5zffwsx4hy7.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://npm.elemecdn.com/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+  window.anzhiyuScrollFnToDo && window.removeEventListener('scroll', anzhiyuScrollFnToDo)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,1248 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux系统编程之进程 | BillySturateの秘密基地</title><meta name="keywords" content="Linux系统编程,进程"><meta name="author" content="BillySturate"><meta name="copyright" content="BillySturate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Linux系统编程之进程"><meta name="application-name" content="Linux系统编程之进程"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="bookmark" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="192x192" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="512x512" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1136x640.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_640x1136.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2688x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1792x828.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1125x2436.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_828x1792.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2436x1125.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1242x2208.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2208x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1334x750.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_750x1334.png"><link rel="apple-touch-startup-image" media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2732x2048.png"><meta name="description" content="1.进程相关概念1.1 程序和进程程序：是指编译好的二进制文件，在磁盘上，不占用系统资源(cpu、内存、打开的文件、 设备、锁….)，是一个静态的概念 。 进程：被执行之后的程序叫做进程，不占用磁盘空间，需要消耗系统的内存，CPU资源，每个运行的进程的都对应一个属于自己的虚拟地址空间，这是一个动态的概念。 程序 → 剧本(纸)  进程 → 戏(舞台、演员、灯光、道具…)  同一个剧本可以在多个舞台">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统编程之进程">
+<meta property="og:url" content="https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/index.html">
+<meta property="og:site_name" content="BillySturateの秘密基地">
+<meta property="og:description" content="1.进程相关概念1.1 程序和进程程序：是指编译好的二进制文件，在磁盘上，不占用系统资源(cpu、内存、打开的文件、 设备、锁….)，是一个静态的概念 。 进程：被执行之后的程序叫做进程，不占用磁盘空间，需要消耗系统的内存，CPU资源，每个运行的进程的都对应一个属于自己的虚拟地址空间，这是一个动态的概念。 程序 → 剧本(纸)  进程 → 戏(舞台、演员、灯光、道具…)  同一个剧本可以在多个舞台">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img1.baidu.com/it/u=2036916699,254542477&fm=253&fmt=auto&app=138&f=JPEG?w=625&h=500">
+<meta property="article:published_time" content="2022-08-26T10:13:54.000Z">
+<meta property="article:modified_time" content="2023-01-28T12:48:27.192Z">
+<meta property="article:author" content="BillySturate">
+<meta property="article:tag" content="Linux系统编程">
+<meta property="article:tag" content="进程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img1.baidu.com/it/u=2036916699,254542477&fm=253&fmt=auto&app=138&f=JPEG?w=625&h=500"><link rel="shortcut icon" href="https://bu.dusays.com/2023/04/28/644be5a78f9f9.png"><link rel="canonical" href="https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  navMusic: false,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#3b70fc","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux系统编程之进程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-01-28 20:48:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/"><div class="title">BillySturateの秘密基地</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><center id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></center></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="darkmode_navswitch"><a class="darkmode_switchbutton" type="button" href="javascript:void(0);" title="Switch Between Light And Dark Mode" onclick="rm.switchDarkMode()"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke" style="font-size: 1.3rem"></i></a></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux系统编程之进程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-08-26T10:13:54.000Z" title="Created 2022-08-26 18:13:54">2022-08-26</time><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-01-28T12:48:27.192Z" title="Updated 2023-01-28 20:48:27">2023-01-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/">Linux系统编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">6.7k</span><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>23min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux系统编程之进程"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img1.baidu.com/it/u=2036916699,254542477&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=625&amp;h=500"></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-进程相关概念"><a href="#1-进程相关概念" class="headerlink" title="1.进程相关概念"></a>1.进程相关概念</h2><h3 id="1-1-程序和进程"><a href="#1-1-程序和进程" class="headerlink" title="1.1 程序和进程"></a>1.1 程序和进程</h3><p>程序：是指编译好的二进制文件，在磁盘上，不占用系统资源(cpu、内存、打开的文件、 设备、锁….)，是一个静态的概念 。</p>
+<p>进程：被执行之后的程序叫做进程，不占用磁盘空间，需要消耗系统的内存，CPU资源，每个运行的进程的都对应一个属于自己的虚拟地址空间，这是一个动态的概念。</p>
+<p>程序 → 剧本(纸) </p>
+<p>进程 → 戏(舞台、演员、灯光、道具…) </p>
+<p>同一个剧本可以在多个舞台同时上演。同样，同一个程序也可以加载为不同的进程(彼此之间互不影响)<br>如：同时开两个终端。各自都有一个 bash 但彼此 ID 不同。</p>
+<h3 id="1-2-并行和并发"><a href="#1-2-并行和并发" class="headerlink" title="1.2 并行和并发"></a>1.2 并行和并发</h3><p><strong>并发</strong></p>
+<ul>
+<li>并发的同时运行是一个假象， CPU 在某一个时间点只能为某一个个体来服务，因此不可能同时处理多任务，这是通过计算机CPU的时间片快速切换实现的。</li>
+<li>并发是针对某一个硬件资源而言的，在某个时间段之内处理的任务的总量，量越大效率越高。</li>
+</ul>
+<p><strong>并行</strong></p>
+<ul>
+<li>并行的多进程同时运行是真实存在的，可以在同一时刻同时运行多个进程</li>
+<li>并行需要依赖多个硬件资源，单个是无法实现的。</li>
+</ul>
+<h3 id="1-3-PCB进程控制块"><a href="#1-3-PCB进程控制块" class="headerlink" title="1.3 PCB进程控制块"></a>1.3 PCB进程控制块</h3><blockquote>
+<p>PCB - 进程控制块（Processing Control Block），Linux 内核的进程控制块本质上是一个叫做 task_struct 的结构体。在这个结构体中记录了进程运行相关的一些信息，下面介绍一些常用的信息：</p>
+</blockquote>
+<ul>
+<li>进程 id：每一个进程都一个唯一的进程 ID，类型为 pid_t, 本质是一个整形数</li>
+<li>进程的状态：进程有不同的状态，状态是一直在变化的，有就绪、运行、挂起、停止等状态。</li>
+<li>进程对应的虚拟地址空间的信息。</li>
+<li>描述控制终端的信息，进程在哪个终端启动默认就和哪个终端绑定。</li>
+<li>当前工作目录：默认情况下，启动进程的目录就是当前的工作目录</li>
+<li>umask 掩码：在创建新文件的时候，通过这个掩码屏蔽某些用于对文件的操作权限。</li>
+<li>文件描述符表：每个被分配的文件描述符都对应一个已经打开的磁盘文件和信号相关的信息：在 Linux 中 调用函数 , 键盘快捷键 , 执行shell命令等操作都会产生信号。</li>
+<li>阻塞信号集：记录当前进程中阻塞哪些已产生的信号，使其不能被处理</li>
+<li>未决信号集：记录在当前进程中产生的哪些信号还没有被处理掉。</li>
+<li>用户 id 和组 id：当前进程属于哪个用户，属于哪个用户组</li>
+<li>会话（Session）和进程组：多个进程的集合叫进程组，多个进程组的集合叫会话。</li>
+<li>进程可以使用的资源上限：可以使用 shell 命令 ulimit -a 查看详细信息。</li>
+</ul>
+<h3 id="1-4-单道程序设计和多道程序设计"><a href="#1-4-单道程序设计和多道程序设计" class="headerlink" title="1.4 单道程序设计和多道程序设计"></a>1.4 单道程序设计和多道程序设计</h3><p><strong>单道程序设计</strong></p>
+<p>所有进程一个一个排对执行。若 A 阻塞，B 只能等待，即使 CPU 处于空闲状态。而在人机交互时阻塞的出现时必然的。所有这种模型在系统资源利用上及其不合理，在计算机发展历史上存在不久，大部分便被淘汰了。</p>
+<p><strong>多道程序设计</strong></p>
+<p>在计算机内存中同时存放几道相互独立的程序，它们在管理程序控制之下，相互穿插的运行。多道程序设计必须有硬件基础作为保证。<strong>时钟中断</strong>即为多道程序设计模型的理论基础。 并发时，任意进程在执行期间都不希望放弃cpu。因此系统需要一种强制让进程让出 cpu 资源的手段。时钟中断有硬件基础作为保障，对进程而言不可抗拒。 操作系统中的中断处理函数，来负责调度程序执行。<br>在多道程序设计模型中，多个进程轮流使用 CPU (分时复用 CPU资源)。而当下常见 CPU为纳秒级，1 秒可以执行大约 10 亿条指令。由于人眼的反应速度是毫秒级，所以看似同时在运行。</p>
+<h3 id="1-5-进程状态"><a href="#1-5-进程状态" class="headerlink" title="1.5 进程状态"></a>1.5 进程状态</h3><p><a target="_blank" rel="noopener" href="https://subingwen.cn/linux/process/#1-4-%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81">参考链接</a></p>
+<p>进程一共有五种状态分别为：<code>创建态</code>，<code>就绪态</code>，<code>运行态</code>，<code>阻塞态(挂起态)</code>，<code>退出态(终止态)</code> 其中创建态和退出态维持的时间是非常短的，稍纵即逝。我们主要是需要将<code>就绪态</code> ,<code>运行态</code>, <code>挂起态</code>，三者之间的状态切换搞明白。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/da67e5d956884ffc8c7a4be647e8e6fe.png#pic_center"></p>
+<p>就绪态：</p>
+<ul>
+<li>进程被创建出来了，有运行的资格但是还没有运行，需要抢 CPU 时间片</li>
+<li>得到 CPU 时间片，进程开始运行，从就绪态转换为运行态。</li>
+<li>进程的 CPU 时间片用完了，再次失去 CPU, 从运行态转换为就绪态。</li>
+</ul>
+<p>运行态：</p>
+<ul>
+<li>获取到 CPU 资源的进程，进程只有在这种状态下才能运行</li>
+<li>运行态不会一直持续，进程的 CPU 时间片用完之后，再次失去 CPU，从运行态转换为就绪态</li>
+<li>只要进程还没有退出，就会在就绪态和运行态之间不停的切换。</li>
+</ul>
+<p>阻塞态：</p>
+<ul>
+<li>进程被强制放弃 CPU，并且没有抢夺 CPU 时间片的资格</li>
+<li>比如：在程序中调用了某些函数（比如: sleep ()），进程由运行态转换为阻塞态（挂起态）</li>
+<li>当某些条件被满足了（比如：sleep()睡醒了），进程的阻塞状态也就被解除了，进程从阻塞态转换为就绪态。</li>
+</ul>
+<p>退出态：</p>
+<ul>
+<li>进程被销毁，占用的系统资源被释放了</li>
+<li>任何状态的进程都可以直接转换为退出态。</li>
+</ul>
+<h3 id="1-6-环境变量"><a href="#1-6-环境变量" class="headerlink" title="1.6 环境变量"></a>1.6 环境变量</h3><p><code>echo $PATH</code>  查看环境变量</p>
+<p>path环境变量里记录了一系列的值，当运行一个可执行文件时，系统会去环境变量记录的位置里查找这个文件并执行。</p>
+<p><code>echo $TERM</code> 查看终端</p>
+<p><code>echo $LANG</code> 查看语言</p>
+<p><code>env</code>     查看所有环境变量</p>
+<p><strong>补充</strong></p>
+<p><code>ps aux</code> 返回结果里，第二列是进程id号</p>
+<h2 id="2-进程创建"><a href="#2-进程创建" class="headerlink" title="2.进程创建"></a>2.进程创建</h2><h3 id="2-1-getpid-x2F-getppid-x2F-fork-函数原型"><a href="#2-1-getpid-x2F-getppid-x2F-fork-函数原型" class="headerlink" title="2.1 getpid()&#x2F;getppid()&#x2F;fork()函数原型"></a>2.1 getpid()&#x2F;getppid()&#x2F;fork()函数原型</h3><p>Linux 中进程 ID 为 pid_t 类型，其本质是一个正整数，通过上边的 ps aux 命令可以查看每个进程的进程ID号。PID 为 1 的进程是 Linux 系统中创建的第一个进程。</p>
+<p>获取当前进程的进程 ID（PID）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">getpid</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>获取当前进程的父进程 ID（PPID）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">getppid</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>创建一个新的进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">fork</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-fork-函数返回值"><a href="#2-2-fork-函数返回值" class="headerlink" title="2.2 fork()函数返回值"></a>2.2 fork()函数返回值</h3><p><code>fork ()</code> 调用成功之后，会返回两个值，父子进程的返回值是不同的。</p>
+<p>父进程的虚拟地址空间中将该返回值标记为一个大于 0 的数（其实记录的是子进程的进程 ID）</p>
+<p>子进程的虚拟地址空间中将该返回值标记 0</p>
+<p>在程序中需要通过 fork () 的返回值来判断当前进程是子进程还是父进程。</p>
+<h3 id="2-3-fork-函数创建子进程示例"><a href="#2-3-fork-函数创建子进程示例" class="headerlink" title="2.3 fork()函数创建子进程示例"></a>2.3 fork()函数创建子进程示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 在父进程中创建子进程</span></span><br><span class="line">    <span class="type">pid_t</span> pid = fork();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;当前进程fork()的返回值: %d\n&quot;</span>, pid);</span><br><span class="line">    <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 父进程执行的逻辑</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是父进程, pid = %d\n&quot;</span>, getpid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 子进程执行的逻辑</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是子进程, pid = %d, 我爹是: %d\n&quot;</span>, getpid(), getppid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="comment">// pid == -1</span></span><br><span class="line">    &#123;</span><br><span class="line">    		perror(<span class="string">&quot;创建失败&quot;</span>);</span><br><span class="line">    		<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 创建子进程失败了</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 不加判断, 父子进程都会执行这个循环</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下所示</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4960546b2a1144d58a2b6b04a9490122.png#pic_center"></p>
+<p>代码理解：我们在父进程中成功创建了子进程，子进程就拥有父进程代码区的所有代码，那么子进程中的代码是在什么位置开始运行的呢？父进程肯定是从 main () 函数开始运行的，子进程是在父进程中调用 fork () 函数之后被创建，子进程就从 fork () 之后开始向下执行代码。上代码演示了父子进程中代码的执行流程，可以看到如果在程序中对 fork() 的返回值做了判断，就可以控制父子进程的行为，如果没有做任何判断这个代码块父子进程都可以执行。在编写多进程程序的时候，一定要将代码想象成多份进行分析，因为直观上看代码就一份，但实际上数据都是多份，并且多份数据中变量名都相同，但是他们的值却不一定相同。</p>
+<h3 id="2-4-循环创建多个子进程"><a href="#2-4-循环创建多个子进程" class="headerlink" title="2.4 循环创建多个子进程"></a>2.4 循环创建多个子进程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"> 		<span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">pid_t</span> pid = fork();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;当前进程pid: %d\n&quot;</span>, getpid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下图所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/1726df02995e4f1984f69e995727f5f3.png#pic_center"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4f4aaaebd1454220962c9adc2a2cbbb4.png#pic_center"></p>
+<p>可以看出，这和我们预想的不一样，为什么呢，明明我用for循环只想创建出5个进程，但是却fork创建了这么多的子进程，这是因为在循环中创建出的子进程还会创建出孙子进程，孙子进程会创建出重孙进程，所以才会创建出这么多的进程，下面给出解决方法，我们可以只让父进程创建子进程，如果是子进程不让其继续创建子进程，因此只需要在程序中添加关于父子进程的判断即可，如果fork()&#x3D;&#x3D;0，说明是子进程，那么我们就直接让子进程break出for循环，下面给出改进过后的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"> 		<span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(fork() == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">        	<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">5</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	sleep(<span class="number">5</span>);</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;i am parent\n&quot;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    	sleep(i);</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;i am %dth child\n&quot;</span>, i+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下图所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/f9ebe2c4c83043c1b06f8e3f408d9f80.png#pic_center"></p>
+<p>看到如上代码，可能有的人或许有疑惑，为什么要调用sleep()函数，因为如果我们不调用sleep()函数的话，最终在终端显示的时候会是乱序的，如下图所示</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b2f1760eb78040789acd3ab18b589c7a.png#pic_center"></p>
+<p>这是要因为，对操作系统而言，这几个子进程几乎是同时出现的，它们和父进程一起争夺cpu，谁抢到，谁打印，所以出现顺序是随机的。还有就是终端提示符混在了输出里，这是因为，fork1 进程启动之后，共创建了 5 个子进程，其实 fork1 也是有父进程的就是当前的终端，终端只能检测到fork1进程的状态，fork1执行期间终端切换到后台，a.out 执行完毕之后终端切换回前台，当终端切换到前台之后，fork1的子进程还没有执行完毕，所以子进程输出的信息就显示到终端命令提示符的后边了，导致终端显示有问题。因此想要解决这个问题，调用sleep()函数即可完美解决。</p>
+<h3 id="2-5-父子进程共享哪些内容"><a href="#2-5-父子进程共享哪些内容" class="headerlink" title="2.5 父子进程共享哪些内容"></a>2.5 父子进程共享哪些内容</h3><p> 刚fork之后：(注意时间点)</p>
+<p><strong>父子进程相同部分：</strong></p>
+<p>  data段、text段、堆、栈、环境变量、全局变量、宿主目录位置、进程工作目录位置、信号处理方式</p>
+<p><strong>父子进程不同部分：</strong></p>
+<p>  进程id、返回值、各自的父进程、进程创建时间、闹钟、未决信号集</p>
+<p><strong>解释：</strong></p>
+<p>在主进程使用fork()函数后，会创建出子进程，因为每个进程都会有自己的虚拟内存空间，所以子进程也会有自己单独的虚拟内存空间，他和主进程的虚拟内存空间是完全独立的，只不过子进程的虚拟内存空间是基于父进程的虚拟内存空间拷贝出来的，拷贝完成后，他们两0-3G的用户区是相同的，但是由于每个进程都有自己的进程 ID，因此内核区存储的父子进程 ID 是不同的。虽然他们在代码区的代码相同，但是执行时可以通过fork()函数的返回值来区分主进程和子进程的执行逻辑，似乎，子进程复制了父进程 0-3G 用户空间内容，以及父进程的 PCB，但 pid 不同。真的每 fork 一个子进程都要将父进程的 0-3G 地址空间完全拷贝一份，然后在映射至物理内存吗？当然不是！父子进程间遵循<strong>读时共享写时复制的原则</strong>。这样设计，无论子进程执行父进程的逻辑还是执行自己的逻辑都能节省内存开销。</p>
+<p>有的人可能会想通过全局变量来让父子进程之间进行通信，但是这是行不通的，因为每个进程都有自己的地址空间，两个同名全局变量存储在不同的虚拟地址空间中，二者没有任何关联性。如果想让父子进程之间进行通信交流，可以使用：管道，共享内存，本地套接字，内存映射区，消息队列等方式。后面会介绍这些方法。</p>
+<h3 id="2-6-父子进程gdb调试"><a href="#2-6-父子进程gdb调试" class="headerlink" title="2.6 父子进程gdb调试"></a>2.6 父子进程gdb调试</h3><p>使用 gdb 调试的时候，gdb 只能跟踪一个进程。可以在 fork 函数调用之前，通过指令设置 gdb 调试工具跟踪父进程或者是跟踪子进程。默认跟踪父进程。</p>
+<ul>
+<li>设置父进程调试路径：<code>set follow-fork-mode parent (默认)</code></li>
+<li>设置子进程调试路径：<code>set follow-fork-mode child</code></li>
+</ul>
+<p>注意，一定要在fork函数调用之前设置才有效。</p>
+<h2 id="3-exec函数族"><a href="#3-exec函数族" class="headerlink" title="3.exec函数族"></a>3.exec函数族</h2><p>fork 创建子进程后执行的是和父进程相同的程序（但有可能执行不同的代码分支），子进程往往要调用一种 exec 函数以执行另一个程序。当进程调用一种 exec 函数时，该进程的用户空间代码和数据完全被新程序替换，从新程序的启动例程开始执行。调用 exec 并不创建新进程，所以调用 exec 前后该进程的 id 并未变。</p>
+<p>函数原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">char</span> **environ;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execl</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path, <span class="type">const</span> <span class="type">char</span> *arg, ...</span></span><br><span class="line"><span class="params">          <span class="comment">/* (char  *) NULL */</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execlp</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *file, <span class="type">const</span> <span class="type">char</span> *arg, ...</span></span><br><span class="line"><span class="params">           <span class="comment">/* (char  *) NULL */</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execle</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path, <span class="type">const</span> <span class="type">char</span> *arg, ...</span></span><br><span class="line"><span class="params">           <span class="comment">/*, (char *) NULL, char * const envp[] */</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execv</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path, <span class="type">char</span> *<span class="type">const</span> argv[])</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execvp</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *file, <span class="type">char</span> *<span class="type">const</span> argv[])</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">execvpe</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *file, <span class="type">char</span> *<span class="type">const</span> argv[],</span></span><br><span class="line"><span class="params">            <span class="type">char</span> *<span class="type">const</span> envp[])</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这些函数执行成功无返回值，失败返回 -1</p>
+<p><code>exec族函数</code>中最常用的有两个<code>execl()</code>和<code> execlp()</code>，这两个函数是对其他 4 个函数做了进一步的封装，下面介绍一下。</p>
+<h3 id="3-1-execlp-函数"><a href="#3-1-execlp-函数" class="headerlink" title="3.1 execlp()函数"></a>3.1 execlp()函数</h3><p>加载一个进程，借助 PATH环境变量</p>
+<p><strong>函数原型</strong></p>
+<p><code>int execlp(const char *file, const char *arg, …)</code></p>
+<p><strong>函数参数</strong></p>
+<p>参数1：要加载的程序名字，该函数需要配合PATH环境变量来使用，当PATH所有目录搜素后没有参数1则返回出错。</p>
+<p>参数2：ps aux 查看进程的时候，启动的进程的名字，可以随意指定，一般和要启动的可执行程序名相同。</p>
+<p>参数3 : 要执行的命令需要的参数，可以写多个，最后以 NULL 结尾，表示参数指定完了。</p>
+<p><strong>函数返回值</strong></p>
+<p>执行成功，无返回，执行失败，返回-1</p>
+<p>该函数通常用来调用系统程序。如ls、date、cp、cat命令。</p>
+<p>execlp这里面的p，表示要借助环境变量来加载可执行文件</p>
+<h3 id="3-2-execl-函数"><a href="#3-2-execl-函数" class="headerlink" title="3.2 execl()函数"></a>3.2 execl()函数</h3><p>该函数可用于执行任意一个可执行程序，函数需要通过指定的文件路径才能找到这个可执行程序。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="comment">// 变参函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">execl</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path, <span class="type">const</span> <span class="type">char</span> *arg, ...)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数</strong><br>参数1：要启动的可执行程序的路径，推荐使用绝对路径。</p>
+<p>参数2：ps aux 查看进程的时候，启动的进程的名字，可以随意指定，一般和要启动的可执行程序名相同。</p>
+<p>参数3：要执行的命令需要的参数，可以写多个，最后以 NULL 结尾，表示参数指定完了。</p>
+<p><strong>函数返回值</strong></p>
+<p>执行成功，无返回，执行失败，返回-1</p>
+<p><strong>函数原型</strong></p>
+<h3 id="3-3-小练习"><a href="#3-3-小练习" class="headerlink" title="3.3 小练习"></a>3.3 小练习</h3><p><strong>1.通过execlp让子进程去执行ls命令：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid = fork();</span><br><span class="line">    <span class="keyword">if</span>(pid == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;fork error\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)&#123;</span><br><span class="line">        execlp(<span class="string">&quot;ls&quot;</span>, <span class="string">&quot;ls&quot;</span>, <span class="string">&quot;-l&quot;</span>, <span class="string">&quot;-h&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">        perror(<span class="string">&quot;exec error\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;i am parent pid = %d&quot;</span>, getpid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下图所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ead9266bfab74c349b6acf4b32a94415.png#pic_center"></p>
+<p><strong>2.使用execl来让子程序调用自定义的程序。</strong></p>
+<p>注意</p>
+<ul>
+<li>和execlp不同的是，第一个参数是路径，不是文件名。</li>
+<li>这个路径用相对路径和绝对路径都行。</li>
+</ul>
+<p>&#x3D;&#x3D;hello.c&#x3D;&#x3D;</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/eef5a1c451f2442aa1040cc2a8031f73.png#pic_center"></p>
+<p>&#x3D;&#x3D;exec.c&#x3D;&#x3D;</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ea74d1fa220a4afeb3b990ef912d336e.png#pic_center"></p>
+<p>编译运行，结果如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/9a6c767e8e104905b715e8836e9dd773.png#pic_center"></p>
+<h3 id="3-4-exec函数族特性"><a href="#3-4-exec函数族特性" class="headerlink" title="3.4 exec函数族特性"></a>3.4 exec函数族特性</h3><p><strong>写一个程序，使用execlp执行进程查看，并将结果输出到文件里。</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/7eb4c463365041a9a3293b2e0df1111a.png#pic_center"></p>
+<p>编译运行，结果如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/61684c3e52af4191aa7cb28210f5365f.png#pic_center"></p>
+<p>exec函数一旦调用成功，即执行新的程序，不返回。只有失败才返回，错误值-1。所以通常我们直接在exec函数调用后直接调用perror()，和exit()，无需if判断。</p>
+<p>l(list)				命令行参数列表</p>
+<p>p(path)				搜索file时使用path变量</p>
+<p>v(vector)				使用命令行参数数组</p>
+<p>e(environment)		使用环境变量数组，不适用进程原有的环境变量，</p>
+<p>设置新加载程序运行的环境变量</p>
+<p>事实上，只有execve是真正的系统调用，其他5个函数最终都调用execve，是库函数，所以execve在man手册第二节，其它函数在man手册第3节。这些函数之间的关系如下图所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/2292db940a6340789fd3bf920206b8f9.png#pic_center"></p>
+<h2 id="4-回收子进程"><a href="#4-回收子进程" class="headerlink" title="4.回收子进程"></a>4.回收子进程</h2><h3 id="4-1孤儿进程和僵尸进程"><a href="#4-1孤儿进程和僵尸进程" class="headerlink" title="4.1孤儿进程和僵尸进程"></a>4.1孤儿进程和僵尸进程</h3><p>孤儿进程：</p>
+<ul>
+<li>父进程先于子进终止，子进程沦为“孤儿进程”，会被 init 进程(1号进程)领养。</li>
+</ul>
+<p>下面这段代码可以得到一个僵尸进程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 创建子进程</span></span><br><span class="line">    <span class="type">pid_t</span> pid = fork();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父进程</span></span><br><span class="line">    <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是父进程, pid=%d\n&quot;</span>, getpid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sleep(<span class="number">1</span>);	<span class="comment">// 强迫子进程睡眠1s, 这个期间, 父进程退出, 当前进程变成了孤儿进程，子进程被1号进程回收</span></span><br><span class="line">        <span class="comment">// 子进程</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是子进程, pid=%d, 父进程ID: %d\n&quot;</span>, getpid(), getppid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>僵尸进程：</p>
+<ul>
+<li>子进程终止，父进程尚未对子进程进行回收，在此期间，子进程为“僵尸进程”。  kill 对其无效。这里要注意，每个进程结束后都必然会经历僵尸态，时间长短的差别而已。</li>
+<li>子进程终止时，子进程残留资源PCB存放于内核中，PCB记录了进程结束原因，进程回收就是回收PCB。回收僵尸进程，得kill它的父进程，让孤儿院去回收它。</li>
+</ul>
+<p>下面这段代码可以得到一个僵尸进程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="comment">// 创建子进程</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父进程</span></span><br><span class="line">    <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 需要保证父进程一直在运行</span></span><br><span class="line">        <span class="comment">// 一直运行不退出, 就会出现僵尸进程</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;我是父进程, pid=%d\n&quot;</span>, getpid());</span><br><span class="line">            sleep(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 子进程, 执行这句代码之后, 子进程退出了</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是子进程, pid=%d, 父进程ID: %d\n&quot;</span>, getpid(), getppid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-wait-函数和waitpid-函数"><a href="#4-2-wait-函数和waitpid-函数" class="headerlink" title="4.2 wait()函数和waitpid()函数"></a>4.2 wait()函数和waitpid()函数</h3><p>为了避免僵尸进程的产生，一般我们会在父进程中进行子进程的资源回收，回收方式有两种，一种是阻塞方式<code> wait()</code>，一种是非阻塞方式 <code>waitpid()</code>。</p>
+<h4 id="4-2-1wait-函数"><a href="#4-2-1wait-函数" class="headerlink" title="4.2.1wait()函数"></a>4.2.1wait()函数</h4><p>这是个阻塞函数，如果没有子进程退出，函数会一直阻塞等待，当检测到子进程退出了，该函数阻塞解除回收子进程资源。这个函数被调用一次，只能回收一个子进程的资源，如果有多个子进程需要资源回收，函数需要被调用多次。</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// man 2 wait</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">wait</span><span class="params">(<span class="type">int</span> *status)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数</strong></p>
+<p>status：传出参数，回收进程的状态。</p>
+<p><strong>函数返回值</strong></p>
+<ul>
+<li>成功：返回被回收的子进程的进程 ID</li>
+<li>失败: -1<ul>
+<li>没有子进程资源可以回收了，函数的阻塞会自动解除，返回 - 1</li>
+<li>回收子进程资源的时候出现了异常</li>
+</ul>
+</li>
+</ul>
+<p><strong>函数作用</strong></p>
+<ul>
+<li>阻塞等待子进程退出</li>
+<li>清理子进程残留在内核的 pcb 资源</li>
+<li>通过传出参数，得到子进程结束状态</li>
+</ul>
+<h4 id="4-2-2-获取子进程退出值和异常终止信号"><a href="#4-2-2-获取子进程退出值和异常终止信号" class="headerlink" title="4.2.2 获取子进程退出值和异常终止信号"></a>4.2.2 获取子进程退出值和异常终止信号</h4><ul>
+<li>一个进程终止时会关闭所有文件描述符，释放在用户空间分配的内存，但它的PCB还保留着，内核在其中保存了一些信息：如果是正常终止则保存着退出状态，如果是异常终止则保存着导致该进程终止的信号是哪个。</li>
+<li>这个进程的父进程可以调用wait或者waitpid获取这些信息，然后彻底清除掉这个进程。</li>
+<li>一个进程的退出状态可以在shell中用特殊变量$？查看，因为shell是它的父进程，当它终止时，shell调用wait或者waitpid得到它的退出状态，同时彻底清除掉这个进程。</li>
+</ul>
+<p><strong>获取子进程正常终止值：</strong></p>
+<p>​	WIFEXITED(status) –&gt; 为真 –&gt;调用 WEXITSTATUS(status) –&gt; 得到 子进程 退出值。</p>
+<p><strong>获取导致子进程异常终止信号：</strong></p>
+<p>​	WIFSIGNALED(status) –&gt; 为真 –&gt;调用 WTERMSIG(status) –&gt; 得到 导致子进程异常终止的信号编号。</p>
+<p><strong>小案例</strong>：</p>
+<p>捕获程序异常终止的信号并打印：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">pid_t</span> pid, wpid;  </span><br><span class="line">    <span class="type">int</span> status;  </span><br><span class="line">  </span><br><span class="line">    pid = fork();  </span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;---child, my id= %d, going to sleep 10s\n&quot;</span>, getpid());  </span><br><span class="line">        sleep(<span class="number">10</span>);  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;-------------child die--------------\n&quot;</span>);  </span><br><span class="line">        <span class="keyword">return</span> <span class="number">73</span>;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="comment">//wpid = wait(NULL);          // 不关心子进程结束原因  </span></span><br><span class="line">        wpid = wait(&amp;status);       <span class="comment">// 如果子进程未终止,父进程阻塞在这个函数上  </span></span><br><span class="line">        <span class="keyword">if</span> (wpid == <span class="number">-1</span>) &#123;  </span><br><span class="line">            perror(<span class="string">&quot;wait error&quot;</span>);  </span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> (WIFEXITED(status)) &#123;        <span class="comment">//为真,说明子进程正常终止.   </span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;child exit with %d\n&quot;</span>, WEXITSTATUS(status));  </span><br><span class="line">  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> (WIFSIGNALED(status)) &#123;      <span class="comment">//为真,说明子进程是被信号终止.  </span></span><br><span class="line">  </span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;child kill with signal %d\n&quot;</span>, WTERMSIG(status));  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;------------parent wait finish: %d\n&quot;</span>, wpid);  </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">        perror(<span class="string">&quot;fork&quot;</span>);  </span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-3-waitpid-函数、"><a href="#4-2-3-waitpid-函数、" class="headerlink" title="4.2.3 waitpid()函数、"></a>4.2.3 waitpid()函数、</h4><p>指定某一个进程进行回收。可以设置非阻塞。			</p>
+<p>waitpid(-1, &amp;status, 0) &#x3D;&#x3D; wait(&amp;status);</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// man 2 waitpid</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="comment">// 这个函数可以设置阻塞, 也可以设置为非阻塞</span></span><br><span class="line"><span class="comment">// 这个函数可以指定回收哪些子进程的资源</span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">waitpid</span><span class="params">(<span class="type">pid_t</span> pid, <span class="type">int</span> *status, <span class="type">int</span> options)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数</strong></p>
+<ul>
+<li><p>pid：指定回收某一个子进程pid</p>
+<ul>
+<li>大于0 回收指定 ID 的子进程 </li>
+<li>-1 回收任意子进程（相当于wait） </li>
+<li>0 回收和当前调用waitpid 一个组的所有子进程</li>
+<li>小于 -1 回收指定进程组内的任意子进程</li>
+</ul>
+</li>
+<li><p>status：（传出参数） 回收进程的状态,同wait()函数</p>
+</li>
+<li><p>options：控制函数是阻塞还是非阻塞</p>
+<ul>
+<li>WNOHANG ：指定回收方式为，非阻塞</li>
+<li>0： 函数是行为是阻塞的 &#x3D;&#x3D;&gt; 和 wait 一样</li>
+</ul>
+</li>
+</ul>
+<p><strong>函数返回值</strong></p>
+<ul>
+<li><p>大于0 : 表成功回收的子进程 pid</p>
+</li>
+<li><p>等于0 : 函数是非阻塞的，并且子进程还在运行</p>
+</li>
+<li><p>-1: 失败。并设置errno</p>
+</li>
+</ul>
+<p><strong>小案例</strong>：</p>
+<p>回收指定子进程:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">int</span> i;  </span><br><span class="line">    <span class="type">pid_t</span> pid, wpid, tmpid;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;         </span><br><span class="line">        pid = fork();  </span><br><span class="line">        <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;       <span class="comment">// 循环期间, 子进程不 fork   </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">2</span>) &#123;  </span><br><span class="line">            tmpid = pid;  </span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;--------pid = %d\n&quot;</span>, tmpid);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> (<span class="number">5</span> == i) &#123;       <span class="comment">// 父进程, 从表达式2跳出  </span></span><br><span class="line">        sleep(<span class="number">5</span>);  </span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;i am parent , before waitpid, pid = %d\n&quot;</span>, tmpid);  </span><br><span class="line">  </span><br><span class="line">        wpid = waitpid(tmpid, <span class="literal">NULL</span>, WNOHANG);   <span class="comment">//指定一个进程回收, 不阻塞  </span></span><br><span class="line">        <span class="comment">//wpid = waitpid(tmpid, NULL, 0);         //指定一个进程回收, 阻塞回收  </span></span><br><span class="line">        <span class="keyword">if</span> (wpid == <span class="number">-1</span>) &#123;  </span><br><span class="line">            perror(<span class="string">&quot;waitpid error&quot;</span>);  </span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">         &#125;  </span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;m parent, wait a child finish : %d \n&quot;</span>, wpid);  </span><br><span class="line">   </span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;            <span class="comment">// 子进程, 从 break 跳出  </span></span><br><span class="line">         sleep(i);  </span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;I&#x27;m %dth child, pid= %d\n&quot;</span>, i+<span class="number">1</span>, getpid());  </span><br><span class="line">     &#125;  </span><br><span class="line">   </span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-4-waitpid-回收多个子进程"><a href="#4-2-4-waitpid-回收多个子进程" class="headerlink" title="4.2.4 waitpid()回收多个子进程"></a>4.2.4 waitpid()回收多个子进程</h4><p>一次wait&#x2F;waitpid函数调用，只能回收一个子进程。下面来演示回收多个子进程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非阻塞处理</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="comment">// 创建子进程</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父进程</span></span><br><span class="line">    <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 需要保证父进程一直在运行</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 回收子进程的资源</span></span><br><span class="line">            <span class="comment">// 子进程有多个, 需要循环回收子进程资源</span></span><br><span class="line">            <span class="comment">// 子进程退出了就回收, </span></span><br><span class="line">            <span class="comment">// 没退出就不回收, 返回0</span></span><br><span class="line">            <span class="type">int</span> status;</span><br><span class="line">            <span class="type">pid_t</span> ret = waitpid(<span class="number">-1</span>, &amp;status, WNOHANG);  <span class="comment">// 非阻塞</span></span><br><span class="line">            <span class="keyword">if</span>(ret &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;成功回收了子进程资源, 子进程PID: %d\n&quot;</span>, ret);</span><br><span class="line">                <span class="comment">// 判断进程是不是正常退出</span></span><br><span class="line">                <span class="keyword">if</span>(WIFEXITED(status))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;子进程退出时候的状态码: %d\n&quot;</span>, WEXITSTATUS(status));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(WIFSIGNALED(status))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;子进程是被这个信号杀死的: %d\n&quot;</span>, WTERMSIG(status));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(ret == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;子进程还没有退出, 不做任何处理...\n&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;回收失败, 或者是已经没有子进程了...\n&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;我是父进程, pid=%d\n&quot;</span>, getpid());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 子进程, 执行这句代码之后, 子进程退出了</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;===我是子进程, pid=%d, 父进程ID: %d\n&quot;</span>, getpid(), getppid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul><a class="reward-main-btn" href="/about/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Linux系统编程之进程&amp;url=https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/&amp;pic=https://img1.baidu.com/it/u=2036916699,254542477&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=625&amp;h=500" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Linux系统编程<span class="tagsPageCount">7</span></a><a class="post-meta__box__tags" href="/tags/%E8%BF%9B%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>进程<span class="tagsPageCount">1</span></a></div></div></div></div></div><div class="post-copyright"><i class="anzhiyufont anzhiyu-icon-copyright"></i><div class="post-copyright__author"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/">原创</a><a class="post-copyright-title"><span>Linux系统编程之进程</span></a></div><div class="post-copyright-info-box"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"></span><a class="link" href="https://billysturate.github.io">BillySturate</a></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a class="link" href="https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/">https://billysturate.github.io/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/</a></span><span class="copy-button" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-copy"></i></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/22/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E6%96%87%E4%BB%B6IO/"><img class="prev-cover" src="https://img0.baidu.com/it/u=2183474374,2295718375&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=317" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Linux系统编程之文件IO</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/27/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E5%92%8C%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"><img class="next-cover" src="https://img1.baidu.com/it/u=3926402033,29969568&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=PNG?w=890&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Linux系统编程之虚拟地址空间和文件描述符</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img class="cover" src="https://img2.baidu.com/it/u=3539075320,3057042483&fm=253&fmt=auto&app=138&f=JPEG?w=650&h=492" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-01</div><div class="title">Linux系统编程之信号</div></div></a></div><div><a href="/2022/08/28/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8BIPC(%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1)/" title="Linux系统编程之进程间通信(IPC)"><img class="cover" src="https://bu.dusays.com/2023/01/25/63d0b8ac4693f.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-28</div><div class="title">Linux系统编程之进程间通信(IPC)</div></div></a></div><div><a href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img class="cover" src="https://img1.baidu.com/it/u=2287437558,3845223698&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-05</div><div class="title">Linux系统编程之守护进程、线程</div></div></a></div><div><a href="/2022/08/27/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E5%92%8C%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" title="Linux系统编程之虚拟地址空间和文件描述符"><img class="cover" src="https://img1.baidu.com/it/u=3926402033,29969568&fm=253&fmt=auto&app=138&f=PNG?w=890&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-27</div><div class="title">Linux系统编程之虚拟地址空间和文件描述符</div></div></a></div><div><a href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img class="cover" src="https://img1.baidu.com/it/u=4017388245,646616071&fm=253&fmt=auto&app=138&f=JPEG?w=550&h=306" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-07</div><div class="title">Linux系统编程之线程同步</div></div></a></div><div><a href="/2022/08/22/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E6%96%87%E4%BB%B6IO/" title="Linux系统编程之文件IO"><img class="cover" src="https://img0.baidu.com/it/u=2183474374,2295718375&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=317" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-22</div><div class="title">Linux系统编程之文件IO</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="author-info-top"> <div class="card-info-avatar"></div></div><div class="author-info__sayhi" id="author-info__sayhi"></div><h1 class="author-info__name">BillySturate</h1><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">产品、设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="banner-button-group"><a class="banner-button" onclick="pjax.loadUrl(&quot;/about/&quot;)"><span class="banner-button-text">了解更多</span><i class="anzhiyufont anzhiyu-icon-arrow-circle-right" style="font-size: 1.5rem"></i></a></div><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/BillySturate" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=billysturate@gmail.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><a class="social-icon faa-parent animated-hover" href="https://www.instagram.com/billysturate/" target="_blank" title="Instagram"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-instagram1"></use></svg></a><a class="social-icon faa-parent animated-hover" href="https://blog.csdn.net/qq_59084325" target="_blank" title="CSDN"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-csdn"></use></svg></a><a class="social-icon faa-parent animated-hover" href="tencent://Message/?Uin=1679510521&amp;amp;websiteName=local.edu.com:8888=&amp;amp;Menu=yes" target="_blank" title="QQ"><i class="anzhiyufont anzhiyu-icon-qq"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%BF%9B%E7%A8%8B%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">1.进程相关概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E7%A8%8B%E5%BA%8F%E5%92%8C%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 程序和进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%B9%B6%E8%A1%8C%E5%92%8C%E5%B9%B6%E5%8F%91"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 并行和并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-PCB%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 PCB进程控制块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E5%8D%95%E9%81%93%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%A4%9A%E9%81%93%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 单道程序设计和多道程序设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 进程状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.6.</span> <span class="toc-text">1.6 环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">2.进程创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-getpid-x2F-getppid-x2F-fork-%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 getpid()&#x2F;getppid()&#x2F;fork()函数原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-fork-%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 fork()函数返回值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-fork-%E5%87%BD%E6%95%B0%E5%88%9B%E5%BB%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 fork()函数创建子进程示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%BE%AA%E7%8E%AF%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AA%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 循环创建多个子进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E7%88%B6%E5%AD%90%E8%BF%9B%E7%A8%8B%E5%85%B1%E4%BA%AB%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 父子进程共享哪些内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E7%88%B6%E5%AD%90%E8%BF%9B%E7%A8%8Bgdb%E8%B0%83%E8%AF%95"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 父子进程gdb调试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-exec%E5%87%BD%E6%95%B0%E6%97%8F"><span class="toc-number">3.</span> <span class="toc-text">3.exec函数族</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-execlp-%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 execlp()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-execl-%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 execl()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%B0%8F%E7%BB%83%E4%B9%A0"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 小练习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-exec%E5%87%BD%E6%95%B0%E6%97%8F%E7%89%B9%E6%80%A7"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 exec函数族特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%9B%9E%E6%94%B6%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">4.回收子进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="toc-number">4.1.</span> <span class="toc-text">4.1孤儿进程和僵尸进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-wait-%E5%87%BD%E6%95%B0%E5%92%8Cwaitpid-%E5%87%BD%E6%95%B0"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 wait()函数和waitpid()函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1wait-%E5%87%BD%E6%95%B0"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1wait()函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E8%8E%B7%E5%8F%96%E5%AD%90%E8%BF%9B%E7%A8%8B%E9%80%80%E5%87%BA%E5%80%BC%E5%92%8C%E5%BC%82%E5%B8%B8%E7%BB%88%E6%AD%A2%E4%BF%A1%E5%8F%B7"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.2 获取子进程退出值和异常终止信号</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-waitpid-%E5%87%BD%E6%95%B0%E3%80%81"><span class="toc-number">4.2.3.</span> <span class="toc-text">4.2.3 waitpid()函数、</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-4-waitpid-%E5%9B%9E%E6%94%B6%E5%A4%9A%E4%B8%AA%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="toc-number">4.2.4.</span> <span class="toc-text">4.2.4 waitpid()回收多个子进程</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/25/63d09dc1f25be.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VSCode去掉拷贝来的代码前的行号"/></a><div class="content"><a class="title" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号">VSCode去掉拷贝来的代码前的行号</a><time datetime="2022-09-12T09:13:54.000Z" title="Created 2022-09-12 17:13:54">2022-09-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=3708672204,273493161&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=690&amp;h=388" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【HTML基础】基础认知 + HTML标签"/></a><div class="content"><a class="title" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签">【HTML基础】基础认知 + HTML标签</a><time datetime="2022-09-08T10:13:54.000Z" title="Created 2022-09-08 18:13:54">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=4017388245,646616071&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=550&amp;h=306" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之线程同步"/></a><div class="content"><a class="title" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步">Linux系统编程之线程同步</a><time datetime="2022-09-07T10:13:54.000Z" title="Created 2022-09-07 18:13:54">2022-09-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之守护进程、线程"/></a><div class="content"><a class="title" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程">Linux系统编程之守护进程、线程</a><time datetime="2022-09-05T10:13:54.000Z" title="Created 2022-09-05 18:13:54">2022-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之信号"/></a><div class="content"><a class="title" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号">Linux系统编程之信号</a><time datetime="2022-09-01T10:13:54.000Z" title="Created 2022-09-01 18:13:54">2022-09-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By BillySturate</div><div id="workboard"><img class="workSituationImg boardsign" src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://anzhiy.cn/" style="margin-inline:5px" data-title="本站使用AnZhiYu主题" title="本站使用AnZhiYu主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pan.anzhiy.cn/d/anzhiyu/svg/Theme-AnZhiYu-2E67D3.svg" alt="本站使用AnZhiYu主题"/></a><a class="github-badge" target="_blank" href="https://www.dogecloud.com/" style="margin-inline:5px" data-title="本站使用多吉云为静态资源提供CDN加速" title="本站使用多吉云为静态资源提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/CDN-多吉云-3693F3.svg" alt="本站使用多吉云为静态资源提供CDN加速"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title="本站项目由Github托管"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div></footer><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg"/><div class="loading-image-dot"></div><div id="loading-percentage">0%</div></div></div><script>const loadingPercentage = document.getElementById("loading-percentage");
+let loadingPercentageTimer = setInterval(function() {
+  var progressBar = document.querySelector(".pace-progress");
+  if (!progressBar) return
+  var currentValue = progressBar.getAttribute("data-progress-text");
+  if (currentValue !== loadingPercentage.textContent) {
+    loadingPercentage.textContent = currentValue;
+    if (currentValue === "100%") {
+      clearInterval(loadingPercentageTimer);
+    }
+  }
+}, 100);
+const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/progress_bar/progress_bar.css"/><script async="async" src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">37</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="center-console" type="button" title="中控台"><i class="anzhiyufont anzhiyu-icon-fish"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="console"><div class="close-btn" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-xmark" style="font-size: 35px;"></i></div><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="wechat" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="alipay" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> <span>Newest Comments</span></span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 1.45em; color: rgb(167, 69, 127)">C++<sup>8</sup></a><a href="/tags/CMake/" style="font-size: 1.15em; color: rgb(42, 164, 78)">CMake<sup>1</sup></a><a href="/tags/GCC/" style="font-size: 1.15em; color: rgb(186, 148, 169)">GCC<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.15em; color: rgb(47, 11, 63)">HTML<sup>1</sup></a><a href="/tags/IPC/" style="font-size: 1.15em; color: rgb(120, 67, 149)">IPC<sup>1</sup></a><a href="/tags/Json/" style="font-size: 1.21em; color: rgb(63, 139, 10)">Json<sup>3</sup></a><a href="/tags/Linux/" style="font-size: 1.33em; color: rgb(106, 172, 169)">Linux<sup>5</sup></a><a href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" style="font-size: 1.39em; color: rgb(152, 64, 55)">Linux系统编程<sup>7</sup></a><a href="/tags/Markdown/" style="font-size: 1.15em; color: rgb(58, 200, 124)">Markdown<sup>1</sup></a><a href="/tags/Matplotlib/" style="font-size: 1.15em; color: rgb(188, 30, 198)">Matplotlib<sup>1</sup></a><a href="/tags/Numpy/" style="font-size: 1.15em; color: rgb(106, 164, 100)">Numpy<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.27em; color: rgb(189, 69, 165)">Python<sup>4</sup></a><a href="/tags/Qt/" style="font-size: 1.27em; color: rgb(83, 39, 1)">Qt<sup>4</sup></a><a href="/tags/Robocup3d/" style="font-size: 1.15em; color: rgb(71, 73, 113)">Robocup3d<sup>1</sup></a><a href="/tags/SSH/" style="font-size: 1.15em; color: rgb(164, 152, 189)">SSH<sup>1</sup></a><a href="/tags/Shell/" style="font-size: 1.15em; color: rgb(169, 159, 176)">Shell<sup>1</sup></a><a href="/tags/VSCode/" style="font-size: 1.21em; color: rgb(54, 184, 98)">VSCode<sup>3</sup></a><a href="/tags/Vim-Vi/" style="font-size: 1.15em; color: rgb(103, 184, 30)">Vim/Vi<sup>1</sup></a><a href="/tags/gdb/" style="font-size: 1.15em; color: rgb(174, 9, 86)">gdb<sup>1</sup></a><a href="/tags/opencv/" style="font-size: 1.15em; color: rgb(124, 194, 161)">opencv<sup>1</sup></a><a href="/tags/pandas/" style="font-size: 1.15em; color: rgb(157, 46, 190)">pandas<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 1.15em; color: rgb(116, 155, 108)">人工智能<sup>1</sup></a><a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 1.15em; color: rgb(63, 34, 127)">信号<sup>1</sup></a><a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(171, 35, 103)">守护进程<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6IO/" style="font-size: 1.15em; color: rgb(25, 55, 5)">文件IO<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" style="font-size: 1.15em; color: rgb(97, 47, 156)">文件描述符<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.15em; color: rgb(21, 159, 35)">算法<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.15em; color: rgb(35, 87, 101)">线程<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" style="font-size: 1.15em; color: rgb(91, 13, 20)">线程同步<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4/" style="font-size: 1.15em; color: rgb(95, 146, 26)">虚拟地址空间<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 1.15em; color: rgb(83, 189, 65)">计算机视觉<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(112, 108, 127)">进程<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history" onclick="anzhiyu.hideConsole()"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/09/"><span class="card-archive-list-date">September 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">August 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/07/"><span class="card-archive-list-date">July 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/06/"><span class="card-archive-list-date">June 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" onclick="rm.switchDarkMode()" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script><div><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/utils.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/main.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/instant.page@5.1.1/instantpage.js" type="module"></script><script src="https://npm.elemecdn.com/vanilla-lazyload@17.3.1/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  console.log(1)
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("06/01/2022 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2022 By 安知鱼",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 BillySturate 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("06/01/2022 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+      img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+      img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "visitor@anzhiy.cn";</script><script>//动态标题
+let leaveTitle = 'w(ﾟДﾟ)w 不要走！再看看嘛！';
+let backTitle = '♪(^∇^*)欢迎肥来！';
+let OriginTitile = document.title
+let titleTime
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    //离开当前页面时标签显示内容
+    document.title = leaveTitle
+    clearTimeout(titleTime)
+  } else {
+    //返回当前页面时标签显示内容
+    document.title = backTitle + OriginTitile
+    //两秒后变回正常标题
+    titleTime = setTimeout(function () {
+      document.title = OriginTitile
+    }, 2000)
+  }
+})</script><script data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/catalog-bar/catalog-bar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/categoryBar/categoryBar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script>// 初始化函数
+let rm = {};
+
+//禁止图片拖拽
+let imgElements = document.getElementsByTagName("img");
+for (let i = 0; i < imgElements.length; i++) {
+  imgElements[i].addEventListener("dragstart", function (event) {
+    event.preventDefault();
+  });
+}
+
+// 显示菜单
+rm.showRightMenu = function (isTrue, x = 0, y = 0) {
+  console.info(x, y)
+  let rightMenu = document.getElementById("rightMenu");
+  rightMenu.style.top = x + "px";
+  rightMenu.style.left = y + "px";
+  if (isTrue) {
+    rightMenu.style.display = "block";
+    stopMaskScroll();
+  } else {
+    rightMenu.style.display = "none";
+  }
+};
+
+// 隐藏菜单
+rm.hideRightMenu = function () {
+  rm.showRightMenu(false);
+  let rightMenuMask = document.querySelector("#rightmenu-mask");
+  rightMenuMask.style.display = "none";
+};
+
+// 尺寸
+let rmWidth = document.getElementById("rightMenu").offsetWidth;
+let rmHeight = document.getElementById("rightMenu").offsetHeight;
+
+// 重新定义尺寸
+rm.reloadrmSize = function () {
+  rightMenu.style.visibility = "hidden";
+  rightMenu.style.display = "block";
+  // 获取宽度和高度
+  rmWidth = document.getElementById("rightMenu").offsetWidth;
+  rmHeight = document.getElementById("rightMenu").offsetHeight;
+  rightMenu.style.visibility = "visible";
+};
+
+// 获取点击的href
+let domhref = "";
+let domImgSrc = "";
+let globalEvent = null;
+
+// 监听右键初始化
+window.oncontextmenu = function (event) {
+  if (document.body.clientWidth > 768) {
+    let pageX = event.clientX + 10; //加10是为了防止显示时鼠标遮在菜单上
+    let pageY = event.clientY;
+
+    //其他额外菜单
+    const $rightMenuOther = document.querySelector(".rightMenuOther");
+    const $rightMenuPlugin = document.querySelector(".rightMenuPlugin");
+    const $rightMenuCopyText = document.querySelector("#menu-copytext");
+    const $rightMenuPasteText = document.querySelector("#menu-pastetext");
+    const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
+    const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
+    const $rightMenuCopyLink = document.querySelector("#menu-copylink");
+    const $rightMenuCopyImg = document.querySelector("#menu-copyimg");
+    const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
+    const $rightMenuSearch = document.querySelector("#menu-search");
+    const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
+    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
+    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
+    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
+    const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
+
+    let href = event.target.href;
+    let imgsrc = event.target.currentSrc;
+
+    // 判断模式 扩展模式为有事件
+    let pluginMode = false;
+    $rightMenuOther.style.display = "block";
+    globalEvent = event;
+
+    // 检查是否需要复制 是否有选中文本
+    if (selectTextNow && window.getSelection()) {
+      pluginMode = true;
+      $rightMenuCopyText.style.display = "block";
+      $rightMenuCommentText.style.display = "block";
+      $rightMenuSearch.style.display = "block";
+      $rightMenuSearchBaidu.style.display = "block";
+    } else {
+      $rightMenuCopyText.style.display = "none";
+      $rightMenuCommentText.style.display = "none";
+      $rightMenuSearchBaidu.style.display = "none";
+      $rightMenuSearch.style.display = "none";
+    }
+
+    //检查是否右键点击了链接a标签
+    if (href) {
+      pluginMode = true;
+      $rightMenuNewWindow.style.display = "block";
+      $rightMenuCopyLink.style.display = "block";
+      domhref = href;
+    } else {
+      $rightMenuNewWindow.style.display = "none";
+      $rightMenuCopyLink.style.display = "none";
+    }
+
+    //检查是否需要复制图片
+    if (imgsrc) {
+      pluginMode = true;
+      $rightMenuCopyImg.style.display = "block";
+      $rightMenuDownloadImg.style.display = "block";
+      $rightMenuNewWindowImg.style.display = "block";
+      document.getElementById("rightMenu").style.width="12rem"
+      domImgSrc = imgsrc;
+    } else {
+      $rightMenuCopyImg.style.display = "none";
+      $rightMenuDownloadImg.style.display = "none";
+      $rightMenuNewWindowImg.style.display = "none";
+    }
+
+    // 判断是否为输入框
+    if (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "textarea") {
+      pluginMode = true;
+      $rightMenuPasteText.style.display = "block";
+    } else {
+      $rightMenuPasteText.style.display = "none";
+    }
+    const navMusicEl = document.querySelector("#nav-music");
+    //判断是否是音乐
+    if (navMusicEl && navMusicEl.contains(event.target)) {
+      pluginMode = true;
+      $rightMenuMusicToggle.style.display = "block";
+      $rightMenuMusicBack.style.display = "block";
+      $rightMenuMusicForward.style.display = "block";
+      $rightMenuMusicPlaylist.style.display = "block";
+      $rightMenuMusicCopyMusicName.style.display = "block";
+    } else {
+      $rightMenuMusicToggle.style.display = "none";
+      $rightMenuMusicBack.style.display = "none";
+      $rightMenuMusicForward.style.display = "none";
+      $rightMenuMusicPlaylist.style.display = "none";
+      $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 如果不是扩展模式则隐藏扩展模块
+    if (pluginMode) {
+      $rightMenuOther.style.display = "none";
+      $rightMenuPlugin.style.display = "block";
+    } else {
+      $rightMenuPlugin.style.display = "none";
+    }
+
+    rm.reloadrmSize();
+
+    // 鼠标默认显示在鼠标右下方，当鼠标靠右或靠下时，将菜单显示在鼠标左方\上方
+    if (pageX + rmWidth > window.innerWidth) {
+      pageX -= rmWidth + 10;
+    }
+    if (pageY + rmHeight > window.innerHeight) {
+      pageY -= pageY + rmHeight - window.innerHeight;
+    }
+
+    rm.showRightMenu(true, pageY, pageX);
+    document.getElementById("rightmenu-mask").style.display = "flex";
+    return false;
+  }
+};
+
+// 下载图片状态
+rm.downloadimging = false;
+
+// 复制图片到剪贴板
+rm.writeClipImg = function (imgsrc) {
+  console.log("按下复制");
+  rm.hideRightMenu();
+  anzhiyu.snackbarShow("正在下载中，请稍后", false, 10000);
+  if (rm.downloadimging == false) {
+    rm.downloadimging = true;
+    setTimeout(function () {
+      copyImage(imgsrc);
+      anzhiyu.snackbarShow("复制成功！图片已添加盲水印，请遵守版权协议");
+      rm.downloadimging = false;
+    }, "10000");
+  }
+};
+
+function imageToBlob(imageURL) {
+  const img = new Image();
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob(
+        blob => {
+          // here the image is a blob
+          resolve(blob);
+        },
+        "image/png",
+        0.75
+      );
+    };
+  });
+}
+
+async function copyImage(imageURL) {
+  const blob = await imageToBlob(imageURL);
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+rm.switchDarkMode = function () {
+  // Switch Between Light And Dark Mode
+  const nowMode = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  if (nowMode === "light") {
+    activateDarkMode();
+    saveToLocal.set("theme", "dark", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night);
+    document.querySelector(".menu-darkmode-text").textContent = "浅色模式";
+  } else {
+    activateLightMode();
+    saveToLocal.set("theme", "light", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day);
+    document.querySelector(".menu-darkmode-text").textContent = "深色模式";
+  }
+  // handle some cases
+  typeof runMermaid === "function" && window.runMermaid();
+  rm.hideRightMenu();
+  anzhiyu.darkModeStatus();
+};
+
+rm.copyUrl = function (id) {
+  const input = document.createElement("input"); // Create a new <input> element
+  input.id = "copyVal"; // Set the id of the new element to "copyVal"
+  document.body.appendChild(input); // Append the new element to the end of the <body> element
+  
+  const text = id;
+  input.value = text;
+  input.select();
+  input.setSelectionRange(0, input.value.length);
+  document.execCommand("copy");
+  
+  input.remove(); // Remove the <input> element from the DOM
+};
+
+function stopMaskScroll() {
+  if (document.getElementById("rightmenu-mask")) {
+    let xscroll = document.getElementById("rightmenu-mask");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+  if (document.getElementById("rightMenu")) {
+    let xscroll = document.getElementById("rightMenu");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+}
+
+rm.rightmenuCopyText = function (txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt);
+  }
+  rm.hideRightMenu();
+};
+
+rm.copyPageUrl = function () {
+  var url = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+rm.sharePage = function () {
+  var content = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+// 复制当前选中文本
+var selectTextNow = "";
+document.onmouseup = document.ondblclick = selceText;
+
+function selceText() {
+  var txt;
+  if (document.selection) {
+    txt = document.selection.createRange().text;
+  } else {
+    txt = window.getSelection().toString();
+  }
+  selectTextNow = txt !== "" ? txt : "";
+}
+
+// 读取剪切板
+rm.readClipboard = function () {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText().then(clipText => rm.insertAtCaret(globalEvent.target, clipText));
+  }
+};
+
+// 粘贴文本到焦点
+rm.insertAtCaret = function (elemt, value) {
+  const startPos = elemt.selectionStart,
+    endPos = elemt.selectionEnd;
+  if (document.selection) {
+    elemt.focus();
+    var sel = document.selection.createRange();
+    sel.text = value;
+    elemt.focus();
+  } else {
+    if (startPos || startPos == "0") {
+      var scrollTop = elemt.scrollTop;
+      elemt.value = elemt.value.substring(0, startPos) + value + elemt.value.substring(endPos, elemt.value.length);
+      elemt.focus();
+      elemt.selectionStart = startPos + value.length;
+      elemt.selectionEnd = startPos + value.length;
+      elemt.scrollTop = scrollTop;
+    } else {
+      elemt.value += value;
+      elemt.focus();
+    }
+  }
+};
+
+//粘贴文本
+rm.pasteText = function () {
+  const result = rm.readClipboard() || "";
+  rm.hideRightMenu();
+};
+
+//引用到评论
+rm.rightMenuCommentText = function (txt) {
+  rm.hideRightMenu();
+  const postCommentDom = document.getElementById("post-comment");
+  var domTop = postCommentDom.offsetTop;
+  window.scrollTo(0, domTop - 80);
+  if (txt == "undefined" || txt == "null") txt = "好棒！";
+  function setText() {
+    setTimeout(() => {
+      var input = document.getElementsByClassName("el-textarea__inner")[0];
+      if (!input) setText();
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("input", true, true);
+      let inputValue = replaceAll(txt, "\n", "\n> ");
+      input.value = "> " + inputValue + "\n\n";
+      input.dispatchEvent(evt);
+      input.focus();
+      input.setSelectionRange(-1, -1);
+      if (document.getElementById("comment-tips")) {
+        document.getElementById("comment-tips").classList.add("show");
+      }
+    }, 100);
+  }
+  setText();
+};
+
+//替换所有内容
+function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
+}
+
+// 百度搜索
+rm.searchBaidu = function () {
+  anzhiyu.snackbarShow("即将跳转到百度搜索", false, 2000);
+  setTimeout(function () {
+    window.open("https://www.baidu.com/s?wd=" + selectTextNow);
+  }, "2000");
+  rm.hideRightMenu();
+};
+
+//分享链接
+rm.copyLink = function () {
+  rm.rightmenuCopyText(domhref);
+  anzhiyu.snackbarShow("已复制链接地址");
+};
+
+function addRightMenuClickEvent() {
+  // 添加点击事件
+  document.getElementById("menu-backward").addEventListener("click", function () {
+  window.history.back();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-forward").addEventListener("click", function () {
+    window.history.forward();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-refresh").addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  document.getElementById("menu-top").addEventListener("click", function () {
+    anzhiyu.scrollToDest(0, 500);
+    rm.hideRightMenu();
+  });
+
+  const menuLinks = document.querySelectorAll(".menu-link");
+  menuLinks.forEach(function (link) {
+    link.addEventListener("click", rm.hideRightMenu);
+  });
+
+  document.getElementById("menu-darkmode").addEventListener("click", rm.switchDarkMode);
+
+  document.getElementById("menu-home") && document.getElementById("menu-home").addEventListener("click", function () {
+    window.location.href = window.location.origin;
+  });
+
+  document.getElementById("menu-randomPost").addEventListener("click", function () {
+    toRandomPost();
+  });
+
+  document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
+
+  document.getElementById("rightmenu-mask").addEventListener("click", rm.hideRightMenu);
+
+  document.getElementById("rightmenu-mask").addEventListener("contextmenu", function (event) {
+    rm.hideRightMenu();
+    event.preventDefault(); // Prevent the default context menu from appearing
+  });
+
+  document.getElementById("menu-copy").addEventListener("click", rm.copyPageUrl);
+
+  document.getElementById("menu-pastetext").addEventListener("click", rm.pasteText);
+
+  document.getElementById("menu-copytext").addEventListener("click", function () {
+    rm.rightmenuCopyText(selectTextNow);
+    anzhiyu.snackbarShow("复制成功，复制和转载请标注本文地址");
+  });
+
+  document.getElementById("menu-commenttext").addEventListener("click", function () {
+    rm.rightMenuCommentText(selectTextNow);
+  });
+
+  document.getElementById("menu-newwindow").addEventListener("click", function () {
+    window.open(domhref);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copylink").addEventListener("click", rm.copyLink);
+
+  document.getElementById("menu-downloadimg").addEventListener("click", function () {
+    anzhiyu.downloadImage(domImgSrc, "anzhiyu");
+  });
+
+  document.getElementById("menu-newwindowimg").addEventListener("click", function () {
+    window.open(domImgSrc);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copyimg").addEventListener("click", function () {
+    rm.writeClipImg(domImgSrc);
+  });
+
+  document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
+
+  //音乐
+  document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
+
+  document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
+
+  document.getElementById("menu-music-forward").addEventListener("click", anzhiyu.musicSkipForward);
+
+  document.getElementById("menu-music-copyMusicName").addEventListener("click", function () {
+    rm.rightmenuCopyText(anzhiyu.musicGetName());
+    anzhiyu.snackbarShow("复制歌曲名称成功", false, 3000);
+  });
+
+}
+
+addRightMenuClickEvent();</script><script data-pjax>var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+var pageHeaderEl = document.getElementById("page-header");
+var navMusicEl = document.getElementById("nav-music");
+var consoleEl = document.getElementById("console");
+// 已随机的歌曲
+var selectRandomSong = [];
+// 音乐默认声音大小
+var musicVolume = 0.8;
+// 是否切换了周杰伦音乐列表
+var changeMusicListFlag = false;
+// 当前默认播放列表
+var defaultPlayMusicList = [];
+
+document.getElementById("page-name").innerText = document.title.split(" | 安知鱼")[0];
+anzhiyu.initIndexEssay();
+anzhiyu.changeTimeInEssay();
+anzhiyu.removeBodyPaceClass();
+anzhiyu.qrcodeCreate();
+anzhiyu.changeTimeInAlbumDetail();
+anzhiyu.reflashEssayWaterFall();
+anzhiyu.sayhi();
+anzhiyu.stopImgRightDrag();
+anzhiyu.addNavBackgroundInit();
+anzhiyu.setValueToBodyType();
+
+anzhiyu.getCustomPlayList();
+anzhiyu.addEventListenerConsoleMusicList(false);</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.6/icon/ali_iconfont_css.css"><script async src="https://at.alicdn.com/t/c/font_4044712_5zffwsx4hy7.js?spm=a313x.7781069.1998910419.53&amp;file=font_4044712_5zffwsx4hy7.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://npm.elemecdn.com/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+  window.anzhiyuScrollFnToDo && window.removeEventListener('scroll', anzhiyuScrollFnToDo)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

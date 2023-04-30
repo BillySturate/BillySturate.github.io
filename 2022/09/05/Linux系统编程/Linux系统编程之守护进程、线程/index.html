@@ -1,0 +1,1232 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux系统编程之守护进程、线程 | BillySturateの秘密基地</title><meta name="keywords" content="Linux系统编程,守护进程,线程"><meta name="author" content="BillySturate"><meta name="copyright" content="BillySturate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Linux系统编程之守护进程、线程"><meta name="application-name" content="Linux系统编程之守护进程、线程"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="bookmark" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="192x192" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="512x512" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1136x640.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_640x1136.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2688x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1792x828.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1125x2436.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_828x1792.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2436x1125.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1242x2208.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2208x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1334x750.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_750x1334.png"><link rel="apple-touch-startup-image" media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2732x2048.png"><meta name="description" content="Linux系统编程之守护进程、线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统编程之守护进程、线程">
+<meta property="og:url" content="https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/index.html">
+<meta property="og:site_name" content="BillySturateの秘密基地">
+<meta property="og:description" content="Linux系统编程之守护进程、线程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img1.baidu.com/it/u=2287437558,3845223698&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500">
+<meta property="article:published_time" content="2022-09-05T10:13:54.000Z">
+<meta property="article:modified_time" content="2023-04-28T12:12:48.128Z">
+<meta property="article:author" content="BillySturate">
+<meta property="article:tag" content="Linux系统编程">
+<meta property="article:tag" content="守护进程">
+<meta property="article:tag" content="线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img1.baidu.com/it/u=2287437558,3845223698&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500"><link rel="shortcut icon" href="https://bu.dusays.com/2023/04/28/644be5a78f9f9.png"><link rel="canonical" href="https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  navMusic: false,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#3b70fc","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux系统编程之守护进程、线程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 20:12:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/"><div class="title">BillySturateの秘密基地</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><center id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></center></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="darkmode_navswitch"><a class="darkmode_switchbutton" type="button" href="javascript:void(0);" title="Switch Between Light And Dark Mode" onclick="rm.switchDarkMode()"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke" style="font-size: 1.3rem"></i></a></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux系统编程之守护进程、线程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-09-05T10:13:54.000Z" title="Created 2022-09-05 18:13:54">2022-09-05</time><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-04-28T12:12:48.128Z" title="Updated 2023-04-28 20:12:48">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/">Linux系统编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">6.5k</span><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>24min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux系统编程之守护进程、线程"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500"></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-守护进程"><a href="#1-守护进程" class="headerlink" title="1.守护进程"></a>1.守护进程</h2><p>守护进程（Daemon Process），也就是通常说的Daemon(精灵)进程，是 Linux 中的后台服务进程，通常独立于控制终端并且周期性地执行某种任务或等待处理 某些发生的事件。一般采用以 d 结尾的名字。 </p>
+<p>Linux 后台的一些系统服务进程，没有控制终端，不能直接和用户交互。不受用户登录、注销的影响，一直在运行着，他们都是守护进程。如：预读入缓输出机制的实现；ftp 服务器；nfs 服务器等。</p>
+<p>创建守护进程，最关键的一步是调用 <code>setsid</code> 函数创建一个新的 Session，并成为 Session Leader。</p>
+<h3 id="1-1-进程组"><a href="#1-1-进程组" class="headerlink" title="1.1 进程组"></a>1.1 进程组</h3><p>多个进程的集合就是进程组，也称之为作业。BSD 于 1980 年前后向 Unix 中增加的一个新特性。代表一个或多个进程的集合。每个进程都属于一个进程组。在<code>waitpid</code>函数和 <code>kill</code> 函数的参数中都曾使用到。操作系统设计的进程组的概念，是为了简化对多个进程的管理。</p>
+<p>当父进程，创建子进程的时候，默认子进程与父进程属于同一进程组。进程组 ID &#x3D;&#x3D; 第一个进程 ID(组长进程)。 所以，组长进程标识：其进程组 ID &#x3D;&#x3D; 其进程 ID </p>
+<p>可以使用 <code>kill -SIGKILL -进程组 ID(负的)</code>来将整个进程组内的进程全部杀死。<br>组长进程可以创建一个进程组，创建该进程组中的进程，然后终止。只要进程组中有一个进程存在，进程组就存在，与组长进程是否终止无关。 </p>
+<p>进程组生存期：进程组创建到最后一个进程离开(终止或转移到另一个进程组)。</p>
+<p>一个进程可以为自己或子进程设置进程组 ID</p>
+<p>下面介绍几个常用的进程组函数：</p>
+<blockquote>
+<p>得到当前进程所在的进程组的组 ID</p>
+</blockquote>
+<p><code>pid_t getpgrp(void);</code></p>
+<blockquote>
+<p>获取指定的进程所在的进程组的组 ID，参数 pid 就是指定的进程</p>
+</blockquote>
+<p><code>pid_t getpgid(pid_t pid);</code></p>
+<blockquote>
+<p>将某个进程移动到其他进程组中或者创建新的进程组</p>
+</blockquote>
+<p><code>int setpgid(pid_t pid, pid_t pgid);</code></p>
+<p><strong>函数参数:</strong></p>
+<p><code>pid: </code>某个进程的进程 ID</p>
+<p><code>pgid:</code> 某个进程组的组 ID</p>
+<p>如果 pgid 对应的进程组存在，pid 对应的进程会移动到这个组中，pid !&#x3D; pgid</p>
+<p>如果 pgid 对应的进程组不存在，会创建一个新的进程组，因此要求 pid &#x3D;&#x3D; pgid, 当前进程就是组长了</p>
+<p><strong>函数返回值：</strong></p>
+<p>函数调用成功返回 0，失败返回 - 1</p>
+<h3 id="1-2-会话"><a href="#1-2-会话" class="headerlink" title="1.2 会话"></a>1.2 会话</h3><p>会话 (session) 是由一个或多个进程组组成的，一个会话可以对应一个控制终端，也可以没有。一个普通的进程可以调用 <code>setsid() </code>函数使自己成为新 session 的领头进程(会长)，并且这个 session 领头进程还会被放入到一个新的进程组中。先来看一下 setsid() 函数的原型:</p>
+<h3 id="1-3-setsid-函数"><a href="#1-3-setsid-函数" class="headerlink" title="1.3 setsid()函数"></a>1.3 setsid()函数</h3><p>创建一个会话，并以自己的 ID 设置进程组 ID，同时也是新会话的 ID。</p>
+<p><strong>函数原型</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">setsid</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数返回值</strong>：</p>
+<ul>
+<li>成功：返回调用进程的会话 ID</li>
+<li>失败：-1，设置 errno</li>
+</ul>
+<h3 id="1-4-getsid-函数"><a href="#1-4-getsid-函数" class="headerlink" title="1.4 getsid()函数"></a>1.4 getsid()函数</h3><p>获取进程所属的会话 ID</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">pid_t</span> <span class="title function_">getsid</span><span class="params">(<span class="type">pid_t</span> pid)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数返回值</strong>：</p>
+<ul>
+<li>成功：返回调用进程的会话 ID</li>
+<li>失败：-1，设置 errno</li>
+</ul>
+<p>&#x3D;&#x3D;pid 为 0 表示察看当前进程 session ID&#x3D;&#x3D;</p>
+<blockquote>
+<p>使用这两个函数的注意事项:</p>
+<p>1.调用这个函数的进程不能是组长进程，如果是,该函数调用失败，如何保证这个函数能调用成功呢？</p>
+<ul>
+<li>先 fork () 创建子进程，终止父进程，让子进程调用这个函数</li>
+</ul>
+<p>2.如果调用这个函数的进程不是进程组长，会话创建成功</p>
+<ul>
+<li>这个进程会变成当前会话中的第一个进程，同时也会变成新的进程组的组长</li>
+<li>该函数调用成功之后，当前进程就脱离了控制终端，因此不会阻塞终端</li>
+</ul>
+</blockquote>
+<h3 id="1-5-创建守护进程"><a href="#1-5-创建守护进程" class="headerlink" title="1.5 创建守护进程"></a>1.5 创建守护进程</h3><ol>
+<li>创建子进程，父进程退出</li>
+<li>在子进程中创建新会话 <code>setsid()函数</code> 使子进程完全独立出来，脱离控制</li>
+<li>改变当前目录位置 <code>chdir()函数</code> 防止占用可卸载的文件系统, 也可以换成其它路径</li>
+<li>重设文件权限掩码 <code>umask()</code>函数 防止继承的文件创建屏蔽字拒绝某些权限,增加守护进程灵活性</li>
+<li>通常根据需要，关闭&#x2F;重定向 文件描述符</li>
+<li>开始执行守护进程业务逻辑，通常是while()循环</li>
+</ol>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>写一个守护进程，每隔 2s 获取一次系统时间，并将得到的时间写入到磁盘文件中。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 信号的处理动作</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">writeFile</span><span class="params">(<span class="type">int</span> num)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 得到系统时间</span></span><br><span class="line">    <span class="type">time_t</span> seconds = time(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// 时间转换, 总秒数 -&gt; 可以识别的时间字符串</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tm</span>* <span class="title">loc</span> =</span> localtime(&amp;seconds);</span><br><span class="line">    <span class="comment">// sprintf();</span></span><br><span class="line">    <span class="type">char</span>* curtime = asctime(loc); <span class="comment">// 自带换行</span></span><br><span class="line">    <span class="comment">// 打开一个文件, 如果文件不存在, 就创建, 文件需要有追加属性</span></span><br><span class="line">    <span class="comment">// ./对应的是哪个目录? /home/robin</span></span><br><span class="line">    <span class="comment">// 0664 &amp; ~022</span></span><br><span class="line">    <span class="type">int</span> fd = open(<span class="string">&quot;./time+++++++.log&quot;</span>, O_WRONLY|O_CREAT|O_APPEND, <span class="number">0664</span>);</span><br><span class="line">    write(fd, curtime, <span class="built_in">strlen</span>(curtime));</span><br><span class="line">    close(fd);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">sys_err</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *str)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">  perror(str);  </span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  	<span class="type">int</span> ret;</span><br><span class="line">    <span class="comment">// 1. 创建子进程, 杀死父进程</span></span><br><span class="line">    <span class="type">pid_t</span> pid = fork();</span><br><span class="line">    <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 父进程终止</span></span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>); <span class="comment">// kill(getpid(), 9); raise(9); abort();</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 子进程, 将其变成会话, 脱离当前终端</span></span><br><span class="line">    pid = setsid();</span><br><span class="line">		<span class="keyword">if</span>(pid == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      sys_err(<span class="string">&quot;setsid error\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 修改进程的工作目录, 修改到一个不能被修改和删除的目录中 /home/robin</span></span><br><span class="line">    ret = chdir(<span class="string">&quot;/home/robin&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span>(ret == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      sys_err(<span class="string">&quot;chdir error\n&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 4. 设置掩码, 在进程中创建文件的时候这个掩码就起作用了</span></span><br><span class="line">    umask(<span class="number">022</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 重定向和终端关联的文件描述符 -&gt; /dev/null</span></span><br><span class="line">    <span class="type">int</span> fd = open(<span class="string">&quot;/dev/null&quot;</span>, O_RDWR);</span><br><span class="line">    dup2(fd, STDIN_FILENO);</span><br><span class="line">    dup2(fd, STDOUT_FILENO);</span><br><span class="line">    dup2(fd, STDERR_FILENO);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 委托内核捕捉并处理将来发生的信号-SIGALRM(14)</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">    act.sa_flags = <span class="number">0</span>;</span><br><span class="line">    act.sa_handler = writeFile;</span><br><span class="line">    sigemptyset(&amp;act.sa_mask);</span><br><span class="line">    sigaction(SIGALRM, &amp;act, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 设置定时器</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">itimerval</span> <span class="title">val</span>;</span></span><br><span class="line">    val.it_value.tv_sec = <span class="number">2</span>;</span><br><span class="line">    val.it_value.tv_usec = <span class="number">0</span>;</span><br><span class="line">    val.it_interval.tv_sec = <span class="number">2</span>;</span><br><span class="line">    val.it_interval.tv_usec = <span class="number">0</span>;</span><br><span class="line">    setitimer(ITIMER_REAL, &amp;val, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sleep(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-线程"><a href="#2-线程" class="headerlink" title="2.线程"></a>2.线程</h2><h3 id="2-1-什么是线程"><a href="#2-1-什么是线程" class="headerlink" title="2.1 什么是线程?"></a>2.1 什么是线程?</h3><p>线程是轻量级的进程（LWP：light weight process），在 Linux 环境下线程的本质仍是进程。在计算机上运行的程序是一组指令及指令参数的组合，指令按照既定的逻辑控制计算机运行。操作系统会以进程为单位，分配系统资源，可以这样理解，&#x3D;&#x3D;进程是资源分配的最小单位，线程是操作系统调度执行的最小单位&#x3D;&#x3D;。</p>
+<p>进程：独立地址空间，拥有 PCB </p>
+<p>线程：有独立的 PCB，但没有独立的地址空间(共享)</p>
+<p>区别：在于是否共享地址空间。 独居(进程)；合租(线程)。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/2c7ecc24d9c04aed91526d59c2f436d1.png#pic_center"></p>
+<h3 id="2-2-Linux-内核线程实现原理-了解即可"><a href="#2-2-Linux-内核线程实现原理-了解即可" class="headerlink" title="2.2 Linux 内核线程实现原理(了解即可)"></a>2.2 Linux 内核线程实现原理(了解即可)</h3><p>类 Unix 系统中，早期是没有“线程”概念的，80 年代才引入，借助进程机制实现出了线程的概念。因此在这类系统中，进程和线程关系密切。</p>
+<ol>
+<li>轻量级进程(light-weight process)，也有 PCB，创建线程使用的底层函数和进程一样，都是 clone </li>
+<li>从内核里看进程和线程是一样的，都有各自不同的 PCB，但是 PCB 中指向内存资源的三级页表是相同的 </li>
+<li>进程可以蜕变成线程 </li>
+<li>线程可看做寄存器和栈的集合 </li>
+<li>在 linux 下，线程最是小的执行单位；进程是最小的分配资源单位<br>查看 LWP 号：<code>ps –Lf pid</code> 查看指定线程的 lwp 号(线程号)。</li>
+</ol>
+<p>三级映射：进程 PCB –&gt; 页目录(可看成数组，首地址位于 PCB 中) –&gt; 页表 –&gt; 物理页面 –&gt; 内存单元<br>对于进程来说，相同的地址(同一个虚拟地址)在不同的进程中，反复使用而不冲突。原因是他们虽虚拟地址一样，但，页目录、页表、物理页面各不相同。相同的虚拟地址，映射到不同的物理页面内存单元，最终访问不同的物理页面。<br>但！线程不同！两个线程具有各自独立的 PCB，但共享同一个页目录，也就共享同一个页表和物理页面。所以两个 PCB 共享一个地址空间。 实际上，无论是创建进程的 fork，还是创建线程的 pthread_create，底层实现都是调用同一个内核函数 clone。 如果复制对方的地址空间，那么就产出一个“进程”；如果共享对方的地址空间，就产生一个“线程”。 因此：&#x3D;&#x3D;Linux 内核是不区分进程和线程的&#x3D;&#x3D;。只在用户层面上进行区分。所以，线程所有操作函数 pthread_* 是库函数，而非系统调用。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/432c1e93d9994c2b85b6a4193b0082d9.png#pic_center"></p>
+<h3 id="2-4-线程共享资源和非共享资源"><a href="#2-4-线程共享资源和非共享资源" class="headerlink" title="2.4 线程共享资源和非共享资源"></a>2.4 线程共享资源和非共享资源</h3><p><strong>共享资源</strong></p>
+<p>1.文件描述符表 </p>
+<p>2.每种信号的处理方式 </p>
+<p>3.当前工作目录 </p>
+<p>4.用户 ID 和组 ID</p>
+<p>5.内存地址空间 (.text&#x2F;.data&#x2F;.bss&#x2F;heap&#x2F;共享库)</p>
+<p><strong>非共享资源</strong></p>
+<p>1.线程 id </p>
+<p>2.处理器现场和栈指针(内核栈) </p>
+<p>3.独立的栈空间(用户空间栈) </p>
+<p>4.errno 变量 </p>
+<p>5.信号屏蔽字</p>
+<p>6.调度优先级</p>
+<p><strong>线程优缺点</strong></p>
+<p>优点： 1. 提高程序并发性 2. 开销小 3. 数据通信、共享数据方便 </p>
+<p>缺点： 1. 库函数，不稳定 2. 调试、编写困难、gdb 不支持 3. 对信号支持不好</p>
+<p>优点相对突出，缺点均不是硬伤。Linux 下由于实现方法导致进程、线程差别不是很大。</p>
+<h2 id="3-创建线程"><a href="#3-创建线程" class="headerlink" title="3.创建线程"></a>3.创建线程</h2><h3 id="3-1-线程函数"><a href="#3-1-线程函数" class="headerlink" title="3.1 线程函数"></a>3.1 线程函数</h3><p>每一个线程都有一个唯一的线程 ID，ID 类型为 <code>pthread_t</code>，这个 ID 是一个无符号长整形数(%lu)，如果想要得到当前线程的线程 ID，可以调用如下函数：</p>
+<p><code>pthread_t pthread_self(void);	// 返回当前线程的线程ID</code></p>
+<p>在一个进程中调用线程创建函数，就可得到一个子线程，和进程不同，需要给每一个创建出的线程指定一个处理函数，否则这个线程无法工作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_create</span><span class="params">(<span class="type">pthread_t</span> *thread, <span class="type">const</span> <span class="type">pthread_attr_t</span> *attr,</span></span><br><span class="line"><span class="params">                   <span class="type">void</span> *(*start_routine) (<span class="type">void</span> *), <span class="type">void</span> *arg)</span>;</span><br><span class="line"><span class="comment">// Compile and link with -pthread, 线程库的名字叫pthread, 全名: libpthread.so libptread.a</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>参数:</p>
+<ul>
+<li>thread: 传出参数，是无符号长整形数，线程创建成功，会将线程 ID 写入到这个指针指向的内存中</li>
+<li>attr: 线程的属性，一般情况下使用默认属性即可，写 NULL</li>
+<li>start_routine: 函数指针，创建出的子线程的处理动作，也就是该函数在子线程中执行。</li>
+<li>arg: 作为实参传递到 start_routine 指针指向的函数内部</li>
+</ul>
+</li>
+<li><p>返回值：线程创建成功返回 0，创建失败直接返回对应的错误号，不会设置errono，所以用<code>perror()</code>是行不通的，这点要注意，应直接用<code>strerror()</code></p>
+</li>
+</ul>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>循环创建多个子线程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">tfn</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i = *((<span class="type">int</span> *)arg);	<span class="comment">//接收从主线程传递过来的地址，因此后面的i读取的都是主线程中的i</span></span><br><span class="line">	sleep(i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;i am %dth thread:pid = %d, tid = %lu\n&quot;</span>, i+<span class="number">1</span>, getpid(), pthread_self());</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="type">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		ret = pthread_create(&amp;tid, <span class="literal">NULL</span>, tfn, (<span class="type">void</span> *)&amp;i);	<span class="comment">//将主线程的i的地址传递进去，会出错</span></span><br><span class="line">		<span class="keyword">if</span>(ret != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">fprintf</span>(<span class="built_in">stderr</span> ,<span class="string">&quot;create error:%s\n&quot;</span>, strerror(ret));</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	sleep(i);		<span class="comment">//主线程执行完之后，就销毁了整个进程的地址空间，子线程就会无法打印，所以应该让主线程睡一会，等待子线程的执行</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;i am main pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/d25699f6eb9143d39b60c01421ee64e7.png#pic_center"></p>
+<p>可以看到，不符合我们的预期想法，错误原因在于，子线程将主线程中i的地址传递了进去，因此子线程运行时会去读取主线程里的i值，而主线程里的i是动态变化的，不固定。所以，应该传递值而不是地址。</p>
+<p>修改的代码如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">tfn</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i = (<span class="type">long</span>)arg;	<span class="comment">//注意这里要强转成long类型，因为64位linux系统，指针占8个字节，int占4个字节，如果强转成int会造成精度的丢失</span></span><br><span class="line">	sleep(i);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;i am %dth thread:pid = %d, tid = %lu\n&quot;</span>, i+<span class="number">1</span>, getpid(), pthread_self());</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="type">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		ret = pthread_create(&amp;tid, <span class="literal">NULL</span>, tfn, (<span class="type">void</span> *)i);		<span class="comment">//按值进行传递</span></span><br><span class="line">		<span class="keyword">if</span>(ret != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">fprintf</span>(<span class="built_in">stderr</span> ,<span class="string">&quot;create error:%s\n&quot;</span>, strerror(ret));</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	sleep(i);		<span class="comment">//主线程执行完之后，就销毁了整个进程的地址空间，子线程就会无法打印，所以应该让主线程睡一会，等待子线程的执行</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;i am main pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/4225514e3dd3404e86320a840b55fcc1.png#pic_center"></p>
+<p><strong>注意</strong></p>
+<p>编译时，要指定参数<code>-lpthread</code>指定动态库libpthread.so</p>
+<h3 id="3-2-线程间全局变量共享"><a href="#3-2-线程间全局变量共享" class="headerlink" title="3.2 线程间全局变量共享"></a>3.2 线程间全局变量共享</h3><blockquote>
+<p>直接看个代码，在子线程里更改全局变量，看主线程里的该变量有啥变化：</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/229bc3a046ca4e9aa7784942f6d85001.png#pic_center"></p>
+<p>编译运行，结果如下</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/017f140f5e7f472284e9965e106e5d78.png#pic_center"></p>
+<p>可以看到，子线程里更改全局变量后，主线程里也跟着发生变化。</p>
+<h2 id="3-线程退出"><a href="#3-线程退出" class="headerlink" title="3.线程退出"></a>3.线程退出</h2><p>在编写多线程程序的时候，如果想要让线程退出，但是不会导致虚拟地址空间的释放（针对于主线程），我们就可以调用线程库中的线程退出函数，只要调用该函数当前线程就马上退出了，并且不会影响到其他线程的正常运行，不管是在子线程或者主线程中都可以使用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">pthread_exit</span><span class="params">(<span class="type">void</span> *retval)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>参数：线程退出的时候携带的数据，当前子线程的主线程会得到该数据。如果不需要使用，指定为 NULL</li>
+</ul>
+<p><strong>注意区别三者</strong></p>
+<ul>
+<li>exit();  退出当前进程。</li>
+<li>return: 返回到调用者那里去。</li>
+<li>pthread_exit(): 退出当前线程。</li>
+</ul>
+<blockquote>
+<p>下面是线程退出的示例代码，可以在任意线程的需要的位置调用该函数：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子线程的处理代码</span></span><br><span class="line"><span class="type">void</span>* <span class="title function_">working</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是子线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">6</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            pthread_exit(<span class="literal">NULL</span>);	<span class="comment">// 直接退出子线程</span></span><br><span class="line">        &#125; </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 创建一个子线程</span></span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, working, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功, 线程ID: %ld\n&quot;</span>, tid);</span><br><span class="line">    <span class="comment">// 2. 子线程不会执行下边的代码, 主线程执行</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是主线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">3</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;i = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主线程调用退出函数退出, 地址空间不会被释放</span></span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/629237f76abb4fc787aa8db7ffa83f5e.png#pic_center"></p>
+<h2 id="4-线程回收"><a href="#4-线程回收" class="headerlink" title="4.线程回收"></a>4.线程回收</h2><h3 id="4-1线程回收函数"><a href="#4-1线程回收函数" class="headerlink" title="4.1线程回收函数"></a>4.1线程回收函数</h3><p>线程和进程一样，子线程退出的时候其内核资源主要由主线程回收，线程库中提供的线程回收函叫做 <code>pthread_join()</code>，这个函数是一个阻塞函数，如果还有子线程在运行，调用该函数就会阻塞，子线程退出函数解除阻塞进行资源的回收，函数被调用一次，只能回收一个子线程，如果有多个子线程则需要循环进行回收。</p>
+<p>另外通过线程回收函数还可以获取到子线程退出时传递出来的数据，函数原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="comment">// 这是一个阻塞函数, 子线程在运行这个函数就阻塞</span></span><br><span class="line"><span class="comment">// 子线程退出, 函数解除阻塞, 回收对应的子线程资源, 类似于回收进程使用的函数 wait()</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_join</span><span class="params">(<span class="type">pthread_t</span> thread, <span class="type">void</span> **retval)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>参数:</p>
+<ul>
+<li>thread: 要被回收的子线程的线程 ID</li>
+<li>retval: 二级指针，指向一级指针的地址，是一个传出参数，这个地址中存储了 pthread_exit () 传递出的数据，如果不需要这个参数，可以指定为 NULL</li>
+</ul>
+</li>
+<li><p>返回值：线程回收成功返回 0，回收失败返回错误号。</p>
+</li>
+</ul>
+<h3 id="4-2-回收子线程数据"><a href="#4-2-回收子线程数据" class="headerlink" title="4.2 回收子线程数据"></a>4.2 回收子线程数据</h3><p>在子线程退出的时候可以使用 pthread_exit() 的参数将数据传出，在回收这个子线程的时候可以通过 phread_join() 的第二个参数来接收子线程传递出的数据。接收数据有很多种处理方式，下面来举个例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Persion</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="type">int</span> id;</span><br><span class="line">	<span class="type">char</span> name[<span class="number">36</span>];</span><br><span class="line">	<span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Persion</span> <span class="title">p</span>;</span> <span class="comment">// 定义全局变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子线程的处理代码</span></span><br><span class="line"><span class="type">void</span> *<span class="title function_">working</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> i;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;我是子线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">9</span>; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">		<span class="keyword">if</span> (i == <span class="number">6</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 使用全局变量</span></span><br><span class="line">			p.age = <span class="number">12</span>;</span><br><span class="line">			<span class="built_in">strcpy</span>(p.name, <span class="string">&quot;tom&quot;</span>);</span><br><span class="line">			p.id = <span class="number">100</span>;</span><br><span class="line">			<span class="comment">// 该函数的参数将这个地址传递给了主线程的pthread_join()</span></span><br><span class="line">			pthread_exit(&amp;p);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> i;</span><br><span class="line">	<span class="comment">// 1. 创建一个子线程</span></span><br><span class="line">	<span class="type">pthread_t</span> tid;</span><br><span class="line">	pthread_create(&amp;tid, <span class="literal">NULL</span>, working, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功, 线程ID: %ld\n&quot;</span>, tid);</span><br><span class="line">	<span class="comment">// 2. 子线程不会执行下边的代码, 主线程执行</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;我是主线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;i = %d\n&quot;</span>, i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 阻塞等待子线程退出</span></span><br><span class="line">	<span class="type">void</span> *ptr = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="comment">// ptr是一个传出参数, 在函数内部让这个指针指向一块有效内存</span></span><br><span class="line">	<span class="comment">// 这个内存地址就是pthread_exit() 参数指向的内存</span></span><br><span class="line">	pthread_join(tid, &amp;ptr);</span><br><span class="line">	<span class="comment">// 打印信息</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Persion</span> *<span class="title">pp</span> =</span> (<span class="keyword">struct</span> Persion *)ptr;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;name: %s, age: %d, id: %d\n&quot;</span>, pp-&gt;name, pp-&gt;age, pp-&gt;id);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;子线程资源被成功回收...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/c83fd72f42924e67b59ade17e67dae43.png#pic_center"></p>
+<h2 id="5-线程分离"><a href="#5-线程分离" class="headerlink" title="5.线程分离"></a>5.线程分离</h2><p>在某些情况下，程序中的主线程有属于自己的业务处理流程，如果让主线程负责子线程的资源回收，调用<code> pthread_join()</code> 只要子线程不退出主线程就会一直被阻塞，主要线程的任务也就不能被执行了。</p>
+<p>在线程库函数中为我们提供了线程分离函数<code> pthread_detach()</code>，调用这个函数之后<code>指定的子线程就可以和主线程分离，当子线程退出的时候，其占用的内核资源就被系统的其他进程接管并回收了</code>。线程分离之后在主线程中使用 <code>pthread_join()</code> 就回收不到子线程资源了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="comment">// 参数就子线程的线程ID, 主线程就可以和这个子线程分离了</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_detach</span><span class="params">(<span class="type">pthread_t</span> thread)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>小案例</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子线程的处理代码</span></span><br><span class="line"><span class="type">void</span>* <span class="title function_">working</span><span class="params">(<span class="type">void</span>* arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是子线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">9</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;child == i: = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 创建一个子线程</span></span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    pthread_create(&amp;tid, <span class="literal">NULL</span>, working, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;子线程创建成功, 线程ID: %ld\n&quot;</span>, tid);</span><br><span class="line">    <span class="comment">// 2. 子线程不会执行下边的代码, 主线程执行</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;我是主线程, 线程ID: %ld\n&quot;</span>, pthread_self());</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">3</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;i = %d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置子线程和主线程分离</span></span><br><span class="line">    pthread_detach(tid);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 让主线程自己退出即可</span></span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-线程取消"><a href="#6-线程取消" class="headerlink" title="6.线程取消"></a>6.线程取消</h2><p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//杀死一个线程。需要到达取消点（保存点）,即进行一次系统调用</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">pthread_cancel</span><span class="params">(<span class="type">pthread_t</span> thread)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>参数：<ul>
+<li><code>thread:</code> 待杀死的线程id</li>
+</ul>
+</li>
+<li>返回值：<ul>
+<li>成功：0 </li>
+<li>失败：直接返回错误号errno</li>
+</ul>
+</li>
+</ul>
+<p>如果，子线程没有到达取消点(即系统调用)， 那么 <code>pthread_cancel</code> 无效。   我们可以在程序中，手动添加一个取消点。使用 <code>pthread_testcancel()</code>; 成功被 <code>pthread_cancel() </code>杀死的线程，返回 -1.使用<code>pthead_join</code> 回收。</p>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>主线程调用pthread_cancel杀死子线程</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span>  </span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="type">void</span> *<span class="title function_">tfn</span><span class="params">(<span class="type">void</span> *arg)</span>&#123;  </span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;thread: pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());  </span><br><span class="line">        sleep(<span class="number">1</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span>&#123;  </span><br><span class="line">    <span class="type">pthread_t</span> tid;  </span><br><span class="line">  </span><br><span class="line">    <span class="type">int</span> ret = pthread_create(&amp;tid, <span class="literal">NULL</span>, tfn, <span class="literal">NULL</span>);  </span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;pthread_create error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;main: pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());  </span><br><span class="line">  </span><br><span class="line">    sleep(<span class="number">5</span>);  </span><br><span class="line">  </span><br><span class="line">    ret = pthread_cancel(tid);          <span class="comment">// 终止线程  </span></span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;pthread_cancel error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>);  </span><br><span class="line">  </span><br><span class="line">    pthread_exit(<span class="literal">NULL</span>);  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/3d93b29b9d074154ac2fd90705bc726c.png#pic_center"></p>
+<p><strong>终止线程方式</strong>：</p>
+<p>总结：终止某个线程而不终止整个进程，有三种方法： </p>
+<ol>
+<li><p>从线程主函数 <code>return</code>。这种方法对主控线程不适用，从main 函数 return 相当于调用 exit。 </p>
+</li>
+<li><p>一个线程可以调用 <code>pthread_cancel</code> 终止同一进程中的另一个线程。</p>
+</li>
+<li><p>线程可以调用 <code>pthread_exit </code>终止自己。</p>
+</li>
+</ol>
+<h2 id="7-控制原语对比"><a href="#7-控制原语对比" class="headerlink" title="7.控制原语对比"></a>7.控制原语对比</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ccbdcb3511a64de895cd6edc527ce4ce.png#pic_center"></p>
+<h2 id="8-线程属性"><a href="#8-线程属性" class="headerlink" title="8.线程属性"></a>8.线程属性</h2><h3 id="8-1-基本概念"><a href="#8-1-基本概念" class="headerlink" title="8.1 基本概念"></a>8.1 基本概念</h3><p>linux 下线程的属性是可以根据实际项目需要，进行设置。之前我们讨论的线程都是采用线程的默认属性，默认属性已经可以解决绝大多数开发时遇到的问题。如我们对程序的性能提出更高的要求那么需要设置线程属性，比如可以通过设置线程栈的大小来降低内存的使用，增加最大线程个数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> detachstate; <span class="comment">//线程的分离状态</span></span><br><span class="line">    <span class="type">int</span> schedpolicy; <span class="comment">//线程的调度策略</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span>　<span class="title">sched</span> <span class="title">schedparam</span>;</span><span class="comment">//线程的调度参数</span></span><br><span class="line">    <span class="type">int</span> inheritsched; <span class="comment">//线程的继承性</span></span><br><span class="line">    <span class="type">int</span> scope; <span class="comment">//线程的作用域</span></span><br><span class="line">    <span class="type">size_t</span> guardsize; <span class="comment">//线程栈末尾的警戒缓冲区大小</span></span><br><span class="line">    <span class="type">int</span> stackaddr_set; <span class="comment">//线程栈的设置</span></span><br><span class="line">    <span class="type">void</span>* stackaddr; <span class="comment">//线程栈的启始位置</span></span><br><span class="line">    <span class="type">size_t</span> stacksize; <span class="comment">//线程栈大小</span></span><br><span class="line">&#125;<span class="type">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>主要结构体成员： </p>
+<ol>
+<li><p>线程分离状态 </p>
+</li>
+<li><p>线程栈大小（默认平均分配）</p>
+</li>
+<li><p>线程栈警戒缓冲区大小（位于栈末尾）</p>
+</li>
+</ol>
+<p>属性值不能直接设置，须使用相关函数进行操作，初始化的函数为 <code>pthread_attr_init</code>，这个函数必须在 <code>pthread_create </code>函数之前调用。之后须用 <code>pthread_attr_destroy</code> 函数来释放资源。</p>
+<p>线程属性主要包括如下属性：作用域（scope）、栈尺寸（stack size）、栈地址（stack address）、优先级（priority）、 分离的状态（detached state）、调度策略和参数（scheduling policy and parameters）。默认的属性为非绑定、非分离、缺省的堆栈、与父进程同样级别的优先级。</p>
+<h3 id="8-1线程属性设置分离线程"><a href="#8-1线程属性设置分离线程" class="headerlink" title="8.1线程属性设置分离线程"></a>8.1线程属性设置分离线程</h3><p>1 .<code>pthread_attr_t attr</code>   创建一个线程属性结构体变量</p>
+<p>2 .<code>pthread_attr_init(&amp;attr); </code> 初始化线程属性</p>
+<p>3 .<code>pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED);</code>   设置线程属性为 分离态</p>
+<p>4 .<code>pthread_create(&amp;tid, &amp;attr, tfn, NULL);</code> 借助修改后的 设置线程属性 创建为分离态的新线程</p>
+<p>5 .<code>pthread_attr_destroy(&amp;attr); </code> 销毁线程属性</p>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>调整线程状态，使线程创建出来就是分离态，代码如下：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span>  </span></span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="type">void</span> *<span class="title function_">tfn</span><span class="params">(<span class="type">void</span> *arg)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;thread: pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());  </span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;  </span><br><span class="line">&#125;  </span><br><span class="line">	</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span>  </span><br><span class="line">&#123;  </span><br><span class="line">	<span class="type">pthread_t</span> tid;  </span><br><span class="line">	</span><br><span class="line">	<span class="type">pthread_attr_t</span> attr;  </span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span> ret = pthread_attr_init(&amp;attr);  </span><br><span class="line">	<span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;attr_init error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">	ret = pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED);      <span class="comment">// 设置线程属性为 分离属性  </span></span><br><span class="line">	<span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;attr_setdetachstate error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">	ret = pthread_create(&amp;tid, &amp;attr, tfn, <span class="literal">NULL</span>);  </span><br><span class="line">	<span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">		perror(<span class="string">&quot;pthread_create error&quot;</span>);  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">	ret = pthread_attr_destroy(&amp;attr);  </span><br><span class="line">	<span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;attr_destroy error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">	ret = pthread_join(tid, <span class="literal">NULL</span>);  </span><br><span class="line">	<span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;  </span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;pthread_join error:%s\n&quot;</span>, strerror(ret));  </span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);  </span><br><span class="line">	&#125;  </span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;main: pid = %d, tid = %lu\n&quot;</span>, getpid(), pthread_self());  </span><br><span class="line">	</span><br><span class="line">	pthread_exit((<span class="type">void</span> *)<span class="number">0</span>);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5f6ca946b7134cc485cc88b0d46c705e.png#pic_center"></p>
+<p>如图，<code>pthread_join</code>报错，说明线程已经自动回收，设置分离成功。</p>
+<h2 id="9-线程使用注意事项"><a href="#9-线程使用注意事项" class="headerlink" title="9.线程使用注意事项"></a>9.线程使用注意事项</h2><ol>
+<li><p>主线程退出其他线程不退出，主线程应调用 <code>pthread_exit</code> </p>
+</li>
+<li><p>避免僵尸线程 </p>
+<p><code>pthread_join </code></p>
+<p><code>pthread_detach </code></p>
+<p><code>pthread_create</code> 指定分离属性 </p>
+<p>被 join 线程可能在 join 函数返回前就释放完自己的所有内存资源，所以不应当返回被回收线程栈中的值;</p>
+</li>
+<li><p><code>malloc</code> 和<code>mmap </code>申请的内存可以被其他线程释放 </p>
+</li>
+<li><p>应避免在多线程模型中调用 <code>fork</code> 除非，马上 <code>exec</code>，子进程中只有调用 <code>fork</code> 的线程存在，其他线程在子进程中均 <code>pthread_exit</code></p>
+</li>
+<li><p>信号的复杂语义很难和多线程共存，应避免在多线程引入信号机制</p>
+</li>
+</ol>
+</article><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul><a class="reward-main-btn" href="/about/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Linux系统编程之守护进程、线程&amp;url=https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/&amp;pic=https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Linux系统编程<span class="tagsPageCount">7</span></a><a class="post-meta__box__tags" href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>守护进程<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>线程<span class="tagsPageCount">1</span></a></div></div></div></div></div><div class="post-copyright"><i class="anzhiyufont anzhiyu-icon-copyright"></i><div class="post-copyright__author"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/">原创</a><a class="post-copyright-title"><span>Linux系统编程之守护进程、线程</span></a></div><div class="post-copyright-info-box"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"></span><a class="link" href="https://billysturate.github.io">BillySturate</a></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a class="link" href="https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/">https://billysturate.github.io/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/</a></span><span class="copy-button" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-copy"></i></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/"><img class="prev-cover" src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Linux系统编程之信号</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/"><img class="next-cover" src="https://img1.baidu.com/it/u=4017388245,646616071&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=550&amp;h=306" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Linux系统编程之线程同步</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img class="cover" src="https://img2.baidu.com/it/u=3539075320,3057042483&fm=253&fmt=auto&app=138&f=JPEG?w=650&h=492" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-01</div><div class="title">Linux系统编程之信号</div></div></a></div><div><a href="/2022/08/28/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8BIPC(%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1)/" title="Linux系统编程之进程间通信(IPC)"><img class="cover" src="https://bu.dusays.com/2023/01/25/63d0b8ac4693f.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-28</div><div class="title">Linux系统编程之进程间通信(IPC)</div></div></a></div><div><a href="/2022/08/27/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E5%92%8C%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" title="Linux系统编程之虚拟地址空间和文件描述符"><img class="cover" src="https://img1.baidu.com/it/u=3926402033,29969568&fm=253&fmt=auto&app=138&f=PNG?w=890&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-27</div><div class="title">Linux系统编程之虚拟地址空间和文件描述符</div></div></a></div><div><a href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img class="cover" src="https://img1.baidu.com/it/u=4017388245,646616071&fm=253&fmt=auto&app=138&f=JPEG?w=550&h=306" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-07</div><div class="title">Linux系统编程之线程同步</div></div></a></div><div><a href="/2022/08/22/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E6%96%87%E4%BB%B6IO/" title="Linux系统编程之文件IO"><img class="cover" src="https://img0.baidu.com/it/u=2183474374,2295718375&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=317" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-22</div><div class="title">Linux系统编程之文件IO</div></div></a></div><div><a href="/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/" title="Linux系统编程之进程"><img class="cover" src="https://img1.baidu.com/it/u=2036916699,254542477&fm=253&fmt=auto&app=138&f=JPEG?w=625&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-26</div><div class="title">Linux系统编程之进程</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="author-info-top"> <div class="card-info-avatar"></div></div><div class="author-info__sayhi" id="author-info__sayhi"></div><h1 class="author-info__name">BillySturate</h1><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">产品、设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="banner-button-group"><a class="banner-button" onclick="pjax.loadUrl(&quot;/about/&quot;)"><span class="banner-button-text">了解更多</span><i class="anzhiyufont anzhiyu-icon-arrow-circle-right" style="font-size: 1.5rem"></i></a></div><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/BillySturate" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=billysturate@gmail.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><a class="social-icon faa-parent animated-hover" href="https://www.instagram.com/billysturate/" target="_blank" title="Instagram"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-instagram1"></use></svg></a><a class="social-icon faa-parent animated-hover" href="https://blog.csdn.net/qq_59084325" target="_blank" title="CSDN"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-csdn"></use></svg></a><a class="social-icon faa-parent animated-hover" href="tencent://Message/?Uin=1679510521&amp;amp;websiteName=local.edu.com:8888=&amp;amp;Menu=yes" target="_blank" title="QQ"><i class="anzhiyufont anzhiyu-icon-qq"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">1.守护进程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E8%BF%9B%E7%A8%8B%E7%BB%84"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 进程组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%BC%9A%E8%AF%9D"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-setsid-%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 setsid()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-getsid-%E5%87%BD%E6%95%B0"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 getsid()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E5%88%9B%E5%BB%BA%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.5.</span> <span class="toc-text">1.5 创建守护进程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">2.线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 什么是线程?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Linux-%E5%86%85%E6%A0%B8%E7%BA%BF%E7%A8%8B%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-%E4%BA%86%E8%A7%A3%E5%8D%B3%E5%8F%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Linux 内核线程实现原理(了解即可)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%BA%BF%E7%A8%8B%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90%E5%92%8C%E9%9D%9E%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90"><span class="toc-number">2.3.</span> <span class="toc-text">2.4 线程共享资源和非共享资源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">3.创建线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%BA%BF%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 线程函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E5%85%B1%E4%BA%AB"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 线程间全局变量共享</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%BA%BF%E7%A8%8B%E9%80%80%E5%87%BA"><span class="toc-number">4.</span> <span class="toc-text">3.线程退出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%BA%BF%E7%A8%8B%E5%9B%9E%E6%94%B6"><span class="toc-number">5.</span> <span class="toc-text">4.线程回收</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1%E7%BA%BF%E7%A8%8B%E5%9B%9E%E6%94%B6%E5%87%BD%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">4.1线程回收函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%9B%9E%E6%94%B6%E5%AD%90%E7%BA%BF%E7%A8%8B%E6%95%B0%E6%8D%AE"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 回收子线程数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%BA%BF%E7%A8%8B%E5%88%86%E7%A6%BB"><span class="toc-number">6.</span> <span class="toc-text">5.线程分离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%BA%BF%E7%A8%8B%E5%8F%96%E6%B6%88"><span class="toc-number">7.</span> <span class="toc-text">6.线程取消</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%8E%A7%E5%88%B6%E5%8E%9F%E8%AF%AD%E5%AF%B9%E6%AF%94"><span class="toc-number">8.</span> <span class="toc-text">7.控制原语对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%BA%BF%E7%A8%8B%E5%B1%9E%E6%80%A7"><span class="toc-number">9.</span> <span class="toc-text">8.线程属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">9.1.</span> <span class="toc-text">8.1 基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1%E7%BA%BF%E7%A8%8B%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E5%88%86%E7%A6%BB%E7%BA%BF%E7%A8%8B"><span class="toc-number">9.2.</span> <span class="toc-text">8.1线程属性设置分离线程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">10.</span> <span class="toc-text">9.线程使用注意事项</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/25/63d09dc1f25be.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VSCode去掉拷贝来的代码前的行号"/></a><div class="content"><a class="title" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号">VSCode去掉拷贝来的代码前的行号</a><time datetime="2022-09-12T09:13:54.000Z" title="Created 2022-09-12 17:13:54">2022-09-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=3708672204,273493161&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=690&amp;h=388" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【HTML基础】基础认知 + HTML标签"/></a><div class="content"><a class="title" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签">【HTML基础】基础认知 + HTML标签</a><time datetime="2022-09-08T10:13:54.000Z" title="Created 2022-09-08 18:13:54">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=4017388245,646616071&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=550&amp;h=306" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之线程同步"/></a><div class="content"><a class="title" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步">Linux系统编程之线程同步</a><time datetime="2022-09-07T10:13:54.000Z" title="Created 2022-09-07 18:13:54">2022-09-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之守护进程、线程"/></a><div class="content"><a class="title" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程">Linux系统编程之守护进程、线程</a><time datetime="2022-09-05T10:13:54.000Z" title="Created 2022-09-05 18:13:54">2022-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之信号"/></a><div class="content"><a class="title" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号">Linux系统编程之信号</a><time datetime="2022-09-01T10:13:54.000Z" title="Created 2022-09-01 18:13:54">2022-09-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By BillySturate</div><div id="workboard"><img class="workSituationImg boardsign" src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://anzhiy.cn/" style="margin-inline:5px" data-title="本站使用AnZhiYu主题" title="本站使用AnZhiYu主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pan.anzhiy.cn/d/anzhiyu/svg/Theme-AnZhiYu-2E67D3.svg" alt="本站使用AnZhiYu主题"/></a><a class="github-badge" target="_blank" href="https://www.dogecloud.com/" style="margin-inline:5px" data-title="本站使用多吉云为静态资源提供CDN加速" title="本站使用多吉云为静态资源提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/CDN-多吉云-3693F3.svg" alt="本站使用多吉云为静态资源提供CDN加速"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title="本站项目由Github托管"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div></footer><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg"/><div class="loading-image-dot"></div><div id="loading-percentage">0%</div></div></div><script>const loadingPercentage = document.getElementById("loading-percentage");
+let loadingPercentageTimer = setInterval(function() {
+  var progressBar = document.querySelector(".pace-progress");
+  if (!progressBar) return
+  var currentValue = progressBar.getAttribute("data-progress-text");
+  if (currentValue !== loadingPercentage.textContent) {
+    loadingPercentage.textContent = currentValue;
+    if (currentValue === "100%") {
+      clearInterval(loadingPercentageTimer);
+    }
+  }
+}, 100);
+const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/progress_bar/progress_bar.css"/><script async="async" src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">37</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="center-console" type="button" title="中控台"><i class="anzhiyufont anzhiyu-icon-fish"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="console"><div class="close-btn" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-xmark" style="font-size: 35px;"></i></div><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="wechat" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="alipay" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> <span>Newest Comments</span></span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 1.45em; color: rgb(167, 69, 127)">C++<sup>8</sup></a><a href="/tags/CMake/" style="font-size: 1.15em; color: rgb(42, 164, 78)">CMake<sup>1</sup></a><a href="/tags/GCC/" style="font-size: 1.15em; color: rgb(186, 148, 169)">GCC<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.15em; color: rgb(47, 11, 63)">HTML<sup>1</sup></a><a href="/tags/IPC/" style="font-size: 1.15em; color: rgb(120, 67, 149)">IPC<sup>1</sup></a><a href="/tags/Json/" style="font-size: 1.21em; color: rgb(63, 139, 10)">Json<sup>3</sup></a><a href="/tags/Linux/" style="font-size: 1.33em; color: rgb(106, 172, 169)">Linux<sup>5</sup></a><a href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" style="font-size: 1.39em; color: rgb(152, 64, 55)">Linux系统编程<sup>7</sup></a><a href="/tags/Markdown/" style="font-size: 1.15em; color: rgb(58, 200, 124)">Markdown<sup>1</sup></a><a href="/tags/Matplotlib/" style="font-size: 1.15em; color: rgb(188, 30, 198)">Matplotlib<sup>1</sup></a><a href="/tags/Numpy/" style="font-size: 1.15em; color: rgb(106, 164, 100)">Numpy<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.27em; color: rgb(189, 69, 165)">Python<sup>4</sup></a><a href="/tags/Qt/" style="font-size: 1.27em; color: rgb(83, 39, 1)">Qt<sup>4</sup></a><a href="/tags/Robocup3d/" style="font-size: 1.15em; color: rgb(71, 73, 113)">Robocup3d<sup>1</sup></a><a href="/tags/SSH/" style="font-size: 1.15em; color: rgb(164, 152, 189)">SSH<sup>1</sup></a><a href="/tags/Shell/" style="font-size: 1.15em; color: rgb(169, 159, 176)">Shell<sup>1</sup></a><a href="/tags/VSCode/" style="font-size: 1.21em; color: rgb(54, 184, 98)">VSCode<sup>3</sup></a><a href="/tags/Vim-Vi/" style="font-size: 1.15em; color: rgb(103, 184, 30)">Vim/Vi<sup>1</sup></a><a href="/tags/gdb/" style="font-size: 1.15em; color: rgb(174, 9, 86)">gdb<sup>1</sup></a><a href="/tags/opencv/" style="font-size: 1.15em; color: rgb(124, 194, 161)">opencv<sup>1</sup></a><a href="/tags/pandas/" style="font-size: 1.15em; color: rgb(157, 46, 190)">pandas<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 1.15em; color: rgb(116, 155, 108)">人工智能<sup>1</sup></a><a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 1.15em; color: rgb(63, 34, 127)">信号<sup>1</sup></a><a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(171, 35, 103)">守护进程<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6IO/" style="font-size: 1.15em; color: rgb(25, 55, 5)">文件IO<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" style="font-size: 1.15em; color: rgb(97, 47, 156)">文件描述符<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.15em; color: rgb(21, 159, 35)">算法<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.15em; color: rgb(35, 87, 101)">线程<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" style="font-size: 1.15em; color: rgb(91, 13, 20)">线程同步<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4/" style="font-size: 1.15em; color: rgb(95, 146, 26)">虚拟地址空间<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 1.15em; color: rgb(83, 189, 65)">计算机视觉<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(112, 108, 127)">进程<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history" onclick="anzhiyu.hideConsole()"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/09/"><span class="card-archive-list-date">September 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">August 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/07/"><span class="card-archive-list-date">July 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/06/"><span class="card-archive-list-date">June 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" onclick="rm.switchDarkMode()" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script><div><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/utils.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/main.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/instant.page@5.1.1/instantpage.js" type="module"></script><script src="https://npm.elemecdn.com/vanilla-lazyload@17.3.1/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  console.log(1)
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("06/01/2022 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2022 By 安知鱼",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 BillySturate 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("06/01/2022 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+      img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+      img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "visitor@anzhiy.cn";</script><script>//动态标题
+let leaveTitle = 'w(ﾟДﾟ)w 不要走！再看看嘛！';
+let backTitle = '♪(^∇^*)欢迎肥来！';
+let OriginTitile = document.title
+let titleTime
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    //离开当前页面时标签显示内容
+    document.title = leaveTitle
+    clearTimeout(titleTime)
+  } else {
+    //返回当前页面时标签显示内容
+    document.title = backTitle + OriginTitile
+    //两秒后变回正常标题
+    titleTime = setTimeout(function () {
+      document.title = OriginTitile
+    }, 2000)
+  }
+})</script><script data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/catalog-bar/catalog-bar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/categoryBar/categoryBar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script>// 初始化函数
+let rm = {};
+
+//禁止图片拖拽
+let imgElements = document.getElementsByTagName("img");
+for (let i = 0; i < imgElements.length; i++) {
+  imgElements[i].addEventListener("dragstart", function (event) {
+    event.preventDefault();
+  });
+}
+
+// 显示菜单
+rm.showRightMenu = function (isTrue, x = 0, y = 0) {
+  console.info(x, y)
+  let rightMenu = document.getElementById("rightMenu");
+  rightMenu.style.top = x + "px";
+  rightMenu.style.left = y + "px";
+  if (isTrue) {
+    rightMenu.style.display = "block";
+    stopMaskScroll();
+  } else {
+    rightMenu.style.display = "none";
+  }
+};
+
+// 隐藏菜单
+rm.hideRightMenu = function () {
+  rm.showRightMenu(false);
+  let rightMenuMask = document.querySelector("#rightmenu-mask");
+  rightMenuMask.style.display = "none";
+};
+
+// 尺寸
+let rmWidth = document.getElementById("rightMenu").offsetWidth;
+let rmHeight = document.getElementById("rightMenu").offsetHeight;
+
+// 重新定义尺寸
+rm.reloadrmSize = function () {
+  rightMenu.style.visibility = "hidden";
+  rightMenu.style.display = "block";
+  // 获取宽度和高度
+  rmWidth = document.getElementById("rightMenu").offsetWidth;
+  rmHeight = document.getElementById("rightMenu").offsetHeight;
+  rightMenu.style.visibility = "visible";
+};
+
+// 获取点击的href
+let domhref = "";
+let domImgSrc = "";
+let globalEvent = null;
+
+// 监听右键初始化
+window.oncontextmenu = function (event) {
+  if (document.body.clientWidth > 768) {
+    let pageX = event.clientX + 10; //加10是为了防止显示时鼠标遮在菜单上
+    let pageY = event.clientY;
+
+    //其他额外菜单
+    const $rightMenuOther = document.querySelector(".rightMenuOther");
+    const $rightMenuPlugin = document.querySelector(".rightMenuPlugin");
+    const $rightMenuCopyText = document.querySelector("#menu-copytext");
+    const $rightMenuPasteText = document.querySelector("#menu-pastetext");
+    const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
+    const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
+    const $rightMenuCopyLink = document.querySelector("#menu-copylink");
+    const $rightMenuCopyImg = document.querySelector("#menu-copyimg");
+    const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
+    const $rightMenuSearch = document.querySelector("#menu-search");
+    const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
+    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
+    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
+    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
+    const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
+
+    let href = event.target.href;
+    let imgsrc = event.target.currentSrc;
+
+    // 判断模式 扩展模式为有事件
+    let pluginMode = false;
+    $rightMenuOther.style.display = "block";
+    globalEvent = event;
+
+    // 检查是否需要复制 是否有选中文本
+    if (selectTextNow && window.getSelection()) {
+      pluginMode = true;
+      $rightMenuCopyText.style.display = "block";
+      $rightMenuCommentText.style.display = "block";
+      $rightMenuSearch.style.display = "block";
+      $rightMenuSearchBaidu.style.display = "block";
+    } else {
+      $rightMenuCopyText.style.display = "none";
+      $rightMenuCommentText.style.display = "none";
+      $rightMenuSearchBaidu.style.display = "none";
+      $rightMenuSearch.style.display = "none";
+    }
+
+    //检查是否右键点击了链接a标签
+    if (href) {
+      pluginMode = true;
+      $rightMenuNewWindow.style.display = "block";
+      $rightMenuCopyLink.style.display = "block";
+      domhref = href;
+    } else {
+      $rightMenuNewWindow.style.display = "none";
+      $rightMenuCopyLink.style.display = "none";
+    }
+
+    //检查是否需要复制图片
+    if (imgsrc) {
+      pluginMode = true;
+      $rightMenuCopyImg.style.display = "block";
+      $rightMenuDownloadImg.style.display = "block";
+      $rightMenuNewWindowImg.style.display = "block";
+      document.getElementById("rightMenu").style.width="12rem"
+      domImgSrc = imgsrc;
+    } else {
+      $rightMenuCopyImg.style.display = "none";
+      $rightMenuDownloadImg.style.display = "none";
+      $rightMenuNewWindowImg.style.display = "none";
+    }
+
+    // 判断是否为输入框
+    if (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "textarea") {
+      pluginMode = true;
+      $rightMenuPasteText.style.display = "block";
+    } else {
+      $rightMenuPasteText.style.display = "none";
+    }
+    const navMusicEl = document.querySelector("#nav-music");
+    //判断是否是音乐
+    if (navMusicEl && navMusicEl.contains(event.target)) {
+      pluginMode = true;
+      $rightMenuMusicToggle.style.display = "block";
+      $rightMenuMusicBack.style.display = "block";
+      $rightMenuMusicForward.style.display = "block";
+      $rightMenuMusicPlaylist.style.display = "block";
+      $rightMenuMusicCopyMusicName.style.display = "block";
+    } else {
+      $rightMenuMusicToggle.style.display = "none";
+      $rightMenuMusicBack.style.display = "none";
+      $rightMenuMusicForward.style.display = "none";
+      $rightMenuMusicPlaylist.style.display = "none";
+      $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 如果不是扩展模式则隐藏扩展模块
+    if (pluginMode) {
+      $rightMenuOther.style.display = "none";
+      $rightMenuPlugin.style.display = "block";
+    } else {
+      $rightMenuPlugin.style.display = "none";
+    }
+
+    rm.reloadrmSize();
+
+    // 鼠标默认显示在鼠标右下方，当鼠标靠右或靠下时，将菜单显示在鼠标左方\上方
+    if (pageX + rmWidth > window.innerWidth) {
+      pageX -= rmWidth + 10;
+    }
+    if (pageY + rmHeight > window.innerHeight) {
+      pageY -= pageY + rmHeight - window.innerHeight;
+    }
+
+    rm.showRightMenu(true, pageY, pageX);
+    document.getElementById("rightmenu-mask").style.display = "flex";
+    return false;
+  }
+};
+
+// 下载图片状态
+rm.downloadimging = false;
+
+// 复制图片到剪贴板
+rm.writeClipImg = function (imgsrc) {
+  console.log("按下复制");
+  rm.hideRightMenu();
+  anzhiyu.snackbarShow("正在下载中，请稍后", false, 10000);
+  if (rm.downloadimging == false) {
+    rm.downloadimging = true;
+    setTimeout(function () {
+      copyImage(imgsrc);
+      anzhiyu.snackbarShow("复制成功！图片已添加盲水印，请遵守版权协议");
+      rm.downloadimging = false;
+    }, "10000");
+  }
+};
+
+function imageToBlob(imageURL) {
+  const img = new Image();
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob(
+        blob => {
+          // here the image is a blob
+          resolve(blob);
+        },
+        "image/png",
+        0.75
+      );
+    };
+  });
+}
+
+async function copyImage(imageURL) {
+  const blob = await imageToBlob(imageURL);
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+rm.switchDarkMode = function () {
+  // Switch Between Light And Dark Mode
+  const nowMode = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  if (nowMode === "light") {
+    activateDarkMode();
+    saveToLocal.set("theme", "dark", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night);
+    document.querySelector(".menu-darkmode-text").textContent = "浅色模式";
+  } else {
+    activateLightMode();
+    saveToLocal.set("theme", "light", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day);
+    document.querySelector(".menu-darkmode-text").textContent = "深色模式";
+  }
+  // handle some cases
+  typeof runMermaid === "function" && window.runMermaid();
+  rm.hideRightMenu();
+  anzhiyu.darkModeStatus();
+};
+
+rm.copyUrl = function (id) {
+  const input = document.createElement("input"); // Create a new <input> element
+  input.id = "copyVal"; // Set the id of the new element to "copyVal"
+  document.body.appendChild(input); // Append the new element to the end of the <body> element
+  
+  const text = id;
+  input.value = text;
+  input.select();
+  input.setSelectionRange(0, input.value.length);
+  document.execCommand("copy");
+  
+  input.remove(); // Remove the <input> element from the DOM
+};
+
+function stopMaskScroll() {
+  if (document.getElementById("rightmenu-mask")) {
+    let xscroll = document.getElementById("rightmenu-mask");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+  if (document.getElementById("rightMenu")) {
+    let xscroll = document.getElementById("rightMenu");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+}
+
+rm.rightmenuCopyText = function (txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt);
+  }
+  rm.hideRightMenu();
+};
+
+rm.copyPageUrl = function () {
+  var url = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+rm.sharePage = function () {
+  var content = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+// 复制当前选中文本
+var selectTextNow = "";
+document.onmouseup = document.ondblclick = selceText;
+
+function selceText() {
+  var txt;
+  if (document.selection) {
+    txt = document.selection.createRange().text;
+  } else {
+    txt = window.getSelection().toString();
+  }
+  selectTextNow = txt !== "" ? txt : "";
+}
+
+// 读取剪切板
+rm.readClipboard = function () {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText().then(clipText => rm.insertAtCaret(globalEvent.target, clipText));
+  }
+};
+
+// 粘贴文本到焦点
+rm.insertAtCaret = function (elemt, value) {
+  const startPos = elemt.selectionStart,
+    endPos = elemt.selectionEnd;
+  if (document.selection) {
+    elemt.focus();
+    var sel = document.selection.createRange();
+    sel.text = value;
+    elemt.focus();
+  } else {
+    if (startPos || startPos == "0") {
+      var scrollTop = elemt.scrollTop;
+      elemt.value = elemt.value.substring(0, startPos) + value + elemt.value.substring(endPos, elemt.value.length);
+      elemt.focus();
+      elemt.selectionStart = startPos + value.length;
+      elemt.selectionEnd = startPos + value.length;
+      elemt.scrollTop = scrollTop;
+    } else {
+      elemt.value += value;
+      elemt.focus();
+    }
+  }
+};
+
+//粘贴文本
+rm.pasteText = function () {
+  const result = rm.readClipboard() || "";
+  rm.hideRightMenu();
+};
+
+//引用到评论
+rm.rightMenuCommentText = function (txt) {
+  rm.hideRightMenu();
+  const postCommentDom = document.getElementById("post-comment");
+  var domTop = postCommentDom.offsetTop;
+  window.scrollTo(0, domTop - 80);
+  if (txt == "undefined" || txt == "null") txt = "好棒！";
+  function setText() {
+    setTimeout(() => {
+      var input = document.getElementsByClassName("el-textarea__inner")[0];
+      if (!input) setText();
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("input", true, true);
+      let inputValue = replaceAll(txt, "\n", "\n> ");
+      input.value = "> " + inputValue + "\n\n";
+      input.dispatchEvent(evt);
+      input.focus();
+      input.setSelectionRange(-1, -1);
+      if (document.getElementById("comment-tips")) {
+        document.getElementById("comment-tips").classList.add("show");
+      }
+    }, 100);
+  }
+  setText();
+};
+
+//替换所有内容
+function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
+}
+
+// 百度搜索
+rm.searchBaidu = function () {
+  anzhiyu.snackbarShow("即将跳转到百度搜索", false, 2000);
+  setTimeout(function () {
+    window.open("https://www.baidu.com/s?wd=" + selectTextNow);
+  }, "2000");
+  rm.hideRightMenu();
+};
+
+//分享链接
+rm.copyLink = function () {
+  rm.rightmenuCopyText(domhref);
+  anzhiyu.snackbarShow("已复制链接地址");
+};
+
+function addRightMenuClickEvent() {
+  // 添加点击事件
+  document.getElementById("menu-backward").addEventListener("click", function () {
+  window.history.back();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-forward").addEventListener("click", function () {
+    window.history.forward();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-refresh").addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  document.getElementById("menu-top").addEventListener("click", function () {
+    anzhiyu.scrollToDest(0, 500);
+    rm.hideRightMenu();
+  });
+
+  const menuLinks = document.querySelectorAll(".menu-link");
+  menuLinks.forEach(function (link) {
+    link.addEventListener("click", rm.hideRightMenu);
+  });
+
+  document.getElementById("menu-darkmode").addEventListener("click", rm.switchDarkMode);
+
+  document.getElementById("menu-home") && document.getElementById("menu-home").addEventListener("click", function () {
+    window.location.href = window.location.origin;
+  });
+
+  document.getElementById("menu-randomPost").addEventListener("click", function () {
+    toRandomPost();
+  });
+
+  document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
+
+  document.getElementById("rightmenu-mask").addEventListener("click", rm.hideRightMenu);
+
+  document.getElementById("rightmenu-mask").addEventListener("contextmenu", function (event) {
+    rm.hideRightMenu();
+    event.preventDefault(); // Prevent the default context menu from appearing
+  });
+
+  document.getElementById("menu-copy").addEventListener("click", rm.copyPageUrl);
+
+  document.getElementById("menu-pastetext").addEventListener("click", rm.pasteText);
+
+  document.getElementById("menu-copytext").addEventListener("click", function () {
+    rm.rightmenuCopyText(selectTextNow);
+    anzhiyu.snackbarShow("复制成功，复制和转载请标注本文地址");
+  });
+
+  document.getElementById("menu-commenttext").addEventListener("click", function () {
+    rm.rightMenuCommentText(selectTextNow);
+  });
+
+  document.getElementById("menu-newwindow").addEventListener("click", function () {
+    window.open(domhref);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copylink").addEventListener("click", rm.copyLink);
+
+  document.getElementById("menu-downloadimg").addEventListener("click", function () {
+    anzhiyu.downloadImage(domImgSrc, "anzhiyu");
+  });
+
+  document.getElementById("menu-newwindowimg").addEventListener("click", function () {
+    window.open(domImgSrc);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copyimg").addEventListener("click", function () {
+    rm.writeClipImg(domImgSrc);
+  });
+
+  document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
+
+  //音乐
+  document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
+
+  document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
+
+  document.getElementById("menu-music-forward").addEventListener("click", anzhiyu.musicSkipForward);
+
+  document.getElementById("menu-music-copyMusicName").addEventListener("click", function () {
+    rm.rightmenuCopyText(anzhiyu.musicGetName());
+    anzhiyu.snackbarShow("复制歌曲名称成功", false, 3000);
+  });
+
+}
+
+addRightMenuClickEvent();</script><script data-pjax>var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+var pageHeaderEl = document.getElementById("page-header");
+var navMusicEl = document.getElementById("nav-music");
+var consoleEl = document.getElementById("console");
+// 已随机的歌曲
+var selectRandomSong = [];
+// 音乐默认声音大小
+var musicVolume = 0.8;
+// 是否切换了周杰伦音乐列表
+var changeMusicListFlag = false;
+// 当前默认播放列表
+var defaultPlayMusicList = [];
+
+document.getElementById("page-name").innerText = document.title.split(" | 安知鱼")[0];
+anzhiyu.initIndexEssay();
+anzhiyu.changeTimeInEssay();
+anzhiyu.removeBodyPaceClass();
+anzhiyu.qrcodeCreate();
+anzhiyu.changeTimeInAlbumDetail();
+anzhiyu.reflashEssayWaterFall();
+anzhiyu.sayhi();
+anzhiyu.stopImgRightDrag();
+anzhiyu.addNavBackgroundInit();
+anzhiyu.setValueToBodyType();
+
+anzhiyu.getCustomPlayList();
+anzhiyu.addEventListenerConsoleMusicList(false);</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.6/icon/ali_iconfont_css.css"><script async src="https://at.alicdn.com/t/c/font_4044712_5zffwsx4hy7.js?spm=a313x.7781069.1998910419.53&amp;file=font_4044712_5zffwsx4hy7.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://npm.elemecdn.com/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+  window.anzhiyuScrollFnToDo && window.removeEventListener('scroll', anzhiyuScrollFnToDo)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

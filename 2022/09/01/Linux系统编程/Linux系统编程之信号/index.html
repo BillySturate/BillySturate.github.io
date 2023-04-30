@@ -1,0 +1,1277 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux系统编程之信号 | BillySturateの秘密基地</title><meta name="keywords" content="Linux系统编程,信号"><meta name="author" content="BillySturate"><meta name="copyright" content="BillySturate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Linux系统编程之信号"><meta name="application-name" content="Linux系统编程之信号"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="bookmark" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="192x192" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-icon" sizes="512x512" href="/img/siteicon/apple-touch-icon.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1136x640.png"><link rel="apple-touch-startup-image" media="screen and (device-width:320px) and (device-height:568px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_640x1136.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2688x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1792x828.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1125x2436.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:896px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_828x1792.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:812px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2436x1125.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_1242x2208.png"><link rel="apple-touch-startup-image" media="screen and (device-width:414px) and (device-height:736px) and (-webkit-device-pixel-ratio:3) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2208x1242.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_1334x750.png"><link rel="apple-touch-startup-image" media="screen and (device-width:375px) and (device-height:667px) and (-webkit-device-pixel-ratio:2) and (orientation:portrait)" href="/img/siteicon/splashIcons/icon_750x1334.png"><link rel="apple-touch-startup-image" media="screen and (device-width:1024px) and (device-height:1366px) and (-webkit-device-pixel-ratio:2) and (orientation:landscape)" href="/img/siteicon/splashIcons/icon_2732x2048.png"><meta name="description" content="Linux系统编程之信号">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux系统编程之信号">
+<meta property="og:url" content="https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/index.html">
+<meta property="og:site_name" content="BillySturateの秘密基地">
+<meta property="og:description" content="Linux系统编程之信号">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img2.baidu.com/it/u=3539075320,3057042483&fm=253&fmt=auto&app=138&f=JPEG?w=650&h=492">
+<meta property="article:published_time" content="2022-09-01T10:13:54.000Z">
+<meta property="article:modified_time" content="2023-04-28T12:11:19.218Z">
+<meta property="article:author" content="BillySturate">
+<meta property="article:tag" content="Linux系统编程">
+<meta property="article:tag" content="信号">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2.baidu.com/it/u=3539075320,3057042483&fm=253&fmt=auto&app=138&f=JPEG?w=650&h=492"><link rel="shortcut icon" href="https://bu.dusays.com/2023/04/28/644be5a78f9f9.png"><link rel="canonical" href="https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  navMusic: false,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#3b70fc","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux系统编程之信号',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 20:11:19'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/"><div class="title">BillySturateの秘密基地</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><center id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></center></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="darkmode_navswitch"><a class="darkmode_switchbutton" type="button" href="javascript:void(0);" title="Switch Between Light And Dark Mode" onclick="rm.switchDarkMode()"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke" style="font-size: 1.3rem"></i></a></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux系统编程之信号</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-09-01T10:13:54.000Z" title="Created 2022-09-01 18:13:54">2022-09-01</time><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-04-28T12:11:19.218Z" title="Updated 2023-04-28 20:11:19">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/">Linux系统编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">6.9k</span><span class="post-meta-separator">|</span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>23min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux系统编程之信号"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492"></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-信号的概念"><a href="#1-信号的概念" class="headerlink" title="1.信号的概念"></a>1.信号的概念</h2><p>信号在我们的生活中随处可见， 如：古代战争中摔杯为号；现代战争中的信号弹；体育比赛中使用的信号枪…… 他们都有<strong>共性</strong>：1. <code>简单</code> 2. <code>不能携带大量信息</code> 3. </p>
+<p><code>满足某个特设条件才发送</code>。</p>
+<p>信号是信息的载体，Linux&#x2F;UNIX 环境下，古老、经典的通信方式， 现下依然是主要的通信手段。 </p>
+<p>Unix 早期版本就提供了信号机制，但不可靠，信号可能丢失。Berkeley 和 AT&amp;T 都对信号模型做了更改，增加了可靠信号机制。但彼此不兼容。POSIX.1 对可靠信号例程进行了标准化。</p>
+<h2 id="2-信号的机制"><a href="#2-信号的机制" class="headerlink" title="2.信号的机制"></a>2.信号的机制</h2><p>A 给 B 发送信号，B 收到信号之前执行自己的代码，收到信号后，不管执行到程序的什么位置，都要暂停运行， 去处理信号，处理完毕再继续执行。与硬件中断类</p>
+<p>似——<code>异步模式</code>。但信号是<code>软件层面上实现的中断</code>，早期常被称 为<code>“软中断”</code>。</p>
+<p><strong>信号的特质：</strong> 由于信号是通过软件方法实现，其实现手段导致信号有很强的延时性。但对于用户来说，这个延迟时间非常短，不易察觉。</p>
+<p>&#x3D;&#x3D;每个进程收到的所有信号，都是由内核负责发送的，内核处理。&#x3D;&#x3D;</p>
+<h2 id="3-与信号相关的事件和状态"><a href="#3-与信号相关的事件和状态" class="headerlink" title="3.与信号相关的事件和状态"></a>3.与信号相关的事件和状态</h2><p><strong>产生信号:</strong> </p>
+<ol>
+<li>按键产生，如：<code>Ctrl+c</code>、<code>Ctrl+z</code>、<code>Ctrl+\ </code></li>
+<li>系统调用产生，如：<code>kill</code>、<code>raise</code>、<code>abort </code></li>
+<li>软件条件产生，如：定时器 <code>alarm </code></li>
+<li>硬件异常产生，如：非法访问内存(段错误)、除 0(浮点数例外)、内存对齐出错(总线错误) </li>
+<li>命令产生，如：<code>kill</code> 命令</li>
+</ol>
+<p><strong>递达：</strong> 递送并且到达进程。</p>
+<p><strong>未决：</strong> 产生和递达之间的状态。主要由于阻塞(屏蔽)导致该状态。</p>
+<p><strong>信号的处理方式:</strong> </p>
+<ol>
+<li><p>执行默认动作 </p>
+</li>
+<li><p>忽略(丢弃)</p>
+</li>
+<li><p>捕捉(调用户处理函数)</p>
+</li>
+</ol>
+<h2 id="4-信号屏蔽字和未决信号集"><a href="#4-信号屏蔽字和未决信号集" class="headerlink" title="4.信号屏蔽字和未决信号集"></a>4.信号屏蔽字和未决信号集</h2><p>Linux 内核的进程控制块 <code>PCB</code> 是一个结构体，<code>task_struct,</code> 除了包含进程 id，状态，工作目录，用户 id，组 id， 文件描述符表，还包含了信号相关的信息，主要指<code>阻塞信号集</code>和<code>未决信号集</code>。</p>
+<p><strong>阻塞信号集(信号屏蔽字)：</strong> </p>
+<p>本质：位图。用来记录信号的屏蔽状态。一旦被屏蔽的信号，在解除屏蔽前，一直处于未决态。</p>
+<p><strong>未决信号集:</strong></p>
+<ol>
+<li>本质：位图。</li>
+<li>信号产生,未决信号集中描述该信号的位立刻翻转为 1，表信号处于未决状态。当信号被处理对应位翻转回为 0。这一时刻往往非常短暂。 </li>
+<li>信号产生后由于某些原因(主要是阻塞)不能抵达。这类信号的集合称之为未决信号集。在屏蔽解除前，信号一直处于未决状态。</li>
+</ol>
+<blockquote>
+<p>阻塞信号集和未决信号集在内核中的结构是相同的，它们都是一个整形数组 (被封装过的), 一共 128 字节 （int [32] &#x3D;&#x3D; 1024 bit），1024 个标志位，其中前 31 个标志位，每一个都对应一个 Linux 中的标准信号，通过标志位的值来标记当前信号在信号集中的状态。</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/6adf7f79ed39494cb0ff6b6ef4bc9456.png#pic_center"></p>
+<h2 id="5-信号四要素和常规信号一览"><a href="#5-信号四要素和常规信号一览" class="headerlink" title="5.信号四要素和常规信号一览"></a>5.信号四要素和常规信号一览</h2><h3 id="5-1-信号的编号"><a href="#5-1-信号的编号" class="headerlink" title="5.1 信号的编号"></a>5.1 信号的编号</h3><p>可以使用 <code>kill –l</code> 命令查看当前系统可使用的信号有哪些。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/5cca8b1728c64a4f875916ec278a2026.png#pic_center"></p>
+<p>不存在编号为 0 的信号。其中 1-31 号信号称之为<code>常规信号（也叫普通信号或标准信号）</code>，34-64 称之为<code>实时信号</code>，驱动编程与硬件相关。名字上区别不大。而前 32 个名字各不相同。</p>
+<h3 id="5-2-信号-4-要素"><a href="#5-2-信号-4-要素" class="headerlink" title="5.2 信号 4 要素"></a>5.2 信号 4 要素</h3><p>与变量三要素类似的，每个信号也有其必备 4 要素，分别是：</p>
+<ol>
+<li>编号 2. 名称 3. 事件 4. 默认处理动作</li>
+</ol>
+<p><strong>注意：</strong> 信号使用之前，应先确定其4要素，而后再用！！！</p>
+<p>可通过<code>man 7 signal </code>查看帮助文档获取。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ef182349353d43d0b8ad8f2b3d672275.png#pic_center"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ce60102d722149d9b4fb73f10f2f1e94.png#pic_center"></p>
+<p>默认动作： </p>
+<ul>
+<li>Term：终止进程 </li>
+<li>Ign： 忽略信号 (默认即时对该种信号忽略操作) </li>
+<li>Core：终止进程，生成 Core 文件。(查验进程死亡原因， 用于 gdb 调试) </li>
+<li>Stop：停止（暂停）进程</li>
+<li>Cont：继续运行进程</li>
+</ul>
+<p>这里特别强调了 &#x3D;&#x3D;9) SIGKILL&#x3D;&#x3D; 和 &#x3D;&#x3D;19) SIGSTOP&#x3D;&#x3D;信号，不允许忽略和捕捉，只能执行默认动作。甚至不能将其设置为阻塞。</p>
+<p><strong>另外需清楚，只有每个信号所对应的事件发生了，该信号才会被递送(但不一定递达)，不应乱发信号！！</strong></p>
+<h3 id="5-3-Linux-常规信号一览表"><a href="#5-3-Linux-常规信号一览表" class="headerlink" title="5.3 Linux 常规信号一览表"></a>5.3 Linux 常规信号一览表</h3><ol>
+<li><p>SIGHUP: 当用户退出 shell 时，由该 shell 启动的所有进程将收到这个信号，默认动作为终止进程 </p>
+</li>
+<li><p>SIGINT：当用户按下了&lt;Ctrl+C&gt;组合键时，用户终端向正在运行中的由该终端启动的程序发出此信号。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGQUIT：当用户按下&lt;ctrl+\&gt;组合键时产生该信号，用户终端向正在运行中的由该终端启动的程序发出些信号。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGILL：CPU检测到某进程执行了非法指令。默认动作为终止进程并产生 core 文件 </p>
+</li>
+<li><p>SIGTRAP：该信号由断点指令或其他 trap 指令产生。默认动作为终止里程 并产生 core 文件。 </p>
+</li>
+<li><p>SIGABRT: 调用 abort 函数时产生该信号。默认动作为终止进程并产生 core 文件。 </p>
+</li>
+<li><p>SIGBUS：非法访问内存地址，包括内存对齐出错，默认动作为终止进程并产生 core 文件。 </p>
+</li>
+<li><p>SIGFPE：在发生致命的运算错误时发出。不仅包括浮点运算错误，还包括溢出及除数为 0 等所有的算法错误。默认动作为终止进程并产生 core 文件。 </p>
+</li>
+<li><p>SIGKILL：无条件终止进程。本信号不能被忽略，处理和阻塞。默认动作为终止进程。它向系统管理员提供了可以杀死任何进程的方法。</p>
+</li>
+<li><p>SIGUSE1：用户定义 的信号。即程序员可以在程序中定义并使用该信号。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGSEGV：指示进程进行了无效内存访问。默认动作为终止进程并产生 core 文件。 </p>
+</li>
+<li><p>SIGUSR2：另外一个用户自定义信号，程序员可以在程序中定义并使用该信号。默认动作为终止进程。</p>
+</li>
+<li><p>SIGPIPE：Broken pipe 向一个没有读端的管道写数据。默认动作为终止进程。</p>
+</li>
+<li><p>SIGALRM: 定时器超时，超时的时间 由系统调用 alarm 设置。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGTERM：程序结束信号，与 SIGKILL 不同的是，该信号可以被阻塞和终止。通常用来要示程序正常退出。执行 shell 命令 Kill 时，缺省产生这个信号。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGSTKFLT：Linux 早期版本出现的信号，现仍保留向后兼容。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGCHLD：子进程状态发生变化时，父进程会收到这个信号。默认动作为忽略这个信号。 </p>
+</li>
+<li><p>SIGCONT：如果进程已停止，则使其继续运行。默认动作为继续&#x2F;忽略。 </p>
+</li>
+<li><p>SIGSTOP：停止进程的执行。信号不能被忽略，处理和阻塞。默认动作为暂停进程。 </p>
+</li>
+<li><p>SIGTSTP：停止终端交互进程的运行。按下&lt;ctrl+z&gt;组合键时发出这个信号。默认动作为暂停进程。 </p>
+</li>
+<li><p>SIGTTIN：后台进程读终端控制台。默认动作为暂停进程。 </p>
+</li>
+<li><p>SIGTTOU: 该信号类似于 SIGTTIN，在后台进程要向终端输出数据时发生。默认动作为暂停进程。 </p>
+</li>
+<li><p>SIGURG：套接字上有紧急数据时，向当前正在运行的进程发出些信号，报告有紧急数据到达。如网络带外数据到达，默认动作为忽略该信号。 </p>
+</li>
+<li><p>SIGXCPU：进程执行时间超过了分配给该进程的 CPU 时间 ，系统产生该信号并发送给该进程。默认动作为终止进程。</p>
+</li>
+<li><p>SIGXFSZ：超过文件的最大长度设置。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGVTALRM：虚拟时钟超时时产生该信号。类似于 SIGALRM，但是该信号只计算该进程占用 CPU 的使用时间。默认动作为终止进程。 </p>
+</li>
+<li><p>SGIPROF：类似于 SIGVTALRM，它不公包括该进程占用 CPU时间还包括执行系统调用时间。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGWINCH：窗口变化大小时发出。默认动作为忽略该信号。 </p>
+</li>
+<li><p>SIGIO：此信号向进程指示发出了一个异步 IO 事件。默认动作为忽略。</p>
+</li>
+<li><p>SIGPWR：关机。默认动作为终止进程。 </p>
+</li>
+<li><p>SIGSYS：无效的系统调用。默认动作为终止进程并产生 core 文件。 </p>
+</li>
+<li><p>SIGRTMIN ～ (64) SIGRTMAX：LINUX 的实时信号，它们没有固定的含义（可以由用户自定义）。所有的实时信号的默认动作都为终止进程。</p>
+</li>
+</ol>
+<h2 id="6-信号的产生"><a href="#6-信号的产生" class="headerlink" title="6.信号的产生"></a>6.信号的产生</h2><h3 id="6-1-终端按键产生信号"><a href="#6-1-终端按键产生信号" class="headerlink" title="6.1 终端按键产生信号"></a>6.1 终端按键产生信号</h3><p><code>Ctrl + c</code> → 2) <code>SIGINT</code>（终止&#x2F;中断） “INT” —-Interrupt </p>
+<p><code>Ctrl + z</code>→ 20) <code>SIGTSTP</code>（暂停&#x2F;停止） “T” —-Terminal 终端。</p>
+<p><code>Ctrl + \</code>→ 3) <code>SIGQUIT</code>（退出）</p>
+<h3 id="6-2-硬件异常产生信号"><a href="#6-2-硬件异常产生信号" class="headerlink" title="6.2 硬件异常产生信号"></a>6.2 硬件异常产生信号</h3><p>除 0 操作 → 8) <code>SIGFPE</code> (浮点数例外) </p>
+<p>非法访问内存 → 11) <code>SIGSEGV</code> (段错误)</p>
+<p>总线错误 → 7) <code>SIGBUS</code></p>
+<h3 id="6-4-kill-函数-x2F-命令产生信号"><a href="#6-4-kill-函数-x2F-命令产生信号" class="headerlink" title="6.4 kill 函数&#x2F;命令产生信号"></a>6.4 kill 函数&#x2F;命令产生信号</h3><p><strong>函数原型:</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="comment">// 给某一个进程发送一个信号</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">kill</span><span class="params">(<span class="type">pid_t</span> pid, <span class="type">int</span> sig)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数：</strong></p>
+<p>​	pid: 	&gt; 0：发送信号给指定进程</p>
+<p>​				&#x3D; 0：发送信号给跟调用kill函数的那个进程处于同一进程组的进程。</p>
+<p>​				&lt; -1：取绝对值，发送信号给该绝对值所对应的进程组的所有组员。</p>
+<p>​				&#x3D; -1：发送信号给，有权限发送的所有进程。</p>
+<p>​	signum：待发送的信号</p>
+<p><strong>函数返回值：</strong></p>
+<p>​	成功： 0</p>
+<p>​	失败： -1 errno</p>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>子进程发送信号kill父进程：</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/55ab221a96504e2da8b8147e4179ebeb.png#pic_center"></p>
+<p>​                               </p>
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b10af39467f14c88be9c81bb79c6a8e3.png#pic_center"></p>
+<blockquote>
+<p>kill -9 -groupname  杀一个进程组</p>
+</blockquote>
+<h2 id="7-定时器"><a href="#7-定时器" class="headerlink" title="7.定时器"></a>7.定时器</h2><h3 id="7-1-alarm-函数"><a href="#7-1-alarm-函数" class="headerlink" title="7.1 alarm()函数"></a>7.1 alarm()函数</h3><p>设置定时器(闹钟)。在指定 seconds 后，内核会给当前进程发送 <code>14）SIGALRM 信号</code>。进程收到该信号，默认动作终止。<br>&#x3D;&#x3D;每个进程都有且只有唯一个定时器。&#x3D;&#x3D;</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">alarm</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> seconds)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数：</strong></p>
+<p>倒计时 seconds 秒，倒计时完成发送一个信号 <code>SIGALRM</code> , 当前进程会收到这个信号，这个信号默认的处理动作是中断当前进程</p>
+<p><strong>函数返回值：</strong></p>
+<p>大于 0 表示倒计时还剩多少秒，返回值为 0 表示倒计时完成，信号被发出</p>
+<p><strong>小案例:</strong></p>
+<blockquote>
+<p>使用这个定时器函数，检测一下当前计算机 1s 钟之内能数多少个数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 设置一个定时器, 定时1s</span></span><br><span class="line">    alarm(<span class="number">1</span>);	<span class="comment">// 1s之后会发出一个信号, 这个信号将中断当前进程</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, i++);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 time 命令查看程序执行的时间。 程序运行的瓶颈在于 IO，优化程序，首选优化 IO。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">直接通过终端输出</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">time ./a.out</span></span><br><span class="line">real    0m1.013s		# 实际数数用的总时间</span><br><span class="line">user    0m0.060s		# 用户区代码使用的时间</span><br><span class="line">sys     0m0.324s		# 内核区使用的时间</span><br><span class="line"></span><br><span class="line">real = user + sys + 消耗的时间(频率的从用户区到内核区进程切换)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不直接写终端, 将数据重定向到磁盘文件中</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">time ./a.out &gt; a.txt</span></span><br><span class="line">Alarm clock</span><br><span class="line"></span><br><span class="line">real    0m1.002s    # 用户实际数数的时间变长了</span><br><span class="line">user    0m0.740s</span><br><span class="line">sys     0m0.236s</span><br></pre></td></tr></table></figure>
+
+<p> &#x3D;&#x3D;实际执行时间 &#x3D; 系统时间 + 用户时间 + 等待时间&#x3D;&#x3D;</p>
+<h3 id="7-2-setitimer-函数"><a href="#7-2-setitimer-函数" class="headerlink" title="7.2 setitimer()函数"></a>7.2 setitimer()函数</h3><p>设置定时器(闹钟)。 可代替 <code>alarm</code> 函数。精度微秒 us，可以实现周期定时。</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个函数可以实现周期性定时, 每个一段固定的时间, 发出一个特定的定时器信号</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">setitimer</span><span class="params">(<span class="type">int</span> which, <span class="type">const</span> <span class="keyword">struct</span> itimerval *new_value, </span></span><br><span class="line"><span class="params">              <span class="keyword">struct</span> itimerval *old_value)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数</strong></p>
+<ul>
+<li><p><code>which</code>：指定定时方式</p>
+<p>① 自然定时：<code>ITIMER_REAL</code> → 14）SIGLARM 计算自然时间</p>
+<p>② 虚拟空间计时(用户空间)：<code>ITIMER_VIRTUAL</code> → 26）SIGVTALRM 只计算进程占用 cpu 的时间</p>
+<p>③ 运行时计时(用户+内核)：<code>ITIMER_PROF </code>→ 27）SIGPROF 计算占用 cpu 及执行系统调用的时间</p>
+</li>
+<li><p><code>new_value: </code>给定时器设置定时秒数，传入参数</p>
+</li>
+<li><p><code>old_value:</code> 上一次给定时器设置的定时信息，传出参数，如果不需要这个信息，指定为 NULL</p>
+</li>
+</ul>
+<p><strong>函数返回值：</strong></p>
+<p>​	成功： 0</p>
+<p>​	失败： -1 errno</p>
+<p><strong>类型：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">itimerval</span> &#123;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line"><span class="type">time_t</span>      tv_sec;         <span class="comment">/* seconds */</span></span><br><span class="line"><span class="type">suseconds_t</span> tv_usec;        <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;it_interval;---&gt; 用于设定两个定时任务之间的间隔时间</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line"><span class="type">time_t</span>      tv_sec;         </span><br><span class="line"><span class="type">suseconds_t</span> tv_usec;        </span><br><span class="line">&#125;it_value;  ---&gt; 第一次定时秒数</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>可以理解为有2个定时器</p>
+<ul>
+<li>一个用于第一个闹钟什么时候触发打印</li>
+<li>一个用于之后间隔多少时间再次触发闹钟。</li>
+</ul>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>使用setitimer定时，向屏幕打印信息：</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/530127108e5f459b88e4f2661c9c54da.png#pic_center"></p>
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/44bc3eaa9b39435b8ffcf24c1da9e529.png#pic_center"></p>
+<p>第一次信息打印是两秒间隔，之后都是5秒间隔打印一次</p>
+<h2 id="8-信号集操作函数"><a href="#8-信号集操作函数" class="headerlink" title="8.信号集操作函数"></a>8.信号集操作函数</h2><p>内核通过读取未决信号集来判断信号是否应被处理。信号屏蔽字 mask 可以影响未决信号集。而我们可以在应 用程序中自定义 set 来改变mask。已达到屏蔽指定</p>
+<p>信号的目的。因为用户是不能直接操作内核中的阻塞信号集和未决信号集的，必须要调用系统函数，关于阻塞信号集可以通过系统函数进行读写操作，未决信号集</p>
+<p>只能对其进行读操作。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/496e997a408c479ab33f9665a5b16102.png#pic_center"></p>
+<h3 id="8-1-信号集设定"><a href="#8-1-信号集设定" class="headerlink" title="8.1 信号集设定"></a>8.1 信号集设定</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="comment">// 如果在程序中读写 sigset_t 类型的变量</span></span><br><span class="line"><span class="comment">// 阻塞信号集和未决信号集都存储在 sigset_t 类型的变量中, 这个变量对应一块内存</span></span><br><span class="line"><span class="comment">// 阻塞信号集和未决信号集, 对应的内存中有1024bit = 128字节</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将set集合中所有的标志位设置为0</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigemptyset</span><span class="params">(<span class="type">sigset_t</span> *<span class="built_in">set</span>)</span>;		成功：<span class="number">0</span>；失败：<span class="number">-1</span></span><br><span class="line"><span class="comment">// 将set集合中所有的标志位设置为1</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigfillset</span><span class="params">(<span class="type">sigset_t</span> *<span class="built_in">set</span>)</span>;		成功：<span class="number">0</span>；失败：<span class="number">-1</span></span><br><span class="line"><span class="comment">// 将set集合中某一个信号(signum)对应的标志位设置为1		</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigaddset</span><span class="params">(<span class="type">sigset_t</span> *<span class="built_in">set</span>, <span class="type">int</span> signum)</span>;		成功：<span class="number">0</span>；失败：<span class="number">-1</span></span><br><span class="line"><span class="comment">// 将set集合中某一个信号(signum)对应的标志位设置为0</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigdelset</span><span class="params">(<span class="type">sigset_t</span> *<span class="built_in">set</span>, <span class="type">int</span> signum)</span>;		成功：<span class="number">0</span>；失败：<span class="number">-1</span></span><br><span class="line"><span class="comment">// 判断某个信号在集合中对应的标志位到底是0还是1, 如果是0返回0, 如果是1返回1(相当于判断某个信号是否在集合中)</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigismember</span><span class="params">(<span class="type">const</span> <span class="type">sigset_t</span> *<span class="built_in">set</span>, <span class="type">int</span> signum)</span>;		返回值：在集合：<span class="number">1</span>；不在：<span class="number">0</span>； 出错：<span class="number">-1</span></span><br></pre></td></tr></table></figure>
+
+<p><code>sigset_t</code> 类型的本质是位图。但不应该直接使用位操作，而应该使用上述函数，保证跨系统操作有效。</p>
+<h3 id="8-2-sigprocmask-函数"><a href="#8-2-sigprocmask-函数" class="headerlink" title="8.2 sigprocmask()函数"></a>8.2 sigprocmask()函数</h3><p>用来屏蔽信号、解除屏蔽也使用该函数。其本质，读取或修改进程的信号屏蔽字(PCB 中) 严格注意，屏蔽信号：只是将信号处理延后执行(延至解除屏蔽)；而忽略表示将信号丢处理。</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="comment">// 使用这个函数修改内核中的阻塞信号集</span></span><br><span class="line"><span class="comment">// sigset_t 被封装之后得到的数据类型, 原型:int[32], 里边一共有1024个标志位, 每一个信号对应一个标志位</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigprocmask</span><span class="params">(<span class="type">int</span> how, <span class="type">const</span> <span class="type">sigset_t</span> *<span class="built_in">set</span>, <span class="type">sigset_t</span> *oldset)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数:</strong><br><code>how:</code></p>
+<ul>
+<li><code>SIG_BLOCK:</code> 当 how设置为此值，set 表示需要屏蔽的信号。相当于 mask &#x3D; mask|set</li>
+<li><code>SIG_UNBLOCK:</code> 当 how设置为此，set 表示需要解除屏蔽的信号。相当于 mask &#x3D; mask &amp; ~set</li>
+<li><code>SIG_SETMASK: </code>使用参数 set 集合中的数据覆盖内核的阻塞信号集数据</li>
+</ul>
+<p><code>set:</code></p>
+<p>传入参数，是一个位图，set 中哪位置 1，就表示当前进程屏蔽哪个信号。</p>
+<p><code>oldset:</code></p>
+<p> 传出参数，保存旧的信号屏蔽集，如果不需要可以指定为 NULL</p>
+<p><strong>函数返回值：</strong></p>
+<p>函数调用成功返回 0，调用失败返回 - 1</p>
+<h3 id="8-4-sigpending-函数"><a href="#8-4-sigpending-函数" class="headerlink" title="8.4 sigpending() 函数"></a>8.4 sigpending() 函数</h3><p>读取当前进程的未决信号集</p>
+<p><code>int sigpending(sigset_t *set);</code>  set 传出参数。 返回值：成功：0；失败：-1，设置 errno</p>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>需求:<br>在阻塞信号集中设置某些信号阻塞, 通过一些操作产生这些信号, 然后读未决信号集, 最后再解除这些信号的阻塞<br>假设阻塞这些信号: </p>
+<ul>
+<li>2号信号: SIGINT: ctrl+c</li>
+<li>3号信号: SIGQUIT: ctrl+\</li>
+<li>9号信号: SIGKILL: 通过shell命令给进程发送这个信号 kill -9 PID</li>
+</ul>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 初始化信号集</span></span><br><span class="line">    <span class="type">sigset_t</span> myset;</span><br><span class="line">    sigemptyset(&amp;myset);</span><br><span class="line">    <span class="comment">// 设置阻塞的信号</span></span><br><span class="line">    sigaddset(&amp;myset, SIGINT);  <span class="comment">// 2</span></span><br><span class="line">    sigaddset(&amp;myset, SIGQUIT); <span class="comment">// 3</span></span><br><span class="line">    sigaddset(&amp;myset, SIGKILL); <span class="comment">// 9 测试不能被阻塞</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 将初始化的信号集中的数据设置给内核</span></span><br><span class="line">    <span class="type">sigset_t</span> old;</span><br><span class="line">    sigprocmask(SIG_BLOCK, &amp;myset, &amp;old);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 让进程一直运行, 在当前进程中产生对应的信号</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 4. 读内核的未决信号集</span></span><br><span class="line">        <span class="type">sigset_t</span> curset;</span><br><span class="line">        sigpending(&amp;curset);</span><br><span class="line">        <span class="comment">// 遍历这个信号集</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;<span class="number">32</span>; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">int</span> ret = sigismember(&amp;curset, i);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, ret);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        i++;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">10</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 解除阻塞, 重新设置阻塞信号集</span></span><br><span class="line">            <span class="comment">//sigprocmask(SIG_UNBLOCK, &amp;myset, NULL);</span></span><br><span class="line">            sigprocmask(SIG_SETMASK, &amp;old, <span class="literal">NULL</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/ae723be5aa8a4726aba321385881098a.png#pic_center"></p>
+<p>&#x3D;&#x3D;通过测试最终得到结论：程序中对 9 号信号的阻塞是无效的，因为它无法被阻塞。&#x3D;&#x3D;</p>
+<h2 id="9-信号捕捉"><a href="#9-信号捕捉" class="headerlink" title="9.信号捕捉"></a>9.信号捕捉</h2><p>Linux 中的每个信号产生之后都会有对应的默认处理行为，如果想要忽略这个信号或者修改某些信号的默认行为就需要在程序中捕捉该信号。程序中进行信号捕捉可以看做是一个注册的动作，提前告诉应用程序信号产生之后做什么样的处理，当进程中对应的信号产生了，这个处理动作也就被调用了。</p>
+<h3 id="9-1-signal-函数"><a href="#9-1-signal-函数" class="headerlink" title="9.1 signal()函数"></a>9.1 signal()函数</h3><p>使用<code> signal()</code> 函数可以捕捉进程中产生的信号，并且修改捕捉到的函数的行为，这个信号的自定义处理动作是一个回调函数，内核通过 <code>signal()</code> 得到这个回调函数的地址，在信号产生之后该函数会被内核调用。</p>
+<p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="comment">// 在程序中什么时候产生信号, 程序猿是不知道的, 因此不能在信号产生之后再去处理</span></span><br><span class="line"><span class="comment">// 在信号产生之前, 提供一个注册函数, 用来捕捉信号</span></span><br><span class="line"><span class="comment">//	  - 假设在将来这个信号产生了, 就委托内核进行捕捉, 这个信号的默认动作就不能被执行</span></span><br><span class="line"><span class="comment">//	  - 执行什么样的处理动作 ==&gt; 在signal函数中指定的处理动作</span></span><br><span class="line"><span class="comment">//	  - 如果这个信号不产生, 回调函数永远不会被调用</span></span><br><span class="line"><span class="type">sighandler_t</span> <span class="title function_">signal</span><span class="params">(<span class="type">int</span> signum, <span class="type">sighandler_t</span> handler)</span>;   </span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数:</strong></p>
+<p><code>signum:</code> 需要捕捉的信号</p>
+<p><code>handler:</code> 信号捕捉到之后的处理动作，这是一个函数指针，函数原型<code>typedef void (*sighandler_t)(int);</code></p>
+<p>&#x3D;&#x3D;这个回调函数是需要程序猿写的，但是程序猿不调用，由内核调用，内核调用回调函数的时候，会给它传递一个实参，这个实参的值就是捕捉的那个信号值。&#x3D;&#x3D;</p>
+<p><strong>小案例</strong></p>
+<blockquote>
+<p>下面的测试程序中使用 signal () 函数来捕捉定时器产生的信号 SIGALRM：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定时器信号的处理动作</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">doing</span><span class="params">(<span class="type">int</span> arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;当前捕捉到的信号是: %d\n&quot;</span>, arg);</span><br><span class="line">    <span class="comment">// 打印当前的时间</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 注册要捕捉哪一个信号, 执行什么样的处理动作</span></span><br><span class="line">    signal(SIGALRM, doing);</span><br><span class="line">    <span class="comment">// 1. 调用定时器函数设置定时器函数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">itimerval</span> <span class="title">newact</span>;</span></span><br><span class="line">    <span class="comment">// 3s之后发出第一个定时器信号, 之后每隔1s发出一个定时器信号</span></span><br><span class="line">    newact.it_value.tv_sec = <span class="number">3</span>;</span><br><span class="line">    newact.it_value.tv_usec = <span class="number">0</span>;</span><br><span class="line">    newact.it_interval.tv_sec = <span class="number">1</span>;</span><br><span class="line">    newact.it_interval.tv_usec = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 这个函数也不是阻塞函数, 函数调用成功, 倒计时开始</span></span><br><span class="line">    <span class="comment">// 倒计时过程中程序是继续运行的</span></span><br><span class="line">    setitimer(ITIMER_REAL, &amp;newact, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 编写一个业务处理, 阻止当前进程自己结束, 让当前进程被发出的信号杀死</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        sleep(<span class="number">1000000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，结果如下:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/b6371a8887794bd6b1734ee65ec86bd4.png#pic_center"></p>
+<h3 id="9-2-sigaction-函数"><a href="#9-2-sigaction-函数" class="headerlink" title="9.2 sigaction()函数"></a>9.2 sigaction()函数</h3><p><code>sigaction ()</code> 函数和 <code>signal ()</code> 函数的功能是一样的，用于捕捉进程中产生的信号，并将用户自定义的信号行为函数（回调函数）注册给内核，内核在信号产生之后调用这个处理动作。<code>sigaction ()</code> 可以看做是 <code>signal ()</code> 函数是加强版，函数参数更多更复杂，函数功能也更强一些。</p>
+<p><strong>函数原型:</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">sigaction</span><span class="params">(<span class="type">int</span> signum, <span class="type">const</span> <span class="keyword">struct</span> sigaction *act, <span class="keyword">struct</span> sigaction *oldact)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数参数:</strong></p>
+<p><code>signum:</code> 要捕捉的信号</p>
+<p><code>act:</code> 捕捉到信号之后的处理动作</p>
+<p><code>oldact:</code> 上一次调用该函数进行信号捕捉设置的信号处理动作，该参数一般指定为 NULL</p>
+<p><strong>函数返回值：</strong></p>
+<p>函数调用成功返回 0，失败返回 - 1</p>
+<p>该函数的参数是一个结构体类型，结构体原型如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> &#123;</span></span><br><span class="line">	<span class="type">void</span>     (*sa_handler)(<span class="type">int</span>);    <span class="comment">// 指向一个函数(回调函数)</span></span><br><span class="line">	<span class="type">void</span>     (*sa_sigaction)(<span class="type">int</span>, <span class="type">siginfo_t</span> *, <span class="type">void</span> *);</span><br><span class="line">	<span class="type">sigset_t</span>   sa_mask;             <span class="comment">// 初始化为空即可, 处理函数执行期间不屏蔽任何信号</span></span><br><span class="line">	<span class="type">int</span>        sa_flags;	        <span class="comment">// 0</span></span><br><span class="line">	<span class="type">void</span>     (*sa_restorer)(<span class="type">void</span>);  <span class="comment">//不用</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>sa_restorer</code>：该元素是过时的，不应该使用，POSIX.1 标准将不指定该元素。(弃用) </p>
+<p><code>sa_sigaction</code>：当 <code>sa_flags</code> 被指定为 <code>SA_SIGINFO</code>标志时，使用该信号处理程序。(很少使用)</p>
+<p>&#x3D;&#x3D;重点掌握：&#x3D;&#x3D;</p>
+<p> ① <code>sa_handler</code>：指定信号捕捉后的处理函数名(即注册函数)。也可赋值为 <code>SIG_IGN</code>表忽略 或 <code>SIG_DFL</code> 表执行默认动作 </p>
+<p>② <code>sa_mask</code>: 调用信号处理函数时，所要屏蔽的信号集合(信号屏蔽字)。注意：仅在处理函数被调用期间屏蔽生效，是临时性设置。</p>
+<p>③ <code>sa_flags</code>：通常设置为 0，表使用默认属性。</p>
+<p><strong>小案例</strong>：</p>
+<blockquote>
+<p>通过 sigaction () 捕捉阻塞信号集中解除阻塞的信号</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 信号的处理动作</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">callback</span><span class="params">(<span class="type">int</span> num)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;当前捕捉的信号: %d\n&quot;</span>, num);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 初始化信号集</span></span><br><span class="line">    <span class="type">sigset_t</span> myset;</span><br><span class="line">    sigemptyset(&amp;myset);</span><br><span class="line">    <span class="comment">// 设置阻塞的信号</span></span><br><span class="line">    sigaddset(&amp;myset, SIGINT);  <span class="comment">// 2</span></span><br><span class="line">    sigaddset(&amp;myset, SIGQUIT); <span class="comment">// 3</span></span><br><span class="line">    sigaddset(&amp;myset, SIGKILL); <span class="comment">// 9 测试不能被阻塞</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当阻塞的信号被解除阻塞, 该信号就可以被捕捉到了</span></span><br><span class="line">    <span class="comment">// 如果信号被捕捉到之后, 马上就被处理掉了 --&gt; 递达状态</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">    act.sa_handler = callback;</span><br><span class="line">    act.sa_flags = <span class="number">0</span>;</span><br><span class="line">    sigemptyset(&amp;act.sa_mask);</span><br><span class="line">    sigaction(SIGINT, &amp;act, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// 和sigint的处理动作相同</span></span><br><span class="line">    sigaction(SIGQUIT, &amp;act, <span class="literal">NULL</span>);</span><br><span class="line">    sigaction(SIGKILL, &amp;act, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 将初始化的信号集中的数据设置给内核</span></span><br><span class="line">    <span class="type">sigset_t</span> old;</span><br><span class="line">    sigprocmask(SIG_BLOCK, &amp;myset, &amp;old);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 让进程一直运行, 在当前进程中产生对应的信号</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 4. 读内核的未决信号集</span></span><br><span class="line">        <span class="type">sigset_t</span> curset;</span><br><span class="line">        sigpending(&amp;curset);</span><br><span class="line">        <span class="comment">// 遍历这个信号集</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>; i&lt;<span class="number">32</span>; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">int</span> ret = sigismember(&amp;curset, i);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, ret);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        i++;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">10</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 解除阻塞, 重新设置阻塞信号集</span></span><br><span class="line">            <span class="comment">//sigprocmask(SIG_UNBLOCK, &amp;myset, NULL);</span></span><br><span class="line">            sigprocmask(SIG_SETMASK, &amp;old, <span class="literal">NULL</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译运行，如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/e34f30b1f71f4040966f80b5dc068b4e.png#pic_center"></p>
+<h3 id="9-3-信号捕捉的特性"><a href="#9-3-信号捕捉的特性" class="headerlink" title="9.3 信号捕捉的特性"></a>9.3 信号捕捉的特性</h3><p>信号捕捉特性：</p>
+<ol>
+<li><p>捕捉函数执行期间，信号屏蔽字 由 mask –&gt; sa_mask , 捕捉函数执行结束。 恢复回mask</p>
+</li>
+<li><p>捕捉函数执行期间，本信号自动被屏蔽(sa_flgs &#x3D; 0).其他信号不屏蔽，如需屏蔽则调用sigsetadd函数修改</p>
+</li>
+<li><p>捕捉函数执行期间，被屏蔽信号多次发送，解除屏蔽后只处理一次！</p>
+</li>
+</ol>
+<h2 id="10-内核实现信号捕捉简析"><a href="#10-内核实现信号捕捉简析" class="headerlink" title="10.内核实现信号捕捉简析"></a>10.内核实现信号捕捉简析</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img-blog.csdnimg.cn/966b608837434932af7ff37393b4bfe4.png#pic_center"></p>
+<h2 id="11-SIGCHLD-信号"><a href="#11-SIGCHLD-信号" class="headerlink" title="11.SIGCHLD 信号"></a>11.SIGCHLD 信号</h2><h3 id="11-1-SIGCHLD-的产生条件"><a href="#11-1-SIGCHLD-的产生条件" class="headerlink" title="11.1 SIGCHLD 的产生条件"></a>11.1 SIGCHLD 的产生条件</h3><ul>
+<li>子进程终止时</li>
+<li>子进程接收到SIGSTOP</li>
+<li>子进程处于停止态，接收到SIGCONT后唤醒时</li>
+</ul>
+<h3 id="11-2-借助-SIGCHLD-信号回收子进程"><a href="#11-2-借助-SIGCHLD-信号回收子进程" class="headerlink" title="11.2 借助 SIGCHLD 信号回收子进程"></a>11.2 借助 SIGCHLD 信号回收子进程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 回收子进程处理函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">recycle</span><span class="params">(<span class="type">int</span> num)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;捕捉到的信号是: %d\n&quot;</span>, num);</span><br><span class="line">    <span class="comment">// 子进程的资源回收, 非阻塞</span></span><br><span class="line">    <span class="comment">// SIGCHLD信号17号信号, 1-31号信号不支持排队</span></span><br><span class="line">    <span class="comment">// 如果这些信号同时产生多个, 最终处理的时候只处理一次</span></span><br><span class="line">    <span class="comment">// 假设多个子进程同时退出, 父进程同时收到了多个sigchld信号</span></span><br><span class="line">    <span class="comment">// 父进程只会处理一次这个信号, 因此当前函数被调用了一次, waitpid被调用一次</span></span><br><span class="line">    <span class="comment">// 相当于只回收了一个子进程, 但是是同时死了多个子进程, 因此就出现了僵尸进程</span></span><br><span class="line">    <span class="comment">// 解决方案: 循环回收即可</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 如果是阻塞回收, 就回不到另外一个处理逻辑上去了</span></span><br><span class="line">        <span class="type">pid_t</span> pid = waitpid(<span class="number">-1</span>, <span class="literal">NULL</span>, WNOHANG);</span><br><span class="line">        <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;child died, pid = %d\n&quot;</span>, pid);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 没有死亡的子进程, 直接退出当前循环</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">-1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;所有子进程都回收完毕了, 拜拜...\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 设置sigchld信号阻塞</span></span><br><span class="line">    <span class="type">sigset_t</span> myset;</span><br><span class="line">    sigemptyset(&amp;myset);</span><br><span class="line">    sigaddset(&amp;myset, SIGCHLD);</span><br><span class="line">    sigprocmask(SIG_BLOCK, &amp;myset, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 循环创建多个子进程 - 20</span></span><br><span class="line">    <span class="type">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">20</span>; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        pid = fork();</span><br><span class="line">        <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是子进程, pid = %d\n&quot;</span>, getpid());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;我是父进程, pid = %d\n&quot;</span>, getpid());</span><br><span class="line">        <span class="comment">// 注册信号捕捉, 捕捉sigchld</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">        act.sa_flags  =<span class="number">0</span>;</span><br><span class="line">        act.sa_handler = recycle;</span><br><span class="line">        sigemptyset(&amp;act.sa_mask);</span><br><span class="line">        <span class="comment">// 注册信号捕捉, 委托内核处理将来产生的信号</span></span><br><span class="line">        <span class="comment">// 当信号产生之后, 当前进程优先处理信号, 之前的处理动作会暂停</span></span><br><span class="line">        <span class="comment">// 信号处理完毕之后, 回到原来的暂停的位置继续运行</span></span><br><span class="line">        sigaction(SIGCHLD, &amp;act, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 解除sigcld信号的阻塞</span></span><br><span class="line">        <span class="comment">// 信号被阻塞之后,就捕捉不到了, 解除阻塞之后才能捕捉到这个信号</span></span><br><span class="line">        sigprocmask(SIG_UNBLOCK, &amp;myset, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 父进程执行其他业务逻辑就可以了</span></span><br><span class="line">        <span class="comment">// 默认父进程执行这个while循环, 但是信号产生了, 这个执行逻辑或强迫暂停</span></span><br><span class="line">        <span class="comment">// 	父进程去处理信号的处理函数</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sleep(<span class="number">100</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>SIGCHLD 信号注意问题</strong></p>
+<ol>
+<li>子进程继承父进程的信号屏蔽字和信号处理动作，但子进程没有继承未决信号集 spending。</li>
+<li>注意注册信号捕捉函数的位置。</li>
+<li>应该在 fork 之前，阻塞 SIGCHLD 信号。注册完捕捉函数后解除阻塞。</li>
+</ol>
+</article><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul><a class="reward-main-btn" href="/about/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Linux系统编程之信号&amp;url=https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/&amp;pic=https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Linux系统编程<span class="tagsPageCount">7</span></a><a class="post-meta__box__tags" href="/tags/%E4%BF%A1%E5%8F%B7/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>信号<span class="tagsPageCount">1</span></a></div></div></div></div></div><div class="post-copyright"><i class="anzhiyufont anzhiyu-icon-copyright"></i><div class="post-copyright__author"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/">原创</a><a class="post-copyright-title"><span>Linux系统编程之信号</span></a></div><div class="post-copyright-info-box"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"></span><a class="link" href="https://billysturate.github.io">BillySturate</a></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a class="link" href="https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/">https://billysturate.github.io/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/</a></span><span class="copy-button" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-copy"></i></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/28/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8BIPC(%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1)/"><img class="prev-cover" src="https://bu.dusays.com/2023/01/25/63d0b8ac4693f.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">Linux系统编程之进程间通信(IPC)</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/"><img class="next-cover" src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Linux系统编程之守护进程、线程</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/08/28/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8BIPC(%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1)/" title="Linux系统编程之进程间通信(IPC)"><img class="cover" src="https://bu.dusays.com/2023/01/25/63d0b8ac4693f.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-28</div><div class="title">Linux系统编程之进程间通信(IPC)</div></div></a></div><div><a href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img class="cover" src="https://img1.baidu.com/it/u=2287437558,3845223698&fm=253&fmt=auto&app=138&f=JPEG?w=750&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-05</div><div class="title">Linux系统编程之守护进程、线程</div></div></a></div><div><a href="/2022/08/27/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E5%92%8C%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" title="Linux系统编程之虚拟地址空间和文件描述符"><img class="cover" src="https://img1.baidu.com/it/u=3926402033,29969568&fm=253&fmt=auto&app=138&f=PNG?w=890&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-27</div><div class="title">Linux系统编程之虚拟地址空间和文件描述符</div></div></a></div><div><a href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img class="cover" src="https://img1.baidu.com/it/u=4017388245,646616071&fm=253&fmt=auto&app=138&f=JPEG?w=550&h=306" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-09-07</div><div class="title">Linux系统编程之线程同步</div></div></a></div><div><a href="/2022/08/22/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E6%96%87%E4%BB%B6IO/" title="Linux系统编程之文件IO"><img class="cover" src="https://img0.baidu.com/it/u=2183474374,2295718375&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=317" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-22</div><div class="title">Linux系统编程之文件IO</div></div></a></div><div><a href="/2022/08/26/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%BF%9B%E7%A8%8B/" title="Linux系统编程之进程"><img class="cover" src="https://img1.baidu.com/it/u=2036916699,254542477&fm=253&fmt=auto&app=138&f=JPEG?w=625&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2022-08-26</div><div class="title">Linux系统编程之进程</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="author-info-top"> <div class="card-info-avatar"></div></div><div class="author-info__sayhi" id="author-info__sayhi"></div><h1 class="author-info__name">BillySturate</h1><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">产品、设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="banner-button-group"><a class="banner-button" onclick="pjax.loadUrl(&quot;/about/&quot;)"><span class="banner-button-text">了解更多</span><i class="anzhiyufont anzhiyu-icon-arrow-circle-right" style="font-size: 1.5rem"></i></a></div><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/BillySturate" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=billysturate@gmail.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><a class="social-icon faa-parent animated-hover" href="https://www.instagram.com/billysturate/" target="_blank" title="Instagram"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-instagram1"></use></svg></a><a class="social-icon faa-parent animated-hover" href="https://blog.csdn.net/qq_59084325" target="_blank" title="CSDN"><svg class="icon faa-tada" aria-hidden="true"><use xlink:href="#icon-csdn"></use></svg></a><a class="social-icon faa-parent animated-hover" href="tencent://Message/?Uin=1679510521&amp;amp;websiteName=local.edu.com:8888=&amp;amp;Menu=yes" target="_blank" title="QQ"><i class="anzhiyufont anzhiyu-icon-qq"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BF%A1%E5%8F%B7%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">1.信号的概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BF%A1%E5%8F%B7%E7%9A%84%E6%9C%BA%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">2.信号的机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%8E%E4%BF%A1%E5%8F%B7%E7%9B%B8%E5%85%B3%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%92%8C%E7%8A%B6%E6%80%81"><span class="toc-number">3.</span> <span class="toc-text">3.与信号相关的事件和状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BF%A1%E5%8F%B7%E5%B1%8F%E8%94%BD%E5%AD%97%E5%92%8C%E6%9C%AA%E5%86%B3%E4%BF%A1%E5%8F%B7%E9%9B%86"><span class="toc-number">4.</span> <span class="toc-text">4.信号屏蔽字和未决信号集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BF%A1%E5%8F%B7%E5%9B%9B%E8%A6%81%E7%B4%A0%E5%92%8C%E5%B8%B8%E8%A7%84%E4%BF%A1%E5%8F%B7%E4%B8%80%E8%A7%88"><span class="toc-number">5.</span> <span class="toc-text">5.信号四要素和常规信号一览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%BF%A1%E5%8F%B7%E7%9A%84%E7%BC%96%E5%8F%B7"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 信号的编号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BF%A1%E5%8F%B7-4-%E8%A6%81%E7%B4%A0"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 信号 4 要素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Linux-%E5%B8%B8%E8%A7%84%E4%BF%A1%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 Linux 常规信号一览表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%BF%A1%E5%8F%B7%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="toc-number">6.</span> <span class="toc-text">6.信号的产生</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E7%BB%88%E7%AB%AF%E6%8C%89%E9%94%AE%E4%BA%A7%E7%94%9F%E4%BF%A1%E5%8F%B7"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 终端按键产生信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E7%A1%AC%E4%BB%B6%E5%BC%82%E5%B8%B8%E4%BA%A7%E7%94%9F%E4%BF%A1%E5%8F%B7"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 硬件异常产生信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-kill-%E5%87%BD%E6%95%B0-x2F-%E5%91%BD%E4%BB%A4%E4%BA%A7%E7%94%9F%E4%BF%A1%E5%8F%B7"><span class="toc-number">6.3.</span> <span class="toc-text">6.4 kill 函数&#x2F;命令产生信号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-number">7.</span> <span class="toc-text">7.定时器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-alarm-%E5%87%BD%E6%95%B0"><span class="toc-number">7.1.</span> <span class="toc-text">7.1 alarm()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-setitimer-%E5%87%BD%E6%95%B0"><span class="toc-number">7.2.</span> <span class="toc-text">7.2 setitimer()函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E4%BF%A1%E5%8F%B7%E9%9B%86%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0"><span class="toc-number">8.</span> <span class="toc-text">8.信号集操作函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E4%BF%A1%E5%8F%B7%E9%9B%86%E8%AE%BE%E5%AE%9A"><span class="toc-number">8.1.</span> <span class="toc-text">8.1 信号集设定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-sigprocmask-%E5%87%BD%E6%95%B0"><span class="toc-number">8.2.</span> <span class="toc-text">8.2 sigprocmask()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-4-sigpending-%E5%87%BD%E6%95%B0"><span class="toc-number">8.3.</span> <span class="toc-text">8.4 sigpending() 函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%BF%A1%E5%8F%B7%E6%8D%95%E6%8D%89"><span class="toc-number">9.</span> <span class="toc-text">9.信号捕捉</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-signal-%E5%87%BD%E6%95%B0"><span class="toc-number">9.1.</span> <span class="toc-text">9.1 signal()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-sigaction-%E5%87%BD%E6%95%B0"><span class="toc-number">9.2.</span> <span class="toc-text">9.2 sigaction()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E4%BF%A1%E5%8F%B7%E6%8D%95%E6%8D%89%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">9.3.</span> <span class="toc-text">9.3 信号捕捉的特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%86%85%E6%A0%B8%E5%AE%9E%E7%8E%B0%E4%BF%A1%E5%8F%B7%E6%8D%95%E6%8D%89%E7%AE%80%E6%9E%90"><span class="toc-number">10.</span> <span class="toc-text">10.内核实现信号捕捉简析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-SIGCHLD-%E4%BF%A1%E5%8F%B7"><span class="toc-number">11.</span> <span class="toc-text">11.SIGCHLD 信号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-1-SIGCHLD-%E7%9A%84%E4%BA%A7%E7%94%9F%E6%9D%A1%E4%BB%B6"><span class="toc-number">11.1.</span> <span class="toc-text">11.1 SIGCHLD 的产生条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-2-%E5%80%9F%E5%8A%A9-SIGCHLD-%E4%BF%A1%E5%8F%B7%E5%9B%9E%E6%94%B6%E5%AD%90%E8%BF%9B%E7%A8%8B"><span class="toc-number">11.2.</span> <span class="toc-text">11.2 借助 SIGCHLD 信号回收子进程</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/25/63d09dc1f25be.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VSCode去掉拷贝来的代码前的行号"/></a><div class="content"><a class="title" href="/2022/09/12/VSCode/VSCode%E5%8E%BB%E6%8E%89%E6%8B%B7%E8%B4%9D%E6%9D%A5%E7%9A%84%E4%BB%A3%E7%A0%81%E5%89%8D%E7%9A%84%E8%A1%8C%E5%8F%B7/" title="VSCode去掉拷贝来的代码前的行号">VSCode去掉拷贝来的代码前的行号</a><time datetime="2022-09-12T09:13:54.000Z" title="Created 2022-09-12 17:13:54">2022-09-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=3708672204,273493161&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=690&amp;h=388" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="【HTML基础】基础认知 + HTML标签"/></a><div class="content"><a class="title" href="/2022/09/08/HTML+CSS+JS/HTML%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" title="【HTML基础】基础认知 + HTML标签">【HTML基础】基础认知 + HTML标签</a><time datetime="2022-09-08T10:13:54.000Z" title="Created 2022-09-08 18:13:54">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=4017388245,646616071&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=550&amp;h=306" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之线程同步"/></a><div class="content"><a class="title" href="/2022/09/07/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="Linux系统编程之线程同步">Linux系统编程之线程同步</a><time datetime="2022-09-07T10:13:54.000Z" title="Created 2022-09-07 18:13:54">2022-09-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img1.baidu.com/it/u=2287437558,3845223698&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=750&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之守护进程、线程"/></a><div class="content"><a class="title" href="/2022/09/05/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B/" title="Linux系统编程之守护进程、线程">Linux系统编程之守护进程、线程</a><time datetime="2022-09-05T10:13:54.000Z" title="Created 2022-09-05 18:13:54">2022-09-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://img2.baidu.com/it/u=3539075320,3057042483&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=650&amp;h=492" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux系统编程之信号"/></a><div class="content"><a class="title" href="/2022/09/01/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B%E4%B9%8B%E4%BF%A1%E5%8F%B7/" title="Linux系统编程之信号">Linux系统编程之信号</a><time datetime="2022-09-01T10:13:54.000Z" title="Created 2022-09-01 18:13:54">2022-09-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By BillySturate</div><div id="workboard"><img class="workSituationImg boardsign" src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://anzhiy.cn/" style="margin-inline:5px" data-title="本站使用AnZhiYu主题" title="本站使用AnZhiYu主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://pan.anzhiy.cn/d/anzhiyu/svg/Theme-AnZhiYu-2E67D3.svg" alt="本站使用AnZhiYu主题"/></a><a class="github-badge" target="_blank" href="https://www.dogecloud.com/" style="margin-inline:5px" data-title="本站使用多吉云为静态资源提供CDN加速" title="本站使用多吉云为静态资源提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/CDN-多吉云-3693F3.svg" alt="本站使用多吉云为静态资源提供CDN加速"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title="本站项目由Github托管"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div></footer><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg"/><div class="loading-image-dot"></div><div id="loading-percentage">0%</div></div></div><script>const loadingPercentage = document.getElementById("loading-percentage");
+let loadingPercentageTimer = setInterval(function() {
+  var progressBar = document.querySelector(".pace-progress");
+  if (!progressBar) return
+  var currentValue = progressBar.getAttribute("data-progress-text");
+  if (currentValue !== loadingPercentage.textContent) {
+    loadingPercentage.textContent = currentValue;
+    if (currentValue === "100%") {
+      clearInterval(loadingPercentageTimer);
+    }
+  }
+}, 100);
+const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/progress_bar/progress_bar.css"/><script async="async" src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://bu.dusays.com/2023/01/26/63d157fc636f6.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">Articles</div><div class="length-num">37</div></a><a href="/tags/" title="tag"><div class="headline">Tags</div><div class="length-num">32</div></a><a href="/categories/" title="category"><div class="headline">Categories</div><div class="length-num">12</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-79px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="center-console" type="button" title="中控台"><i class="anzhiyufont anzhiyu-icon-fish"></i></button><button id="go-up" type="button" title="Back To Top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="console"><div class="close-btn" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-xmark" style="font-size: 35px;"></i></div><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="wechat" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="alipay" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> <span>Newest Comments</span></span></div><div class="aside-list"><span>loading...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags" onclick="anzhiyu.hideConsole()"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 1.45em; color: rgb(167, 69, 127)">C++<sup>8</sup></a><a href="/tags/CMake/" style="font-size: 1.15em; color: rgb(42, 164, 78)">CMake<sup>1</sup></a><a href="/tags/GCC/" style="font-size: 1.15em; color: rgb(186, 148, 169)">GCC<sup>1</sup></a><a href="/tags/HTML/" style="font-size: 1.15em; color: rgb(47, 11, 63)">HTML<sup>1</sup></a><a href="/tags/IPC/" style="font-size: 1.15em; color: rgb(120, 67, 149)">IPC<sup>1</sup></a><a href="/tags/Json/" style="font-size: 1.21em; color: rgb(63, 139, 10)">Json<sup>3</sup></a><a href="/tags/Linux/" style="font-size: 1.33em; color: rgb(106, 172, 169)">Linux<sup>5</sup></a><a href="/tags/Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B/" style="font-size: 1.39em; color: rgb(152, 64, 55)">Linux系统编程<sup>7</sup></a><a href="/tags/Markdown/" style="font-size: 1.15em; color: rgb(58, 200, 124)">Markdown<sup>1</sup></a><a href="/tags/Matplotlib/" style="font-size: 1.15em; color: rgb(188, 30, 198)">Matplotlib<sup>1</sup></a><a href="/tags/Numpy/" style="font-size: 1.15em; color: rgb(106, 164, 100)">Numpy<sup>1</sup></a><a href="/tags/Python/" style="font-size: 1.27em; color: rgb(189, 69, 165)">Python<sup>4</sup></a><a href="/tags/Qt/" style="font-size: 1.27em; color: rgb(83, 39, 1)">Qt<sup>4</sup></a><a href="/tags/Robocup3d/" style="font-size: 1.15em; color: rgb(71, 73, 113)">Robocup3d<sup>1</sup></a><a href="/tags/SSH/" style="font-size: 1.15em; color: rgb(164, 152, 189)">SSH<sup>1</sup></a><a href="/tags/Shell/" style="font-size: 1.15em; color: rgb(169, 159, 176)">Shell<sup>1</sup></a><a href="/tags/VSCode/" style="font-size: 1.21em; color: rgb(54, 184, 98)">VSCode<sup>3</sup></a><a href="/tags/Vim-Vi/" style="font-size: 1.15em; color: rgb(103, 184, 30)">Vim/Vi<sup>1</sup></a><a href="/tags/gdb/" style="font-size: 1.15em; color: rgb(174, 9, 86)">gdb<sup>1</sup></a><a href="/tags/opencv/" style="font-size: 1.15em; color: rgb(124, 194, 161)">opencv<sup>1</sup></a><a href="/tags/pandas/" style="font-size: 1.15em; color: rgb(157, 46, 190)">pandas<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 1.15em; color: rgb(116, 155, 108)">人工智能<sup>1</sup></a><a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 1.15em; color: rgb(63, 34, 127)">信号<sup>1</sup></a><a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(171, 35, 103)">守护进程<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6IO/" style="font-size: 1.15em; color: rgb(25, 55, 5)">文件IO<sup>1</sup></a><a href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/" style="font-size: 1.15em; color: rgb(97, 47, 156)">文件描述符<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.15em; color: rgb(21, 159, 35)">算法<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.15em; color: rgb(35, 87, 101)">线程<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" style="font-size: 1.15em; color: rgb(91, 13, 20)">线程同步<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4/" style="font-size: 1.15em; color: rgb(95, 146, 26)">虚拟地址空间<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 1.15em; color: rgb(83, 189, 65)">计算机视觉<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 1.15em; color: rgb(112, 108, 127)">进程<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history" onclick="anzhiyu.hideConsole()"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>Archives</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/09/"><span class="card-archive-list-date">September 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">August 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/07/"><span class="card-archive-list-date">July 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/06/"><span class="card-archive-list-date">June 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" onclick="rm.switchDarkMode()" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script><div><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/utils.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/main.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.1.8/source/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/instant.page@5.1.1/instantpage.js" type="module"></script><script src="https://npm.elemecdn.com/vanilla-lazyload@17.3.1/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  console.log(1)
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("06/01/2022 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2022 By 安知鱼",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 BillySturate 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("06/01/2022 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+      img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+      img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "visitor@anzhiy.cn";</script><script>//动态标题
+let leaveTitle = 'w(ﾟДﾟ)w 不要走！再看看嘛！';
+let backTitle = '♪(^∇^*)欢迎肥来！';
+let OriginTitile = document.title
+let titleTime
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    //离开当前页面时标签显示内容
+    document.title = leaveTitle
+    clearTimeout(titleTime)
+  } else {
+    //返回当前页面时标签显示内容
+    document.title = backTitle + OriginTitile
+    //两秒后变回正常标题
+    titleTime = setTimeout(function () {
+      document.title = OriginTitile
+    }, 2000)
+  }
+})</script><script data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/catalog-bar/catalog-bar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/categoryBar/categoryBar.js"></script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script>// 初始化函数
+let rm = {};
+
+//禁止图片拖拽
+let imgElements = document.getElementsByTagName("img");
+for (let i = 0; i < imgElements.length; i++) {
+  imgElements[i].addEventListener("dragstart", function (event) {
+    event.preventDefault();
+  });
+}
+
+// 显示菜单
+rm.showRightMenu = function (isTrue, x = 0, y = 0) {
+  console.info(x, y)
+  let rightMenu = document.getElementById("rightMenu");
+  rightMenu.style.top = x + "px";
+  rightMenu.style.left = y + "px";
+  if (isTrue) {
+    rightMenu.style.display = "block";
+    stopMaskScroll();
+  } else {
+    rightMenu.style.display = "none";
+  }
+};
+
+// 隐藏菜单
+rm.hideRightMenu = function () {
+  rm.showRightMenu(false);
+  let rightMenuMask = document.querySelector("#rightmenu-mask");
+  rightMenuMask.style.display = "none";
+};
+
+// 尺寸
+let rmWidth = document.getElementById("rightMenu").offsetWidth;
+let rmHeight = document.getElementById("rightMenu").offsetHeight;
+
+// 重新定义尺寸
+rm.reloadrmSize = function () {
+  rightMenu.style.visibility = "hidden";
+  rightMenu.style.display = "block";
+  // 获取宽度和高度
+  rmWidth = document.getElementById("rightMenu").offsetWidth;
+  rmHeight = document.getElementById("rightMenu").offsetHeight;
+  rightMenu.style.visibility = "visible";
+};
+
+// 获取点击的href
+let domhref = "";
+let domImgSrc = "";
+let globalEvent = null;
+
+// 监听右键初始化
+window.oncontextmenu = function (event) {
+  if (document.body.clientWidth > 768) {
+    let pageX = event.clientX + 10; //加10是为了防止显示时鼠标遮在菜单上
+    let pageY = event.clientY;
+
+    //其他额外菜单
+    const $rightMenuOther = document.querySelector(".rightMenuOther");
+    const $rightMenuPlugin = document.querySelector(".rightMenuPlugin");
+    const $rightMenuCopyText = document.querySelector("#menu-copytext");
+    const $rightMenuPasteText = document.querySelector("#menu-pastetext");
+    const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
+    const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
+    const $rightMenuCopyLink = document.querySelector("#menu-copylink");
+    const $rightMenuCopyImg = document.querySelector("#menu-copyimg");
+    const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
+    const $rightMenuSearch = document.querySelector("#menu-search");
+    const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
+    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
+    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
+    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
+    const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
+
+    let href = event.target.href;
+    let imgsrc = event.target.currentSrc;
+
+    // 判断模式 扩展模式为有事件
+    let pluginMode = false;
+    $rightMenuOther.style.display = "block";
+    globalEvent = event;
+
+    // 检查是否需要复制 是否有选中文本
+    if (selectTextNow && window.getSelection()) {
+      pluginMode = true;
+      $rightMenuCopyText.style.display = "block";
+      $rightMenuCommentText.style.display = "block";
+      $rightMenuSearch.style.display = "block";
+      $rightMenuSearchBaidu.style.display = "block";
+    } else {
+      $rightMenuCopyText.style.display = "none";
+      $rightMenuCommentText.style.display = "none";
+      $rightMenuSearchBaidu.style.display = "none";
+      $rightMenuSearch.style.display = "none";
+    }
+
+    //检查是否右键点击了链接a标签
+    if (href) {
+      pluginMode = true;
+      $rightMenuNewWindow.style.display = "block";
+      $rightMenuCopyLink.style.display = "block";
+      domhref = href;
+    } else {
+      $rightMenuNewWindow.style.display = "none";
+      $rightMenuCopyLink.style.display = "none";
+    }
+
+    //检查是否需要复制图片
+    if (imgsrc) {
+      pluginMode = true;
+      $rightMenuCopyImg.style.display = "block";
+      $rightMenuDownloadImg.style.display = "block";
+      $rightMenuNewWindowImg.style.display = "block";
+      document.getElementById("rightMenu").style.width="12rem"
+      domImgSrc = imgsrc;
+    } else {
+      $rightMenuCopyImg.style.display = "none";
+      $rightMenuDownloadImg.style.display = "none";
+      $rightMenuNewWindowImg.style.display = "none";
+    }
+
+    // 判断是否为输入框
+    if (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "textarea") {
+      pluginMode = true;
+      $rightMenuPasteText.style.display = "block";
+    } else {
+      $rightMenuPasteText.style.display = "none";
+    }
+    const navMusicEl = document.querySelector("#nav-music");
+    //判断是否是音乐
+    if (navMusicEl && navMusicEl.contains(event.target)) {
+      pluginMode = true;
+      $rightMenuMusicToggle.style.display = "block";
+      $rightMenuMusicBack.style.display = "block";
+      $rightMenuMusicForward.style.display = "block";
+      $rightMenuMusicPlaylist.style.display = "block";
+      $rightMenuMusicCopyMusicName.style.display = "block";
+    } else {
+      $rightMenuMusicToggle.style.display = "none";
+      $rightMenuMusicBack.style.display = "none";
+      $rightMenuMusicForward.style.display = "none";
+      $rightMenuMusicPlaylist.style.display = "none";
+      $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 如果不是扩展模式则隐藏扩展模块
+    if (pluginMode) {
+      $rightMenuOther.style.display = "none";
+      $rightMenuPlugin.style.display = "block";
+    } else {
+      $rightMenuPlugin.style.display = "none";
+    }
+
+    rm.reloadrmSize();
+
+    // 鼠标默认显示在鼠标右下方，当鼠标靠右或靠下时，将菜单显示在鼠标左方\上方
+    if (pageX + rmWidth > window.innerWidth) {
+      pageX -= rmWidth + 10;
+    }
+    if (pageY + rmHeight > window.innerHeight) {
+      pageY -= pageY + rmHeight - window.innerHeight;
+    }
+
+    rm.showRightMenu(true, pageY, pageX);
+    document.getElementById("rightmenu-mask").style.display = "flex";
+    return false;
+  }
+};
+
+// 下载图片状态
+rm.downloadimging = false;
+
+// 复制图片到剪贴板
+rm.writeClipImg = function (imgsrc) {
+  console.log("按下复制");
+  rm.hideRightMenu();
+  anzhiyu.snackbarShow("正在下载中，请稍后", false, 10000);
+  if (rm.downloadimging == false) {
+    rm.downloadimging = true;
+    setTimeout(function () {
+      copyImage(imgsrc);
+      anzhiyu.snackbarShow("复制成功！图片已添加盲水印，请遵守版权协议");
+      rm.downloadimging = false;
+    }, "10000");
+  }
+};
+
+function imageToBlob(imageURL) {
+  const img = new Image();
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob(
+        blob => {
+          // here the image is a blob
+          resolve(blob);
+        },
+        "image/png",
+        0.75
+      );
+    };
+  });
+}
+
+async function copyImage(imageURL) {
+  const blob = await imageToBlob(imageURL);
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+rm.switchDarkMode = function () {
+  // Switch Between Light And Dark Mode
+  const nowMode = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  if (nowMode === "light") {
+    activateDarkMode();
+    saveToLocal.set("theme", "dark", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.day_to_night);
+    document.querySelector(".menu-darkmode-text").textContent = "浅色模式";
+  } else {
+    activateLightMode();
+    saveToLocal.set("theme", "light", 2);
+    GLOBAL_CONFIG.Snackbar !== undefined && anzhiyu.snackbarShow(GLOBAL_CONFIG.Snackbar.night_to_day);
+    document.querySelector(".menu-darkmode-text").textContent = "深色模式";
+  }
+  // handle some cases
+  typeof runMermaid === "function" && window.runMermaid();
+  rm.hideRightMenu();
+  anzhiyu.darkModeStatus();
+};
+
+rm.copyUrl = function (id) {
+  const input = document.createElement("input"); // Create a new <input> element
+  input.id = "copyVal"; // Set the id of the new element to "copyVal"
+  document.body.appendChild(input); // Append the new element to the end of the <body> element
+  
+  const text = id;
+  input.value = text;
+  input.select();
+  input.setSelectionRange(0, input.value.length);
+  document.execCommand("copy");
+  
+  input.remove(); // Remove the <input> element from the DOM
+};
+
+function stopMaskScroll() {
+  if (document.getElementById("rightmenu-mask")) {
+    let xscroll = document.getElementById("rightmenu-mask");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+  if (document.getElementById("rightMenu")) {
+    let xscroll = document.getElementById("rightMenu");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      false
+    );
+  }
+}
+
+rm.rightmenuCopyText = function (txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt);
+  }
+  rm.hideRightMenu();
+};
+
+rm.copyPageUrl = function () {
+  var url = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+rm.sharePage = function () {
+  var content = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+// 复制当前选中文本
+var selectTextNow = "";
+document.onmouseup = document.ondblclick = selceText;
+
+function selceText() {
+  var txt;
+  if (document.selection) {
+    txt = document.selection.createRange().text;
+  } else {
+    txt = window.getSelection().toString();
+  }
+  selectTextNow = txt !== "" ? txt : "";
+}
+
+// 读取剪切板
+rm.readClipboard = function () {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText().then(clipText => rm.insertAtCaret(globalEvent.target, clipText));
+  }
+};
+
+// 粘贴文本到焦点
+rm.insertAtCaret = function (elemt, value) {
+  const startPos = elemt.selectionStart,
+    endPos = elemt.selectionEnd;
+  if (document.selection) {
+    elemt.focus();
+    var sel = document.selection.createRange();
+    sel.text = value;
+    elemt.focus();
+  } else {
+    if (startPos || startPos == "0") {
+      var scrollTop = elemt.scrollTop;
+      elemt.value = elemt.value.substring(0, startPos) + value + elemt.value.substring(endPos, elemt.value.length);
+      elemt.focus();
+      elemt.selectionStart = startPos + value.length;
+      elemt.selectionEnd = startPos + value.length;
+      elemt.scrollTop = scrollTop;
+    } else {
+      elemt.value += value;
+      elemt.focus();
+    }
+  }
+};
+
+//粘贴文本
+rm.pasteText = function () {
+  const result = rm.readClipboard() || "";
+  rm.hideRightMenu();
+};
+
+//引用到评论
+rm.rightMenuCommentText = function (txt) {
+  rm.hideRightMenu();
+  const postCommentDom = document.getElementById("post-comment");
+  var domTop = postCommentDom.offsetTop;
+  window.scrollTo(0, domTop - 80);
+  if (txt == "undefined" || txt == "null") txt = "好棒！";
+  function setText() {
+    setTimeout(() => {
+      var input = document.getElementsByClassName("el-textarea__inner")[0];
+      if (!input) setText();
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("input", true, true);
+      let inputValue = replaceAll(txt, "\n", "\n> ");
+      input.value = "> " + inputValue + "\n\n";
+      input.dispatchEvent(evt);
+      input.focus();
+      input.setSelectionRange(-1, -1);
+      if (document.getElementById("comment-tips")) {
+        document.getElementById("comment-tips").classList.add("show");
+      }
+    }, 100);
+  }
+  setText();
+};
+
+//替换所有内容
+function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
+}
+
+// 百度搜索
+rm.searchBaidu = function () {
+  anzhiyu.snackbarShow("即将跳转到百度搜索", false, 2000);
+  setTimeout(function () {
+    window.open("https://www.baidu.com/s?wd=" + selectTextNow);
+  }, "2000");
+  rm.hideRightMenu();
+};
+
+//分享链接
+rm.copyLink = function () {
+  rm.rightmenuCopyText(domhref);
+  anzhiyu.snackbarShow("已复制链接地址");
+};
+
+function addRightMenuClickEvent() {
+  // 添加点击事件
+  document.getElementById("menu-backward").addEventListener("click", function () {
+  window.history.back();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-forward").addEventListener("click", function () {
+    window.history.forward();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-refresh").addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  document.getElementById("menu-top").addEventListener("click", function () {
+    anzhiyu.scrollToDest(0, 500);
+    rm.hideRightMenu();
+  });
+
+  const menuLinks = document.querySelectorAll(".menu-link");
+  menuLinks.forEach(function (link) {
+    link.addEventListener("click", rm.hideRightMenu);
+  });
+
+  document.getElementById("menu-darkmode").addEventListener("click", rm.switchDarkMode);
+
+  document.getElementById("menu-home") && document.getElementById("menu-home").addEventListener("click", function () {
+    window.location.href = window.location.origin;
+  });
+
+  document.getElementById("menu-randomPost").addEventListener("click", function () {
+    toRandomPost();
+  });
+
+  document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
+
+  document.getElementById("rightmenu-mask").addEventListener("click", rm.hideRightMenu);
+
+  document.getElementById("rightmenu-mask").addEventListener("contextmenu", function (event) {
+    rm.hideRightMenu();
+    event.preventDefault(); // Prevent the default context menu from appearing
+  });
+
+  document.getElementById("menu-copy").addEventListener("click", rm.copyPageUrl);
+
+  document.getElementById("menu-pastetext").addEventListener("click", rm.pasteText);
+
+  document.getElementById("menu-copytext").addEventListener("click", function () {
+    rm.rightmenuCopyText(selectTextNow);
+    anzhiyu.snackbarShow("复制成功，复制和转载请标注本文地址");
+  });
+
+  document.getElementById("menu-commenttext").addEventListener("click", function () {
+    rm.rightMenuCommentText(selectTextNow);
+  });
+
+  document.getElementById("menu-newwindow").addEventListener("click", function () {
+    window.open(domhref);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copylink").addEventListener("click", rm.copyLink);
+
+  document.getElementById("menu-downloadimg").addEventListener("click", function () {
+    anzhiyu.downloadImage(domImgSrc, "anzhiyu");
+  });
+
+  document.getElementById("menu-newwindowimg").addEventListener("click", function () {
+    window.open(domImgSrc);
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copyimg").addEventListener("click", function () {
+    rm.writeClipImg(domImgSrc);
+  });
+
+  document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
+
+  //音乐
+  document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
+
+  document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
+
+  document.getElementById("menu-music-forward").addEventListener("click", anzhiyu.musicSkipForward);
+
+  document.getElementById("menu-music-copyMusicName").addEventListener("click", function () {
+    rm.rightmenuCopyText(anzhiyu.musicGetName());
+    anzhiyu.snackbarShow("复制歌曲名称成功", false, 3000);
+  });
+
+}
+
+addRightMenuClickEvent();</script><script data-pjax>var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+var pageHeaderEl = document.getElementById("page-header");
+var navMusicEl = document.getElementById("nav-music");
+var consoleEl = document.getElementById("console");
+// 已随机的歌曲
+var selectRandomSong = [];
+// 音乐默认声音大小
+var musicVolume = 0.8;
+// 是否切换了周杰伦音乐列表
+var changeMusicListFlag = false;
+// 当前默认播放列表
+var defaultPlayMusicList = [];
+
+document.getElementById("page-name").innerText = document.title.split(" | 安知鱼")[0];
+anzhiyu.initIndexEssay();
+anzhiyu.changeTimeInEssay();
+anzhiyu.removeBodyPaceClass();
+anzhiyu.qrcodeCreate();
+anzhiyu.changeTimeInAlbumDetail();
+anzhiyu.reflashEssayWaterFall();
+anzhiyu.sayhi();
+anzhiyu.stopImgRightDrag();
+anzhiyu.addNavBackgroundInit();
+anzhiyu.setValueToBodyType();
+
+anzhiyu.getCustomPlayList();
+anzhiyu.addEventListenerConsoleMusicList(false);</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.6/icon/ali_iconfont_css.css"><script async src="https://at.alicdn.com/t/c/font_4044712_5zffwsx4hy7.js?spm=a313x.7781069.1998910419.53&amp;file=font_4044712_5zffwsx4hy7.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://npm.elemecdn.com/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+  window.anzhiyuScrollFnToDo && window.removeEventListener('scroll', anzhiyuScrollFnToDo)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
