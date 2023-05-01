@@ -20583,11 +20583,11 @@ div#runtime {
   box-shadow: 0 0 5px rgba(28, 69, 218, 0.71);
   animation: flashlight 1s linear infinite alternate;
 }
-#ghbdages .github-badge img {
+/* #ghbdages .github-badge img {
   height: 20px;
   max-width: 150px;
   border-radius: 4px;
-}
+} */
 #workboard img.boardsign {
   width: 100%;
   max-width: 130px;
