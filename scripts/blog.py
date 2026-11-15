@@ -39,6 +39,16 @@ def post_url(post, base=''):
     return base + '/blog/' + urllib.parse.quote(post['path'], safe='/')
 
 
+def set_published_date(soup, date):
+    """Change the displayed publication date without changing article URLs."""
+    for el in soup.select('time.post-meta-date-created, .recent-post-item time, .article-sort-item time'):
+        el['datetime'] = date + 'T00:00:00+08:00'
+        el['title'] = '发表于 ' + date
+        el.string = date
+    for el in soup.select('meta[property="article:published_time"]'):
+        el['content'] = date + 'T00:00:00+08:00'
+
+
 def metadata(soup, title, description=None, image=None):
     soup.title.string = title + ' | BillySturateの秘密基地'
     for el in soup.select('meta[property="og:title"],meta[name="twitter:title"]'):
@@ -272,6 +282,11 @@ def finish_blog(out, posts, base, origin):
         soup = fragment(file.read_text())
         for el in soup.select('.article-sort-item:not(.year)'):
             entries[path_of(el.select_one('.article-sort-item-title'))] = copy.deepcopy(el)
+    for post in posts:
+        if post['path'] in cards:
+            set_published_date(cards[post['path']], post['date'])
+        if post['path'] in entries:
+            set_published_date(entries[post['path']], post['date'])
     card_shell, entry_shell = copy.deepcopy(next(iter(cards.values()))), copy.deepcopy(next(iter(entries.values())))
     for post in new:
         card, entry = copy.deepcopy(card_shell), copy.deepcopy(entry_shell)
@@ -394,8 +409,8 @@ def finish_blog(out, posts, base, origin):
             for key in items:
                 info = (categories if directory == 'categories' else tags)[key]
                 groups[info['path']] = (name + ' - ' + key, [p for p in posts if p['path'] in info['posts']])
-        for date in [post['date'][:4], post['date'][:7]]:
-            groups['archives/' + date.replace('-', '/') + '/'] = (date, [p for p in posts if p['date'].startswith(date)])
+    for date in sorted({part for post in posts for part in (post['date'][:4], post['date'][:7])}):
+        groups['archives/' + date.replace('-', '/') + '/'] = (date, [p for p in posts if p['date'].startswith(date)])
     listing_shell = str(read('categories/Python/index.html'))
     for path, (heading, subset) in groups.items():
         count = math.ceil(len(subset) / 10)
@@ -440,15 +455,12 @@ def finish_blog(out, posts, base, origin):
                 else:
                     catalog.append(fragment('<div class="catalog-list-item" id="' + href + '"><a href="' + href + '">' + html.escape(name) + '<span class="notification-tip">' + str(len(info['posts'])) + '</span></a></div>'))
         for archive in soup.select('.card-archive-list'):
-            for date in sorted({p['date'][:7] for p in new}, reverse=True):
+            archive.clear()
+            for date in sorted({p['date'][:7] for p in posts}, reverse=True):
                 href = base + '/blog/archives/' + date.replace('-', '/') + '/'
                 count = sum(p['date'].startswith(date) for p in posts)
-                existing = archive.select_one('a[href="' + href + '"]')
-                if existing:
-                    existing.select_one('.card-archive-list-count').string = str(count)
-                else:
-                    month = ['一','二','三','四','五','六','七','八','九','十','十一','十二'][int(date[5:7]) - 1]
-                    archive.insert(0, fragment('<li class="card-archive-list-item"><a class="card-archive-list-link" href="' + href + '"><span class="card-archive-list-date">' + month + '月 ' + date[:4] + '</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">' + str(count) + '</span><span>篇</span></div></a></li>'))
+                month = ['一','二','三','四','五','六','七','八','九','十','十一','十二'][int(date[5:7]) - 1]
+                archive.append(fragment('<li class="card-archive-list-item"><a class="card-archive-list-link" href="' + href + '"><span class="card-archive-list-date">' + month + '月 ' + date[:4] + '</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">' + str(count) + '</span><span>篇</span></div></a></li>'))
         for value in soup.select('.site-data a[title="category"] .length-num'):
             value.string = str(len(categories))
         for value in soup.select('.site-data a[title="tag"] .length-num'):

@@ -107,7 +107,7 @@ def main():
     ET.parse(out / 'sitemap.xml')
     ET.parse(out / 'blog/feed.xml')
     assert (out / '.nojekyll').exists()
-    assert (out / 'CNAME').exists() == report['production']
+    assert not (out / 'CNAME').exists()
     result = {'pages_checked': pages, 'unique_local_paths_checked': len(checked), 'original_files_verified': len(manifest['files']), 'article_text_verified': report['article_text_verified'], 'total_posts_listed_once': len(listed), 'markdown_anchors_and_example_downloads': 'passed', 'errors': errors}
     report_suffix = '-production' if report['production'] else ('-preview' if base else '')
     (ROOT / 'reports' / ('validation' + report_suffix + '.json')).write_text(json.dumps(result, ensure_ascii=False, indent=2))

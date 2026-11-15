@@ -13,7 +13,7 @@ from pathlib import Path
 import markdown
 from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
-from blog import finish_blog, personalize, render_new_posts
+from blog import finish_blog, personalize, render_new_posts, set_published_date
 
 ROOT = Path(__file__).resolve().parents[1]
 OLD_HOSTS = {'www.billysturate.top', 'billysturate.top', 'billysturate.github.io', 'billy-sturate-github-io.vercel.app'}
@@ -56,6 +56,7 @@ def main():
     asset_manifest = read_json('legacy/assets.json')
     profile = read_json('data/profile.json')
     blog_config = read_json('data/blog.json')
+    date_overrides = read_json('data/blog-date-overrides.json')
     new_pages = render_new_posts()
     new_article_count = len(new_pages)
     from playground import new_playground_page
@@ -115,7 +116,7 @@ def main():
         text = re.sub(r'([\"\'`])(/(?!/)[^\"\'`\s<>]*)(\1)', lambda m: m[1] + url_rewrite(m[2]) + m[3], text)
         text = re.sub(r'url\(\s*([\"\']?)(/(?!/)[^\"\')]+)\1\s*\)', lambda m: 'url(' + m[1] + url_rewrite(m[2]) + m[1] + ')', text)
         text = text.replace('window.location.origin;', 'window.location.origin + ' + json.dumps(base + '/blog/') + ';')
-        return text
+        return text.replace('06/01/2022 00:00:00', '06/01/2021 00:00:00')
 
     posts = []
     html_pages = []
@@ -137,7 +138,9 @@ def main():
                 if article is not None and re.match(r'^20\d\d/', rel.as_posix()):
                     title_el = original.select_one('h1.post-title') or original.select_one('h1')
                     date_el = original.select_one('time[datetime]')
-                    posts.append({'title': title_el.get_text(' ', strip=True) if title_el else original.title.get_text().split(' | ')[0], 'date': date_el['datetime'][:10] if date_el else '/'.join(rel.parts[:3]).replace('/', '-'), 'path': rel.parent.as_posix() + '/', 'text': article.get_text(' ', strip=True)})
+                    path = rel.parent.as_posix() + '/'
+                    original_date = date_el['datetime'][:10] if date_el else '/'.join(rel.parts[:3]).replace('/', '-')
+                    posts.append({'title': title_el.get_text(' ', strip=True) if title_el else original.title.get_text().split(' | ')[0], 'date': date_overrides.get(path, original_date), 'path': path, 'text': article.get_text(' ', strip=True)})
                 migrated = BeautifulSoup(rewrite_text(text), 'html.parser')
                 for tag in migrated.find_all(True):
                     for attr in ('href', 'src', 'data-src', 'data-lazy-src', 'data-background', 'poster', 'action', 'content'):
@@ -146,6 +149,8 @@ def main():
                     if tag.has_attr('srcset'):
                         tag['srcset'] = ', '.join(url_rewrite(part.strip().split()[0]) + (' ' + ' '.join(part.strip().split()[1:]) if len(part.strip().split()) > 1 else '') for part in tag['srcset'].split(',') if part.strip())
                 personalize(migrated, base, blog_config, total_posts)
+                if article is not None and rel.parent.as_posix() + '/' in date_overrides:
+                    set_published_date(migrated, date_overrides[rel.parent.as_posix() + '/'])
                 article_missing = []
                 for image in migrated.select('img'):
                     image_url = image.get('data-lazy-src') or image.get('data-src') or image.get('src')
