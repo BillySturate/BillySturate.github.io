@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "python3 -m venv .vercel-build-venv && .vercel-build-venv/bin/python -m pip install -r requirements.txt && .vercel-build-venv/bin/python scripts/build.py --production --site-url https://www.billysturate.top --output dist-production",
+  "outputDirectory": "dist-production"
+}
