@@ -116,7 +116,11 @@ def main():
         text = re.sub(r'([\"\'`])(/(?!/)[^\"\'`\s<>]*)(\1)', lambda m: m[1] + url_rewrite(m[2]) + m[3], text)
         text = re.sub(r'url\(\s*([\"\']?)(/(?!/)[^\"\')]+)\1\s*\)', lambda m: 'url(' + m[1] + url_rewrite(m[2]) + m[1] + ')', text)
         text = text.replace('window.location.origin;', 'window.location.origin + ' + json.dumps(base + '/blog/') + ';')
-        return text.replace('06/01/2022 00:00:00', '06/01/2021 00:00:00')
+        # Keep both the legacy footer timer and the sidebar's data-publishDate
+        # counter aligned to the same site launch date (June 1, 2021).
+        return (text
+                .replace('06/01/2022 00:00:00', '06/01/2021 00:00:00')
+                .replace('2022-05-31T16:00:00.000Z', '2021-05-31T16:00:00.000Z'))
 
     posts = []
     html_pages = []
