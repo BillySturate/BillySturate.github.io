@@ -265,8 +265,6 @@ def main():
     render('cv.html', 'cv/index.html', title='CV', active='cv', body=md(ROOT / 'content/cv.md'))
     render('404.html', '404.html', title='Page not found')
     write(out / '.nojekyll', '')
-    if args.production:
-        write(out / 'CNAME', 'www.billysturate.top\n')
     write(out / 'robots.txt', 'User-agent: *\nAllow: /\nSitemap: ' + origin + base + '/sitemap.xml\n')
     ET.register_namespace('', 'http://www.sitemaps.org/schemas/sitemap/0.9')
     sitemap = ET.Element('{http://www.sitemaps.org/schemas/sitemap/0.9}urlset')

@@ -1,5 +1,8 @@
 (() => {
   let theme;
   try { theme = localStorage.getItem('silas-theme'); } catch (_) {}
-  document.documentElement.dataset.theme = theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const hour = new Date().getHours();
+  document.documentElement.dataset.theme = theme === 'light' || theme === 'dark'
+    ? theme
+    : (hour >= 7 && hour < 19 ? 'light' : 'dark');
 })();
