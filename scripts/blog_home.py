@@ -21,7 +21,7 @@ def refine_blog_home(soup, base):
         for card_group in soup.select('#home_top .categoryGroup,#home_top #topPostGroup'):
             card_group.decompose()
     for box in soup.select('#footer-wrap .copyright'):
-        box.clear(); box.append('©2022 – ')
+        box.clear(); box.append('©2021 – ')
         year = soup.new_tag('span', attrs={'data-blog-year':''}); year.string = str(datetime.date.today().year)
         box.append(year); box.append(' By BillySturate')
     for script in list(soup.select('script[src]')):

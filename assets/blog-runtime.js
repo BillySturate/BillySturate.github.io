@@ -2,7 +2,7 @@
 (() => {
   if (window.billyBlogRuntime) return;
   window.billyBlogRuntime = true;
-  const officialHosts = new Set(['billysturate.top', 'www.billysturate.top']);
+  const officialHosts = new Set(['billysturate.top', 'www.billysturate.top', 'billysturate.github.io']);
   let lastCountedPage = null;
   let sliderFixTimer = null;
   function fixFeaturedSlider() {
