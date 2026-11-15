@@ -115,6 +115,9 @@ def render_new_posts():
         soup = fragment(shell)
         cover = root + post['cover']
         metadata(soup, post['title'], post['description'], cover)
+        top_cover = soup.select_one('#post-top-bg')
+        if top_cover:
+            top_cover['src'] = cover
         for el in soup.select('.post-title,.post-copyright-title span,#nav #page-name'):
             el.string = post['title']
         for el in soup.select('time.post-meta-date-created,time.post-meta-date-updated'):
