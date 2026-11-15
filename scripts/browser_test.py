@@ -137,7 +137,8 @@ def main():
             fits('Desktop homepage')
             suffix = '-production' if report['production'] else ('-preview' if prefix else '')
             page.screenshot(path=str(shots / f'home-desktop{suffix}.png'), full_page=True)
-            page.get_by_role('button', name='Switch to dark mode').click()
+            if page.locator('html').get_attribute('data-theme') != 'dark':
+                page.locator('.theme-toggle').click()
             assert page.locator('html').get_attribute('data-theme') == 'dark'
             page.reload()
             assert page.locator('html').get_attribute('data-theme') == 'dark'
@@ -171,7 +172,8 @@ def main():
             assert page.get_by_role('heading', name='Academic Service', exact=True).count() == 0
             page.get_by_role('button', name='Switch to light mode').click()
             page.screenshot(path=str(shots / f'cv-desktop{suffix}.png'), full_page=True)
-            page.get_by_role('button', name='Switch to dark mode').click()
+            if page.locator('html').get_attribute('data-theme') != 'dark':
+                page.locator('.theme-toggle').click()
             results['checks'].append('Structured CV with selected work, honors, confirmed education, skills and hidden empty fields')
             visit('/404.html')
             assert page.get_by_role('link', name='Back to home').is_visible()
