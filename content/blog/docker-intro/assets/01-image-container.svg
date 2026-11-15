@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="620" viewBox="0 0 1280 620">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#536579" stroke-width="1.6"/></marker></defs>
+<style>text{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}</style>
+<rect width="1280" height="620" rx="24" fill="#ffffff"/>
+<text x="48" y="65" font-size="34" font-weight="700" fill="#162b46">01 · 从镜像到容器</text>
+<text x="48" y="104" font-size="21" fill="#536579">镜像是模板；容器是模板创建出的运行实例。</text>
+<rect x="48" y="190" width="270" height="155" rx="18" fill="#f3f7ff" stroke="#d8e2ee" stroke-width="2"/>
+<text x="72" y="234" font-size="26" font-weight="600" fill="#2563eb" text-anchor="start">镜像仓库</text>
+<text x="72" y="273" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">存放与分发镜像</text>
+<text x="72" y="307" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">例如 Docker Hub</text>
+<rect x="480" y="190" width="280" height="155" rx="18" fill="#f3f7ff" stroke="#d8e2ee" stroke-width="2"/>
+<text x="504" y="234" font-size="26" font-weight="600" fill="#2563eb" text-anchor="start">本地镜像</text>
+<text x="504" y="273" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">应用 + 依赖 + 文件</text>
+<text x="504" y="307" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">例如 nginx:1.28.0</text>
+<rect x="930" y="155" width="300" height="130" rx="18" fill="#eef9f5" stroke="#d8e2ee" stroke-width="2"/>
+<text x="954" y="199" font-size="26" font-weight="600" fill="#0f766e" text-anchor="start">容器 A</text>
+<text x="954" y="238" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">独立运行的 Nginx</text>
+<rect x="930" y="320" width="300" height="130" rx="18" fill="#eef9f5" stroke="#d8e2ee" stroke-width="2"/>
+<text x="954" y="364" font-size="26" font-weight="600" fill="#0f766e" text-anchor="start">容器 B</text>
+<text x="954" y="403" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">同一镜像可创建多个</text>
+<line x1="318" y1="260" x2="480" y2="260" stroke="#536579" stroke-width="3" marker-end="url(#arrow)"/>
+<polygon points="480.0,260.0 465.0,254.0 465.0,266.0" fill="#536579"/>
+<text x="399.0" y="245.0" font-size="21" font-weight="400" fill="#536579" text-anchor="middle">pull</text>
+<line x1="760" y1="245" x2="930" y2="220" stroke="#536579" stroke-width="3" marker-end="url(#arrow)"/>
+<polygon points="930.0,220.0 914.3,216.2 916.0,228.1" fill="#536579"/>
+<text x="845.0" y="217.5" font-size="21" font-weight="400" fill="#536579" text-anchor="middle">run</text>
+<line x1="760" y1="300" x2="930" y2="370" stroke="#536579" stroke-width="3" marker-end="url(#arrow)"/>
+<polygon points="930.0,370.0 918.4,358.7 913.8,369.8" fill="#536579"/>
+<text x="845.0" y="308.0" font-size="21" font-weight="400" fill="#536579" text-anchor="middle">run</text>
+<rect x="480" y="445" width="280" height="115" rx="18" fill="#f8fafc" stroke="#d8e2ee" stroke-width="2"/>
+<text x="504" y="489" font-size="26" font-weight="600" fill="#162b46" text-anchor="start">Dockerfile</text>
+<text x="504" y="528" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">描述镜像制作步骤</text>
+<line x1="620" y1="445" x2="620" y2="345" stroke="#536579" stroke-width="3" marker-end="url(#arrow)"/>
+<polygon points="620.0,345.0 614.0,360.0 626.0,360.0" fill="#536579"/>
+<text x="650" y="402" font-size="21" font-weight="400" fill="#536579" text-anchor="start">build</text>
+<text x="48" y="595" font-size="23" font-weight="400" fill="#536579" text-anchor="start">容器可修改自己的可写层；这些改动不会自动变成一个新镜像。</text>
+</svg>

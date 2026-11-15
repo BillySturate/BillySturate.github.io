@@ -1,0 +1,15 @@
+.venv/
+dist/
+dist-preview/
+dist-production/
+backups/
+reports/screenshots/
+__pycache__/
+.DS_Store
+*.pyc
+.env
+.tools/
+reports/*.log
+README.md
+docs/
+assets/blog/travel/README.md

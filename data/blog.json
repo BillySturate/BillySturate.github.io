@@ -1,0 +1,30 @@
+{
+  "avatar": "/assets/portrait.png",
+  "personality": {
+    "name": "提倡者",
+    "code": "INFJ",
+    "image": "/assets/blog/infj.svg",
+    "url": "https://www.16personalities.com/ch/infj-人格"
+  },
+  "motto": "独立之人格，自由之思想。",
+  "career_image": "/assets/portrait.png",
+  "career_label": "计算机科学 · 杭州电子科技大学 / ITMO University",
+  "show_updated_dates": false,
+  "asset_credits": [
+    {
+      "asset": "assets/blog/infj.svg",
+      "source": "https://static.neris-assets.com/images/personality-types/avatars/infj-advocate-male.svg",
+      "credit": "INFJ Advocate illustration by 16Personalities; linked from the personality card."
+    },
+    {
+      "asset": "assets/blog/icons/",
+      "source": "https://simpleicons.org/",
+      "credit": "C++, Rust and Git brand icons from Simple Icons (CC0)."
+    }
+  ],
+  "cover_replacements": {
+    "https://bu.dusays.com/2022/12/31/63affa80dae65.png": "https://i-blog.csdnimg.cn/blog_migrate/fe9e75567d0883e5586315138435e145.png",
+    "https://bu.dusays.com/2023/01/25/63d09dc1f25be.png": "https://i-blog.csdnimg.cn/blog_migrate/fb2343b9dc0ed7cc9ca0a18e2ea02c1d.png",
+    "https://bu.dusays.com/2023/01/25/63d0b8ac4693f.png": "https://img0.baidu.com/it/u=2638227006,80688867&fm=253&fmt=auto&app=138&f=JPEG?w=640&h=359"
+  }
+}

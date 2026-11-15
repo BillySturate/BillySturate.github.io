@@ -1,0 +1,21 @@
+{
+  "markdown_source": "content/blog/docker-intro/index.md",
+  "original_source_bytes_match": true,
+  "image_assets_match": 10,
+  "example_files_match": 6,
+  "fixture_check": {
+    "temporary_extra_posts": 10,
+    "total_posts": 62,
+    "home_pages": 7,
+    "existing_tag_pagination": "passed",
+    "new_category_and_tag": "passed",
+    "fixture_data_removed": true
+  },
+  "additional_visual_checks": {
+    "dark_blog_appearance": "passed",
+    "infj_image_320px_and_390px_unclipped": "passed",
+    "csdn_fancybox_open_and_decode": "passed",
+    "footer_icp_svg_dimensions": "149 x 20",
+    "desktop_cover_fit": "contain; all ten first-page images decoded"
+  }
+}

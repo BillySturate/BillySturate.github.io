@@ -1,0 +1,10 @@
+[
+  {
+    "title": "便携小空调",
+    "description": "在网页里吹一阵不存在的冷风。",
+    "icon": "/assets/blog/air-conditioner.svg",
+    "tags": ["HTML", "CSS", "JavaScript"],
+    "path": "/blog/air-conditioner/",
+    "status": "Interactive"
+  }
+]

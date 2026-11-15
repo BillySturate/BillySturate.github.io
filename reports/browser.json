@@ -1,0 +1,123 @@
+{
+  "base_path": "",
+  "external_network_disabled": true,
+  "http_article_checks": 52,
+  "http_redirect_checks": 137,
+  "page_errors": [],
+  "local_http_errors": [],
+  "external_failures": [
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_447995575634",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_752578851013",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_269502814425",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_506557864493",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_358677472816",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_741873739151",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_522741763217",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_986012052196",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_195381172934",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_633474283956",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_655522366136",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_383703119039",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_316364562074",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_171998627587",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_342548360924",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_163404467158",
+      "failure": "net::ERR_FAILED"
+    }
+  ],
+  "checks": [
+    "Concise homepage: selected papers, real avatar, contact email, four interests and two honors without years",
+    "Desktop homepage",
+    "Research lists, patent anchor navigation and expandable Chinese source titles",
+    "RoboCup 3D Soccer Simulation",
+    "DriveGuard-RT",
+    "High-Performance C++ Reactor Server",
+    "AgentOps",
+    "Structured CV with selected work, honors, confirmed education, skills and hidden empty fields",
+    "Mobile homepage 390px",
+    "Mobile /research/",
+    "Mobile expanded Chinese patent title",
+    "Mobile /projects/",
+    "Mobile /cv/",
+    "Mobile /projects/driveguard-rt/",
+    "Small mobile homepage 320px",
+    "Small mobile research 320px",
+    "Small mobile CV 320px",
+    "Desktop preserved blog",
+    "Blog PJAX article navigation, TOC and highlighted code",
+    "Desktop personalized blog About",
+    "Blog avatar, INFJ illustration, motto, removed cards and ICP SVG badge",
+    "Historical redirect preserves query and fragment",
+    "Mobile preserved blog",
+    "Mobile personalized blog About",
+    "Mobile Docker note",
+    "Mobile preserved article",
+    "Return from legacy blog to academic home"
+  ],
+  "typography": {
+    "font": "-apple-system, \"system-ui\", \"Segoe UI\", \"Helvetica Neue\", Lato, Roboto, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "size": "16px",
+    "rendered_fonts": [
+      {
+        "familyName": ".SF NS",
+        "postScriptName": ".SFNS-Regular",
+        "isCustomFont": false,
+        "glyphCount": 210
+      },
+      {
+        "familyName": ".SF NS",
+        "postScriptName": ".SFNS-Bold",
+        "isCustomFont": false,
+        "glyphCount": 7
+      }
+    ]
+  },
+  "local_images_decoded": 219,
+  "passed": true
+}

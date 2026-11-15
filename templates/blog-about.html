@@ -1,0 +1,42 @@
+<div id="about-page" class="bento-about">
+  <header class="ba-hero">
+    <div class="ba-hero-copy">
+      <span class="ba-eyebrow">BILLYSTURATE の秘密基地 / ABOUT</span>
+      <h1>{{ about.title }}</h1>
+      <p class="ba-subtitle">{{ about.subtitle }}</p>
+      <p class="ba-intro">{{ about.intro }}</p>
+    </div>
+    <div class="ba-portrait"><img class="about-hero-avatar no-lightbox" src="{{ base }}{{ config.avatar }}" alt="BillySturate 的企鹅虚拟头像" width="1122" height="1402" fetchpriority="high"><span>Curiosity takes me places.</span></div>
+  </header>
+  <div class="ba-grid">
+    <section class="ba-card ba-who" aria-labelledby="who-title">
+      <span class="ba-eyebrow">01 / WHO I AM</span><h2 id="who-title">现在的我</h2>
+      <p>喜欢琢磨新东西，也享受把想法一步步变成现实的过程。偶尔写写代码，偶尔出去走走，希望一直保有自己的好奇心。</p>
+      <div class="ba-keywords" aria-label="个人关键词">
+        <span class="ba-keyword"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5a3 3 0 0 0-5 2 3 3 0 0 0-1 5 3 3 0 0 0 1 5 3 3 0 0 0 5 2V5Zm4 0a3 3 0 0 1 5 2 3 3 0 0 1 1 5 3 3 0 0 1-1 5 3 3 0 0 1-5 2V5ZM10 9H7m7 6h3M10 15H8m6-6h2"/></svg>BCI &amp; EEG</span>
+        <span class="ba-keyword"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4m-2 0h4M2 12v4m20-4v4M8 16h8"/><circle cx="9" cy="13" r=".7"/><circle cx="15" cy="13" r=".7"/></svg>Robotics &amp; C++</span>
+        <span class="ba-keyword"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8 4.8-2.2Z"/></svg>Travel &amp; Explore</span>
+      </div>
+      <a class="ba-link" href="{{ base }}/">Visit my academic homepage <span aria-hidden="true">↗</span></a>
+    </section>
+    <section class="ba-card ba-build" aria-labelledby="build-title">
+      <span class="ba-eyebrow">02 / THINGS I BUILD</span><h2 id="build-title">我喜欢折腾什么</h2>
+      <div class="ba-tech-wall">
+      {% for item in about.interests %}<div class="ba-tech"><span class="ba-tech-icon" aria-hidden="true">{% if item.symbol == 'robot' %}<svg viewBox="0 0 32 32"><rect x="5" y="10" width="22" height="17" rx="5"/><path d="M16 10V5m-3 0h6M1 16v7m30-7v7M11 23h10"/><circle cx="11" cy="17" r="1"/><circle cx="21" cy="17" r="1"/></svg>{% elif item.symbol == 'terminal' %}<svg viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="22" rx="4"/><path d="m8 12 5 4-5 4m9 0h7"/></svg>{% elif item.symbol == 'containers' %}<svg viewBox="0 0 32 32"><path d="M3 18h26c-1 7-7 10-14 10S4 24 3 18Z"/><path d="M7 18v-6h6v6m0-6V6h6v12m0-6h6v6M13 12h6"/></svg>{% elif item.symbol == 'branch' %}<svg viewBox="0 0 32 32"><circle cx="9" cy="6" r="3"/><circle cx="9" cy="26" r="3"/><circle cx="24" cy="8" r="3"/><path d="M9 9v14m0-6h7c5 0 8-2 8-6"/></svg>{% else %}{{ item.symbol }}{% endif %}</span><span>{{ item.name }}</span></div>{% endfor %}
+      </div>
+      <p class="ba-muted">喜欢研究新技术，更喜欢亲手把有趣的想法变成现实。</p>
+    </section>
+    <section class="ba-card ba-education-strip" aria-labelledby="education-title">
+      <h2 class="ba-eyebrow" id="education-title">EDUCATION / 求学经历</h2>
+      <dl class="ba-education" aria-label="教育经历">{% for entry in about.education %}<div><dt>{{ entry.stage }}</dt><dd>{{ entry.school }}<small>{{ entry.discipline }}</small></dd></div>{% endfor %}</dl>
+    </section>
+    <section class="ba-card ba-personality" aria-labelledby="personality-title">
+      <div><span class="ba-eyebrow">03 / A LITTLE ABOUT ME</span><h2 id="personality-title">INFJ · 提倡者</h2><p>喜欢独处、思考，也喜欢观察世界。对未知保持好奇，对真正感兴趣的事情愿意投入时间。</p><a class="ba-link" href="{{ config.personality.url }}" target="_blank" rel="noopener">了解 INFJ ↗</a><small>一种认识自己的视角，而非固定的标签。</small></div>
+      <img class="ba-infj no-lightbox" src="{{ base }}{{ config.personality.image }}" alt="INFJ 提倡者的绿色白胡子人物插画，来自 16Personalities" width="400" height="400">
+    </section>
+    <section class="ba-card ba-philosophy" aria-labelledby="philosophy-title"><span class="ba-eyebrow" id="philosophy-title">04 / MY PHILOSOPHY</span><p>{% for line in about.motto %}<span>{{ line }}</span>{% endfor %}</p><span class="ba-philosophy-line" aria-hidden="true"></span></section>
+    <section class="ba-card ba-journey" aria-labelledby="journey-title"><span class="ba-eyebrow">05 / ALONG THE WAY</span><h2 id="journey-title">A Little Journey.</h2><p class="ba-muted">从代码出发，去探索更大的世界。</p><ol class="ba-timeline">{% for stage in about.journey %}<li><span class="ba-eyebrow">{{ stage.label }}</span><h3>{{ stage.title }}</h3><p>{{ stage.text }}</p></li>{% endfor %}</ol></section>
+    <section class="ba-card ba-story" aria-labelledby="story-title"><div><span class="ba-eyebrow">06 / WHY THIS LITTLE CORNER EXISTS</span><h2 id="story-title">为什么叫<br>「秘密基地」？</h2><span class="ba-story-mark" aria-hidden="true">A little corner.<br>A growing world.</span></div><div class="ba-story-prose">{% for paragraph in about.story %}<p>{{ paragraph }}</p>{% endfor %}</div></section>
+  </div>
+  <footer class="ba-contact" aria-label="Contact and links"><span>保持好奇，路上见。</span><nav aria-label="About links"><a href="https://github.com/BillySturate" target="_blank" rel="noopener">GitHub ↗</a><a href="{{ base }}/">Academic Homepage ↗</a><a href="mailto:billysturate@gmail.com">Email ↗</a><a href="{{ base }}/blog/">Back to Blog →</a></nav></footer>
+</div>

@@ -1,0 +1,181 @@
+{
+  "base_path": "/silas-homepage-preview",
+  "external_network_disabled": true,
+  "http_article_checks": 52,
+  "http_redirect_checks": 137,
+  "page_errors": [],
+  "local_http_errors": [],
+  "external_failures": [
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_787994312602",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_712473027379",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_504111854079",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_350140097087",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_158995346767",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_751456844655",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_775732770234",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_1025981704952",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_37183894553",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_544231676512",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_587700160406",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_355189971138",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_990068289403",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_631662268408",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_825699451462",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_663630883410",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://bu.dusays.com/2023/04/28/644be5a78f9f9.png",
+      "failure": "net::ERR_FAILED"
+    }
+  ],
+  "checks": [
+    "Concise homepage: selected papers, real avatar, contact email, four interests and two honors without years",
+    "Desktop homepage",
+    "Research lists, patent anchor navigation and expandable Chinese source titles",
+    "RoboCup 3D Soccer Simulation",
+    "DriveGuard-RT",
+    "High-Performance C++ Reactor Server",
+    "AgentOps",
+    "Structured CV with selected work, honors, confirmed education, skills and hidden empty fields",
+    "Mobile homepage 390px",
+    "Mobile /research/",
+    "Mobile expanded Chinese patent title",
+    "Mobile /projects/",
+    "Mobile /cv/",
+    "Mobile /projects/driveguard-rt/",
+    "Small mobile homepage 320px",
+    "Small mobile research 320px",
+    "Small mobile CV 320px",
+    "Desktop preserved blog",
+    "Blog PJAX article navigation, TOC and highlighted code",
+    "Desktop personalized blog About",
+    "Blog avatar, INFJ illustration, motto, removed cards and ICP SVG badge",
+    "Historical redirect preserves query and fragment",
+    "Mobile preserved blog",
+    "Mobile personalized blog About",
+    "Mobile Docker note",
+    "Mobile preserved article",
+    "Return from legacy blog to academic home"
+  ],
+  "typography": {
+    "font": "\"Hiragino Maru Gothic ProN\", ui-rounded, \"SF Pro Rounded\", system-ui, -apple-system, \"system-ui\", \"PingFang SC\", \"Hiragino Sans GB\", \"Segoe UI\", sans-serif",
+    "size": "16px",
+    "rendered_fonts": [
+      {
+        "familyName": "Hiragino Maru Gothic ProN",
+        "postScriptName": "HiraMaruProN-W4",
+        "isCustomFont": false,
+        "glyphCount": 102
+      }
+    ]
+  },
+  "local_images_decoded": 218,
+  "passed": true
+}

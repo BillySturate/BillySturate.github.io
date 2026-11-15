@@ -1,0 +1,81 @@
+{
+  "title": "Hi, I'm BillySturate. 👋",
+  "subtitle": "写代码，做研究，也去看看世界。",
+  "intro": "平时研究脑机接口与机器学习，也喜欢折腾机器人、C++ 和各种有意思的工程项目。代码之外，我热爱旅行，喜欢去陌生的城市走走，认识不同的人。",
+  "motto": [
+    "Stay curious.",
+    "Keep building.",
+    "Keep exploring."
+  ],
+  "interests": [
+    {
+      "name": "C++",
+      "symbol": "C++"
+    },
+    {
+      "name": "Python",
+      "symbol": "Py"
+    },
+    {
+      "name": "Artificial Intelligence",
+      "symbol": "AI"
+    },
+    {
+      "name": "Machine Learning",
+      "symbol": "ML"
+    },
+    {
+      "name": "Robotics",
+      "symbol": "robot"
+    },
+    {
+      "name": "Linux",
+      "symbol": "terminal"
+    },
+    {
+      "name": "Docker",
+      "symbol": "containers"
+    },
+    {
+      "name": "Git",
+      "symbol": "branch"
+    }
+  ],
+  "travel_photos": [],
+  "journey": [
+    {
+      "label": "01 / BEGINNINGS",
+      "title": "从编程与机器人开始",
+      "text": "本科时学习计算机，接触 C++、Linux 与机器人仿真，参加 RoboCup 3D Soccer Simulation 相关竞赛，也搭起了这个技术博客。"
+    },
+    {
+      "label": "02 / RESEARCH",
+      "title": "走进科研",
+      "text": "研究生期间，开始探索脑机接口、EEG、机器学习与多模态智能，在研究和工程实践中慢慢积累经验。"
+    },
+    {
+      "label": "03 / WHAT'S NEXT",
+      "title": "继续探索",
+      "text": "对技术和世界依然充满好奇。未来想继续学习新知识，尝试有趣的项目，也去更多地方走走看看。至于下一站会在哪里，就交给时间慢慢回答。"
+    }
+  ],
+  "story": [
+    "这个小站最初诞生于我刚开始认真学习编程的时候。",
+    "那时候总觉得，能在互联网上拥有一块属于自己的小天地，是一件很酷的事情。于是，便有了 BillySturate の秘密基地。",
+    "后来，从写技术笔记到做机器人，从研究脑机接口到走出国门，我开始接触更加广阔的世界。",
+    "如今，AI 已经可以轻松解答许多技术问题，我也不再像从前一样频繁更新教程。但我依然希望保留这里，记录那些真正值得回忆的经历、想法和探索。",
+    "技术会不断更新，生活也会继续向前。而这里，始终是属于我的一方小天地。"
+  ],
+  "education": [
+    {
+      "stage": "硕士",
+      "school": "杭州电子科技大学 · ITMO University",
+      "discipline": "计算机科学与技术"
+    },
+    {
+      "stage": "本科",
+      "school": "安徽理工大学",
+      "discipline": "计算机科学与技术"
+    }
+  ]
+}

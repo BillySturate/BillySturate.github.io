@@ -1,0 +1,222 @@
+[
+  {
+    "slug": "robocup-3d",
+    "name": "RoboCup 3D Soccer Simulation",
+    "category": "Multi-agent robotics",
+    "description": "A robot-soccer team agent combining ball-aware formations, role assignment, and tactical behaviors in the SimSpark 3D environment.",
+    "stack": [
+      "C++",
+      "SimSpark",
+      "RoboCup 3D"
+    ],
+    "highlights": [
+      "Ball-conditioned formation interpolation",
+      "Hungarian assignment of players to roles",
+      "Tactical behavior and motion-skill integration"
+    ],
+    "status": "Multi-agent coordination",
+    "github": null,
+    "demo": null,
+    "image": null,
+    "article_match": "Robocup3d",
+    "body": "robocup-3d.md",
+    "focus": "World modeling, formation control, and coordinated robot behavior.",
+    "facts": [
+      {
+        "label": "Environment",
+        "value": "SimSpark / rcssserver3d"
+      },
+      {
+        "label": "Base code",
+        "value": "UT Austin Villa 3D simulation"
+      },
+      {
+        "label": "Checked locally",
+        "value": "Assignment-module smoke test"
+      }
+    ],
+    "source_review": {
+      "root": "robocup/occ-main",
+      "files": [
+        "worldmodel/worldmodel.cc",
+        "worldmodel/Hungarian.cpp",
+        "behaviors/strategy.cc",
+        "behaviors/naobehavior.cc",
+        "CMakeLists.txt"
+      ],
+      "scope": "Team code extends an upstream base. Individual contribution breakdown is not recorded."
+    },
+    "missing_fields": [
+      "github",
+      "demo",
+      "image"
+    ]
+  },
+  {
+    "slug": "driveguard-rt",
+    "name": "DriveGuard-RT",
+    "category": "Robotics & real-time systems",
+    "description": "A C++17 / ROS 2 pipeline that separates perception scheduling from control, with bounded queues and freshness-aware decisions under overload.",
+    "stack": [
+      "C++17",
+      "ROS 2",
+      "OpenCV",
+      "CARLA"
+    ],
+    "highlights": [
+      "Bounded FIFO and latest-frame queues",
+      "Independent control loop with stale-data handling",
+      "Reproducible offline regression and protocol tests"
+    ],
+    "status": "Offline regression passed",
+    "github": null,
+    "demo": null,
+    "image": null,
+    "article_match": null,
+    "body": "driveguard-rt.md",
+    "focus": "Scheduling, backpressure, and observation freshness in a driving-simulation pipeline.",
+    "facts": [
+      {
+        "label": "Processing",
+        "value": "FIFO / latest-frame policies"
+      },
+      {
+        "label": "Simulation adapter",
+        "value": "Synthetic scenes / CARLA"
+      },
+      {
+        "label": "Checked locally",
+        "value": "C++ core, offline regression, two protocol tests"
+      }
+    ],
+    "source_review": {
+      "root": "DriveGuard-RT/DriveGuard-RT-Ubuntu24-NoRoot-v2-fixed",
+      "files": [
+        "core/include/driveguard/queue.hpp",
+        "core/src/aeb.cpp",
+        "ros_ws/src/driveguard_cpp/src/perception_node.cpp",
+        "ros_ws/src/driveguard_cpp/src/control_node.cpp",
+        "apps/offline_bench.cpp",
+        "tests/test_core.cpp",
+        "tests/check_offline.py",
+        "tests/test_protocol.py"
+      ],
+      "scope": "Offline model and protocol tests passed. ROS 2 / CARLA integration was source-reviewed, not run on this Mac."
+    },
+    "missing_fields": [
+      "github",
+      "demo",
+      "image"
+    ]
+  },
+  {
+    "slug": "cpp-reactor",
+    "name": "High-Performance C++ Reactor Server",
+    "category": "Systems engineering",
+    "description": "A C++ HTTP server organized around an acceptor and worker event loops, with pluggable I/O dispatchers and buffered connection handling.",
+    "stack": [
+      "C++",
+      "Linux",
+      "POSIX sockets",
+      "Reactor"
+    ],
+    "highlights": [
+      "Acceptor and worker-loop separation",
+      "Socket-pair wakeups for cross-thread tasks",
+      "HTTP parsing and read/write buffers"
+    ],
+    "status": "Multi-reactor HTTP",
+    "github": "https://github.com/BillySturate/Highly-concurrent-reactor-server",
+    "demo": null,
+    "image": null,
+    "article_match": "epoll反应堆",
+    "body": "cpp-reactor.md",
+    "focus": "Event-driven server architecture, thread ownership, and connection lifecycle management.",
+    "facts": [
+      {
+        "label": "I/O backends",
+        "value": "select / poll / epoll"
+      },
+      {
+        "label": "Concurrency",
+        "value": "Worker event loops"
+      },
+      {
+        "label": "Protocol",
+        "value": "HTTP static-file service"
+      }
+    ],
+    "source_review": {
+      "root": "高并发【Reactor】服务器/项目代码",
+      "files": [
+        "ReactorHttp-Cpp/ReactorHttp-Cpp/EventLoop.cpp",
+        "ReactorHttp-Cpp/ReactorHttp-Cpp/ThreadPool.cpp",
+        "ReactorHttp-Cpp/ReactorHttp-Cpp/HttpRequest.cpp",
+        "ReactorHttp-Cpp/ReactorHttp-Cpp/Buffer.cpp",
+        "benchmark-results/2026-11-01-limited/REPORT.md"
+      ],
+      "scope": "C++ source reviewed. Archived load measurements apply to the companion C implementation, which crashed during a short 16-worker probe."
+    },
+    "missing_fields": [
+      "demo",
+      "image"
+    ]
+  },
+  {
+    "slug": "agentops",
+    "name": "AgentOps",
+    "category": "AI engineering",
+    "description": "A local service-operations workbench that connects telemetry and read-only investigation to human-approved recovery and auditable verification.",
+    "stack": [
+      "C++17",
+      "Python",
+      "MCP",
+      "LangGraph",
+      "FastAPI"
+    ],
+    "highlights": [
+      "Prometheus metrics and structured Loki logs",
+      "Read-only MCP investigation with optional LLM tools",
+      "SQLite approval state and recovery audit trail"
+    ],
+    "status": "Diagnosis & recovery",
+    "github": null,
+    "demo": null,
+    "image": null,
+    "article_match": null,
+    "body": "agentops.md",
+    "focus": "Evidence collection, fault diagnosis, and controlled recovery for a C++ target service.",
+    "facts": [
+      {
+        "label": "Target service",
+        "value": "C++17 HTTP worker pool"
+      },
+      {
+        "label": "Telemetry",
+        "value": "Prometheus / Grafana / Loki"
+      },
+      {
+        "label": "Checked locally",
+        "value": "C++ build and five diagnosis-rule tests"
+      }
+    ],
+    "source_review": {
+      "root": "agent/AgentOps-Final",
+      "files": [
+        "demo-service/src/main.cpp",
+        "backend/app/agent.py",
+        "backend/app/mcp_server.py",
+        "backend/app/storage.py",
+        "backend/app/api.py",
+        "tests/test_rules.py",
+        "compose.yaml"
+      ],
+      "scope": "C++ target compiles and five rule tests pass. Docker services, MCP transport, and LLM calls were not re-run; the local Docker daemon is stopped."
+    },
+    "missing_fields": [
+      "github",
+      "demo",
+      "image"
+    ]
+  }
+]

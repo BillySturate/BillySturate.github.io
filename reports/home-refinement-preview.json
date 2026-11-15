@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Local clock day/night, manual preference retained, preview counters suppressed",
+    "Copyright year follows browser clock",
+    "Three papers, two selected, owner-confirmed CAS tags, no visible JCR, shared metrics and mobile wrapping",
+    "Production-domain counter gate, correct Referer and numeric response display (mock service; no fixture numbers in site)"
+  ],
+  "page_errors": [],
+  "statistics_live_snapshot": "6738 UV / 8093 PV on billysturate.top; sequential www check 6739 / 8094, not embedded in site",
+  "cas_basis": "Owner-confirmed; CAS edition year unspecified",
+  "impact_factor_year": 2025
+}

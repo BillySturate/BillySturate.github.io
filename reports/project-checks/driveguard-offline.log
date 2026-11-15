@@ -1,0 +1,18 @@
+
+PASS: 12 core assertions (AEB, bounded FIFO/latest queues, metrics)
+
+
+fifo guard=1 work=35ms age_p99=50.0ms dropped=0 collision=0 min_gap=3.1m
+fifo guard=0 work=35.0ms age_p99=50.0ms dropped=0 collision=0 min_gap=3.1m
+fifo guard=1 work=90.0ms age_p99=4100.0ms dropped=40 collision=0 min_gap=10.5m
+fifo guard=0 work=90.0ms age_p99=4100.0ms dropped=40 collision=1 min_gap=-5.0m
+fifo guard=1 work=160.0ms age_p99=4300.0ms dropped=100 collision=0 min_gap=13.9m
+fifo guard=0 work=160.0ms age_p99=4300.0ms dropped=100 collision=1 min_gap=-28.7m
+latest guard=1 work=35.0ms age_p99=50.0ms dropped=0 collision=0 min_gap=3.1m
+latest guard=0 work=35.0ms age_p99=50.0ms dropped=0 collision=0 min_gap=3.1m
+latest guard=1 work=90.0ms age_p99=150.0ms dropped=119 collision=0 min_gap=3.0m
+latest guard=0 work=90.0ms age_p99=150.0ms dropped=119 collision=0 min_gap=3.0m
+latest guard=1 work=160.0ms age_p99=350.0ms dropped=179 collision=0 min_gap=5.3m
+latest guard=0 work=160.0ms age_p99=350.0ms dropped=179 collision=0 min_gap=3.0m
+
+PASS: regression -- FIFO age P99=4100ms vs Latest=150ms; guarded and legacy differ

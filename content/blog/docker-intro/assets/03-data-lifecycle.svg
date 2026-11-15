@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="570" viewBox="0 0 1280 570">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#536579" stroke-width="1.6"/></marker></defs>
+<style>text{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}</style>
+<rect width="1280" height="570" rx="24" fill="#ffffff"/>
+<text x="48" y="65" font-size="34" font-weight="700" fill="#162b46">03 · 删除容器后，文件还在不在？</text>
+<text x="48" y="104" font-size="21" fill="#536579">stop 只是停止进程；rm 才会删除容器及其可写层。</text>
+<rect x="48" y="165" width="350" height="310" rx="18" fill="#fff7ed" stroke="#d8e2ee" stroke-width="2"/>
+<text x="72" y="209" font-size="26" font-weight="600" fill="#b45309" text-anchor="start">容器可写层</text>
+<text x="72" y="248" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">直接写进容器</text>
+<text x="72" y="282" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">例如临时安装的软件</text>
+<text x="72" y="400" font-size="22" font-weight="600" fill="#b45309" text-anchor="start">随容器删除而消失</text>
+<rect x="465" y="165" width="350" height="310" rx="18" fill="#eef9f5" stroke="#d8e2ee" stroke-width="2"/>
+<text x="489" y="209" font-size="26" font-weight="600" fill="#0f766e" text-anchor="start">绑定挂载 Bind mount</text>
+<text x="489" y="248" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">你指定宿主机路径</text>
+<text x="489" y="282" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">适合源码、配置、网页</text>
+<text x="489" y="400" font-size="22" font-weight="600" fill="#0f766e" text-anchor="start">原目录保留</text>
+<rect x="882" y="165" width="350" height="310" rx="18" fill="#eef9f5" stroke="#d8e2ee" stroke-width="2"/>
+<text x="906" y="209" font-size="26" font-weight="600" fill="#0f766e" text-anchor="start">命名卷 Volume</text>
+<text x="906" y="248" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">Docker 管理的存储</text>
+<text x="906" y="282" font-size="22" font-weight="400" fill="#162b46" text-anchor="start">适合数据库等持久数据</text>
+<text x="906" y="400" font-size="22" font-weight="600" fill="#0f766e" text-anchor="start">卷保留，除非另行删除</text>
+<text x="48" y="530" font-size="23" font-weight="400" fill="#536579" text-anchor="start">挂载会遮住目标目录原有内容；空命名卷默认会先复制目标目录中的已有文件。</text>
+</svg>

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "graduate-national-scholarship",
+    "title": "National Scholarship for Graduate Students",
+    "organization": "China",
+    "category": "Graduate scholarship",
+    "original_title": "研究生国家奖学金",
+    "year": null,
+    "url": null
+  },
+  {
+    "id": "robocup-national-second-prize",
+    "title": "China Robot Competition & RoboCup China Open",
+    "organization": "China",
+    "category": "3D Soccer Simulation League",
+    "award": "National Second Prize",
+    "original_title": "中国机器人大赛暨ROBOCUP机器人世界杯中国赛仿真3D组全国二等奖",
+    "year": null,
+    "url": null
+  }
+]

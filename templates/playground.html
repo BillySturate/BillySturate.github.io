@@ -1,0 +1,5 @@
+<section id="playground-page">
+  <link rel="stylesheet" href="{{ base }}/assets/playground.css">
+  <header class="pg-heading"><span class="pg-eyebrow">BILLY'S PLAYGROUND</span><h1>奇妙小玩意.</h1><p>一些不一定有用，但做起来很有意思的东西。</p></header>
+  <div class="pg-grid">{% for item in items %}<article class="pg-card"><span class="pg-number">{{ '%02d'|format(loop.index) }} / <span class="pg-status">{{ item.status }}</span></span><a class="pg-art" href="{{ base }}{{ item.path }}" aria-label="体验{{ item.title }}"><img src="{{ base }}{{ item.icon }}" alt="{{ item.title }}图标" width="400" height="240"></a><h2><a href="{{ base }}{{ item.path }}">{{ item.title }}</a></h2><p>{{ item.description }}</p><ul class="pg-tags" aria-label="技术标签">{% for tag in item.tags %}<li>{{ tag }}</li>{% endfor %}</ul><a class="pg-enter" href="{{ base }}{{ item.path }}">进入体验 <span aria-hidden="true">→</span></a></article>{% endfor %}</div>
+</section>

@@ -1,0 +1,8 @@
+# Preserve original and third-party bytes for integrity verification.
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+legacy/** -text -whitespace

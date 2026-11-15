@@ -1,0 +1,86 @@
+{
+  "name": "Hao Liu",
+  "chinese_name": "刘浩",
+  "initials": "HL",
+  "wordmark": "hao",
+  "title": "Computer Science · Research & Engineering",
+  "description": "Hao Liu — computer science, trustworthy AI, robotics, and systems engineering. Research publications, patent applications, engineering projects, and a preserved technical blog.",
+  "degree": "Master’s student · Computer Science",
+  "affiliations": [
+    "Hangzhou Dianzi University",
+    "ITMO University"
+  ],
+  "github": "https://github.com/BillySturate",
+  "email": "billysturate@gmail.com",
+  "portrait": "/assets/portrait.png",
+  "cv_pdf": null,
+  "interests": [
+    "Robust learning",
+    "Human–machine collaboration",
+    "Autonomous robots",
+    "Concurrent systems"
+  ],
+  "education": [
+    {
+      "institution": "Hangzhou Dianzi University",
+      "degree": "M.Sc. in Computer Science",
+      "dates": "2025–2028"
+    },
+    {
+      "institution": "ITMO University",
+      "degree": "M.Sc. in Computer Science",
+      "dates": "2025–2027"
+    },
+    {
+      "institution": "Anhui University of Science and Technology",
+      "degree": "Undergraduate degree in Computer Science",
+      "dates": "2020–2024"
+    }
+  ],
+  "portrait_alt": "Illustrated penguin avatar wearing aviator goggles and a green scarf",
+  "portrait_position": "50% 50%",
+  "academic_service": [],
+  "skills": [
+    {
+      "category": "Programming",
+      "items": [
+        "C++17",
+        "Python"
+      ]
+    },
+    {
+      "category": "Systems",
+      "items": [
+        "Linux",
+        "POSIX sockets",
+        "Reactor architecture",
+        "Concurrent programming"
+      ]
+    },
+    {
+      "category": "Robotics",
+      "items": [
+        "ROS 2",
+        "RoboCup 3D",
+        "SimSpark"
+      ]
+    },
+    {
+      "category": "AI & Observability",
+      "items": [
+        "LangGraph",
+        "MCP",
+        "FastAPI",
+        "Prometheus",
+        "Loki",
+        "SQLite"
+      ]
+    }
+  ],
+  "research_interests": [
+    "Reliable machine learning",
+    "Multimodal intelligence",
+    "Brain–computer interfaces",
+    "Robotics & autonomous systems"
+  ]
+}

@@ -1,0 +1,33 @@
+services:
+  mongo:
+    image: mongo:8.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: demo
+      MONGO_INITDB_ROOT_PASSWORD: demo-pass
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet -u demo -p demo-pass
+          --authenticationDatabase admin
+          --eval "db.adminCommand('ping')"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  admin:
+    image: mongo-express:1.0.2
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://demo:demo-pass@mongo:27017/?authSource=admin
+      ME_CONFIG_BASICAUTH_USERNAME: viewer
+      ME_CONFIG_BASICAUTH_PASSWORD: viewer-pass
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

@@ -1,0 +1,234 @@
+{
+  "mode": "Direct CSDN image URLs only; no CSDN article text imported; existing article text verified during build",
+  "references_restored": 221,
+  "pages": [
+    {
+      "page": "2022/06/01/Markdown/Markdown语法/index.html",
+      "title": "Markdown语法快速入门",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/125663001",
+      "original_images": 1,
+      "source_images": 1,
+      "references_restored": 1,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/06/17/Qt/Qt学习笔记(下)/index.html",
+      "title": "Qt学习笔记(下)",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126408539",
+      "original_images": 1,
+      "source_images": 1,
+      "references_restored": 1,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/06/17/Qt/Qt学习笔记(上)/index.html",
+      "title": "Qt学习笔记(上)",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126408133",
+      "original_images": 5,
+      "source_images": 5,
+      "references_restored": 5,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/06/02/Linux/Linux常用命令总结/index.html",
+      "title": "Linux常用命令总结",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126142711",
+      "original_images": 21,
+      "source_images": 21,
+      "references_restored": 20,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/06/04/Robocup/Robocup3d比赛环境的搭建及常用函数简介/index.html",
+      "title": "Robocup3d比赛环境的搭建及常用函数简介",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/125663364",
+      "original_images": 4,
+      "source_images": 4,
+      "references_restored": 4,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/08/11/Linux/Vim_Vi常用命令总结/index.html",
+      "title": "Vim/Vi常用命令总结",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126289885",
+      "original_images": 1,
+      "source_images": 1,
+      "references_restored": 1,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/13/HTML+CSS+JS/CSS基础总结/index.html",
+      "title": "【CSS基础】基础选择器+字体文本相关样式",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126820599",
+      "original_images": 17,
+      "source_images": 17,
+      "references_restored": 17,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/12/VSCode/VSCode去掉拷贝来的代码前的行号/index.html",
+      "title": "VSCode去掉拷贝来的代码前的行号",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126818639",
+      "original_images": 3,
+      "source_images": 3,
+      "references_restored": 3,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/15/HTML+CSS+JS/CSS寄出之选择器进阶+背景属性+元素显示模式+三大特性/index.html",
+      "title": "【CSS基础】选择器进阶+背景属性+元素显示模式+三大特性",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126875282",
+      "original_images": 21,
+      "source_images": 21,
+      "references_restored": 21,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/24/HTML+CSS+JS/CSS布局之盒子模型/index.html",
+      "title": "【CSS布局】盒子模型",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127024304",
+      "original_images": 20,
+      "source_images": 20,
+      "references_restored": 20,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/08/HTML+CSS+JS/HTML基础总结/index.html",
+      "title": "【HTML基础】基础认知 + HTML标签",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126770475",
+      "original_images": 12,
+      "source_images": 12,
+      "references_restored": 11,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/07/Linux系统编程/Linux系统编程之线程同步/index.html",
+      "title": "Linux系统编程之线程同步",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126754107",
+      "original_images": 4,
+      "source_images": 4,
+      "references_restored": 4,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/09/29/HTML+CSS+JS/CSS布局之浮动/index.html",
+      "title": "【CSS布局】结构伪类选择器、伪元素、浮动",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127112267",
+      "original_images": 21,
+      "source_images": 21,
+      "references_restored": 16,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/07/25/Python/Matplotlib详解/index.html",
+      "title": "Matplotlib详解",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/125982978",
+      "original_images": 17,
+      "source_images": 17,
+      "references_restored": 17,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/07/07/VSCode/VScode 调试教程 tasks.json和launch.json的设置/index.html",
+      "title": "VScode 调试教程 tasks.json和launch.json的设置",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/125662393",
+      "original_images": 12,
+      "source_images": 12,
+      "references_restored": 12,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/07/17/Qt/QtUI/index.html",
+      "title": "Qt5.15.2中编译报错：“invalid use of incomplete type 'class Ui::xxx'”的解决方法",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/125836423",
+      "original_images": 3,
+      "source_images": 3,
+      "references_restored": 3,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/07/28/Python/Numpy/index.html",
+      "title": "Numpy详解",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/126044236",
+      "original_images": 26,
+      "source_images": 26,
+      "references_restored": 25,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/10/14/Linux网络编程/【Linux网络编程】TCP状态转换、半关闭、2MSL/index.html",
+      "title": "【Linux网络编程】TCP状态转换、半关闭、2MSL时长",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127326785",
+      "original_images": 5,
+      "source_images": 5,
+      "references_restored": 5,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/10/13/Linux网络编程/【Linux网络编程】多进程并发服务器、多线程并发服务器/index.html",
+      "title": "【Linux网络编程】多进程并发服务器、多线程并发服务器",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127307806",
+      "original_images": 4,
+      "source_images": 4,
+      "references_restored": 4,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/10/21/Linux网络编程/【Linux网络编程】多路IO转接之select、poll、epoll/index.html",
+      "title": "【Linux网络编程】多路IO转接之select、poll、epoll",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127453099",
+      "original_images": 9,
+      "source_images": 9,
+      "references_restored": 9,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/10/11/Linux网络编程/Linux网络编程之三次握手四次挥手/index.html",
+      "title": "【Linux网络编程】TCP通信时序、滑动窗口 (TCP流量控制)",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127262462",
+      "original_images": 2,
+      "source_images": 2,
+      "references_restored": 2,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/10/05/Linux网络编程/Linux网路编程之Socket套接字/index.html",
+      "title": "【Linux网路编程】Socket套接字",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127176498",
+      "original_images": 14,
+      "source_images": 14,
+      "references_restored": 14,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/11/09/Linux网络编程/【Linux网络编程】epoll进阶/index.html",
+      "title": "【Linux网络编程】epoll进阶之水平模式和边沿模式",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127775882",
+      "original_images": 5,
+      "source_images": 5,
+      "references_restored": 5,
+      "matching_method": "matching article title and identical image sequence/count"
+    },
+    {
+      "page": "2022/11/21/Linux网络编程/【Linux网络编程】UDP服务器/index.html",
+      "title": "【Linux网络编程】UDP服务器",
+      "source_article": "https://blog.csdn.net/qq_59084325/article/details/127958070",
+      "original_images": 4,
+      "source_images": 1,
+      "references_restored": 1,
+      "matching_method": "same C/S模型-UDP section (only matching diagram)"
+    }
+  ],
+  "verification": {
+    "browser_report": "reports/csdn-image-check.json",
+    "body_text_unchanged": 51,
+    "missing_original_screenshots": 3,
+    "covers_repaired": [
+      "Qt",
+      "VSCode",
+      "Linux IPC / IO multiplexing"
+    ],
+    "footer_badge": "Original ICP SVG preserved, extension and MIME repaired",
+    "lightbox": "Live CSDN image opened and decoded successfully in retained Fancybox"
+  }
+}

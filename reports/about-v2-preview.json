@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "1440px dark: grid, images, no overflow",
+    "1440px light: grid, images, no overflow",
+    "820px dark: grid, images, no overflow",
+    "820px light: grid, images, no overflow",
+    "390px dark: grid, images, no overflow",
+    "390px light: grid, images, no overflow",
+    "320px dark: grid, images, no overflow",
+    "320px light: grid, images, no overflow",
+    "Reduced motion, contact links, PJAX entry and academic-home exit"
+  ],
+  "page_errors": [],
+  "existing_non_about_files_identical": 0
+}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% import 'components.html' as components %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">{{ eyebrow }}</p><h1>{{ title }}<span>.</span></h1><p>{{ intro }}</p></section>
+{% if active == 'research' %}
+<nav class="research-index" aria-label="Research sections"><a href="#publications">Publications <span>{{ papers | length }}</span></a><a href="#patents">Patent applications <span>{{ patents | length }}</span></a></nav>
+<section id="publications" aria-labelledby="publications-heading"><h2 id="publications-heading" class="research-list-title">Publications</h2>{{ components.publications(papers, base, profile) }}</section>
+<section id="patents" aria-labelledby="patents-heading"><div class="research-subheading"><h2 id="patents-heading">Patent applications<span>.</span></h2><p>English translations; original Chinese titles and inventor lists are available below.</p></div>{{ components.patents(patents, profile) }}<p class="editorial-note">Student inventor roles are reported separately from the full inventor order shown above.</p></section>
+{% endif %}
+{% if active == 'projects' %}{{ components.projects(projects, base) }}{% endif %}
+{% endblock %}

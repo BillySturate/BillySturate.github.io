@@ -1,0 +1,13 @@
+[
+  {
+    "title": "Docker 入门实战笔记",
+    "date": "2026-11-14",
+    "path": "2026/11/14/Docker/Docker入门实战笔记/",
+    "source": "content/blog/docker-intro/index.md",
+    "category": "Docker",
+    "tags": ["Docker"],
+    "cover": "assets/01-image-container.png",
+    "description": "从镜像与容器、端口映射、数据持久化到 Dockerfile 与 Compose，配合 Nginx、FastAPI 和 MongoDB 示例整理 Docker 入门实践。",
+    "examples": "examples"
+  }
+]

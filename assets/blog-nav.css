@@ -1,0 +1,16 @@
+#nav .blog-home-icon,#sidebar .blog-home-icon{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;vertical-align:-2px;margin-right:5px}
+#nav .blog-academic-nav>a{font-size:.9em;opacity:.85}
+#nav .blog-academic-nav{margin-left:6px}
+.menus_items .site-page:focus-visible{outline:2px solid var(--anzhiyu-main);outline-offset:5px;border-radius:4px}
+body:has(#playground-page) .menus_items a[href$="/blog/playground/"],body:has(.playground-ac) .menus_items a[href$="/blog/playground/"]{color:var(--anzhiyu-main)}
+@media(max-width:900px){
+  #nav{padding-left:12px;padding-right:12px;gap:8px}
+  #nav #blog_name{flex:1 1 0%;min-width:0;width:auto}
+  #nav #blog_name>a{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #nav #blog_name .back-home-button{flex-shrink:0}
+  #nav #site-name{min-width:0;flex:1 1 auto}
+  #nav #site-name>.title{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  #nav #nav-right{flex:0 0 auto;width:auto;margin-left:auto}
+  #nav .menus_items{display:none}
+  #nav #toggle-menu{display:flex!important;align-items:center;justify-content:center;flex-shrink:0;width:28px}
+}

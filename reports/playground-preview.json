@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Original power, heating/cooling, temperature 16–31, audio metadata and logo",
+    "AC layout 820px",
+    "AC layout 390px",
+    "AC layout 320px",
+    "Mobile drawer academic-home link, bidirectional navigation, safe widget exit"
+  ],
+  "page_errors": [],
+  "local_http_errors": [],
+  "academic_and_shared_files_unchanged": 0
+}

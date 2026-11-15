@@ -1,0 +1,10 @@
+{
+  "robocup_assignment_smoke_passed": true,
+  "agentops_cpp_build_passed": true,
+  "agentops_rules_tests_passed": 5,
+  "driveguard_protocol_tests_passed": 2,
+  "driveguard_offline_regression_passed": true,
+  "driveguard_scenarios_generated": 12,
+  "ros2_carla_runtime_tested": false,
+  "docker_stack_tested": false
+}

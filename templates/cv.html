@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% import 'components.html' as components %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">Background & Experience</p><h1>Curriculum vitae<span>.</span></h1><p>{{ profile.name }} · {{ profile.chinese_name }}<br>Computer Science · Research & Engineering</p><div class="text-links">{% if profile.email %}<a href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}<a href="{{ profile.github }}">GitHub ↗</a>{% if profile.cv_pdf %}<a href="{{ base }}{{ profile.cv_pdf }}">Download CV (PDF) ↓</a>{% endif %}</div></section>
+<div class="cv-content">
+<section class="cv-section" aria-labelledby="cv-education"><h2 id="cv-education">Education</h2>{% for item in profile.education %}<div class="education-entry"><div><h3>{{ item.institution }}</h3><p>{{ item.degree }}</p></div>{% if item.dates %}<time class="education-dates">{{ item.dates }}</time>{% endif %}</div>{% endfor %}</section>
+<section class="cv-section" aria-labelledby="cv-interests"><h2 id="cv-interests">Research Interests</h2><p>{{ profile.research_interests | join(' · ') }}</p></section>
+<section class="cv-section" aria-labelledby="cv-publications"><h2 id="cv-publications">Selected Publications</h2>{{ components.publications(selected_papers, base, profile, compact=true) }}<a class="cv-section-link" href="{{ base }}/research/">All publications & patent applications ↗</a></section>
+<section class="cv-section" aria-labelledby="cv-honors"><h2 id="cv-honors">Honors & Awards</h2>{{ components.honors(awards) }}</section>
+<section class="cv-section" aria-labelledby="cv-projects"><h2 id="cv-projects">Selected Projects</h2>{% for project in projects %}<article class="cv-project"><h3><a href="{{ base }}/projects/{{ project.slug }}/">{{ project.name }} ↗</a></h3><p>{{ project.description }}</p><div class="stack">{% for technology in project.stack %}<span>{{ technology }}</span>{% endfor %}</div></article>{% endfor %}</section>
+{% if profile.academic_service %}<section class="cv-section" aria-labelledby="cv-service"><h2 id="cv-service">Academic Service</h2><ul>{% for service in profile.academic_service %}<li>{{ service }}</li>{% endfor %}</ul></section>{% endif %}
+<section class="cv-section" aria-labelledby="cv-skills"><h2 id="cv-skills">Skills</h2><dl class="cv-skills">{% for group in profile.skills %}<div><dt>{{ group.category }}</dt><dd>{{ group['items'] | join(', ') }}</dd></div>{% endfor %}</dl></section>
+{% if body %}<div class="prose">{{ body | safe }}</div>{% endif %}
+</div>
+{% endblock %}

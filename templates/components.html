@@ -1,0 +1,64 @@
+{% macro people(names, self_name) %}{% for name in names %}{% if name == self_name %}<strong class="self-author">{{ name }}</strong>{% else %}{{ name }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}{% endmacro %}
+{% macro publications(items, base, profile, compact=false) %}
+<div class="publications">
+{% for paper in items %}
+<article class="publication" id="{{ paper.id }}">
+  <div class="paper-index">{{ '%02d' | format(loop.index) }}</div>
+  <div class="paper-body">
+    <div class="paper-meta"><span class="badge {% if paper.status in ['Published', 'Accepted'] %}accepted{% elif paper.status == 'Major revision' %}revision{% endif %}">{{ paper.status }}</span><span>{{ paper.year }}{% if paper.year_note %} · {{ paper.year_note }}{% endif %}</span><span class="author-role">{{ paper.author_role }}</span></div>
+    <h3>{% if paper.doi and paper.status in ['Published', 'Accepted'] %}<a href="https://doi.org/{{ paper.doi }}">{{ paper.title }}</a>{% else %}{{ paper.title }}{% endif %}</h3>
+    <p class="authors">{{ people(paper.authors, profile.name) }}</p>
+    <p class="venue">{{ paper.venue }}</p>
+    {% if paper.metricsVerified %}<div class="journal-metrics" aria-label="Journal metrics">
+      {% if paper.casDisplay %}<span>中科院{{ {1:'一区',2:'二区',3:'三区',4:'四区'}[paper.casQuartile] }}{% if paper.casTop %} TOP{% endif %}</span>{% endif %}
+      <span>IF {{ paper.impactFactor }}</span>
+    </div>{% endif %}
+    {% if not compact and paper.summary %}<p class="paper-summary">{{ paper.summary }}</p>{% endif %}
+    <div class="text-links">{% if paper.doi and paper.status in ['Published', 'Accepted'] %}<a href="https://doi.org/{{ paper.doi }}">DOI ↗</a>{% endif %}{% if paper.pdf and paper.status in ['Published', 'Accepted'] %}<a href="{{ paper.pdf }}">PDF ↗</a>{% endif %}{% if paper.code and paper.status in ['Published', 'Accepted'] %}<a href="{{ paper.code }}">Code ↗</a>{% endif %}</div>
+  </div>
+</article>
+{% endfor %}
+</div>
+{% endmacro %}
+{% macro patents(items, profile) %}
+<div class="patent-list">
+{% for patent in items %}
+<article class="patent-application" id="{{ patent.id }}">
+  <div class="paper-index">P{{ '%02d' | format(loop.index) }}</div>
+  <div class="paper-body">
+    <div class="paper-meta"><span class="badge">{{ patent.status }}</span><span>{{ patent.year }}</span><span class="inventor-role">{{ patent.inventor_role }}</span></div>
+    <h3>{% if patent.url %}<a href="{{ patent.url }}">{{ patent.title }}</a>{% else %}{{ patent.title }}{% endif %}</h3>
+    <p class="authors">{{ people(patent.inventors, profile.name) }}</p>
+    <p class="patent-info"><span>{{ patent.jurisdiction }} · Patent application</span>{% if patent.application_number %}<span class="application-number">Application No. {{ patent.application_number }}</span>{% endif %}</p>
+    <details class="original-title"><summary>Original Chinese title & inventors</summary><p lang="zh-Hans">{{ patent.original_title }}</p><p lang="zh-Hans">{{ patent.original_inventors | join('、') }}</p></details>
+  </div>
+</article>
+{% endfor %}
+</div>
+{% endmacro %}
+{% macro honors(items) %}
+<div class="honors-list">
+{% for award in items %}
+<article class="honor" id="{{ award.id }}">
+  <div class="paper-index">{{ '%02d' | format(loop.index) }}</div>
+  <div><div class="paper-meta"><span class="badge">{{ award.get('award') or award.category }}</span></div><h3>{% if award.url %}<a href="{{ award.url }}">{{ award.title }}</a>{% else %}{{ award.title }}{% endif %}</h3><p>{{ award.category if award.get('award') else award.organization }}</p></div>
+</article>
+{% endfor %}
+</div>
+{% endmacro %}
+{% macro projects(items, base) %}
+<div class="project-grid">
+{% for project in items %}
+<article class="project-card">
+  {% if project.image %}<img class="project-image" src="{{ base }}{{ project.image }}" alt="{{ project.name }} project screenshot" loading="lazy">{% endif %}
+  <div class="project-top"><span class="eyebrow">{{ project.category }}</span><span class="project-number">{{ '%02d' | format(loop.index) }}</span></div>
+  <h3><a href="{{ base }}/projects/{{ project.slug }}/">{{ project.name }} <span aria-hidden="true">↗</span></a></h3>
+  <p>{{ project.description }}</p>
+  <ul class="highlights">{% for item in project.highlights %}<li>{{ item }}</li>{% endfor %}</ul>
+  <div class="stack">{% for tech in project.stack %}<span>{{ tech }}</span>{% endfor %}</div>
+  <div class="project-bottom"><span class="status-text">{{ project.status }}</span><a href="{{ base }}/projects/{{ project.slug }}/" aria-label="Details for {{ project.name }}">Details →</a></div>
+  {% if project.github or project.demo or project.article %}<div class="text-links project-resources">{% if project.github %}<a href="{{ project.github }}">GitHub ↗</a>{% endif %}{% if project.demo %}<a href="{{ project.demo }}">Demo ↗</a>{% endif %}{% if project.article %}<a href="{{ base }}/blog/{{ project.article }}">Technical notes ↗</a>{% endif %}</div>{% endif %}
+</article>
+{% endfor %}
+</div>
+{% endmacro %}

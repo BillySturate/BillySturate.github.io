@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% import 'components.html' as components %}
+{% block content %}
+<section class="hero" aria-labelledby="intro-name">
+  <div class="hero-copy">
+    <p class="eyebrow intro-label"><span class="small-square"></span> Research & Engineering</p>
+    <h1 id="intro-name">{{ profile.name }}<span class="chinese-name">{{ profile.chinese_name }}</span></h1>
+    <p class="hero-subtitle">Intelligent systems.<br><em>Grounded in engineering.</em></p>
+    <div class="prose intro-prose">{{ about | safe }}</div>
+    <div class="hero-links"><a class="button" href="{{ base }}/research/">Explore my work <span>↗</span></a><a class="plain-link" href="{{ profile.github }}">GitHub ↗</a><a class="plain-link" href="{{ base }}/cv/">View CV →</a></div>
+    {% if profile.email %}<p class="contact-line"><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
+  </div>
+  <aside class="profile-panel" aria-label="Profile">
+    <div class="portrait">{% if profile.portrait %}<img src="{{ base }}{{ profile.portrait }}" alt="{{ profile.portrait_alt or profile.name }}" style="object-position:{{ profile.portrait_position or '50% 50%' }}" width="1122" height="1402" fetchpriority="high">{% else %}<span class="portrait-corner top-left"></span><span class="monogram" aria-label="{{ profile.name }}">{{ profile.initials }}<span>.</span></span><span class="portrait-corner bottom-right"></span>{% endif %}</div>
+    <div class="profile-details"><p class="degree">{{ profile.degree }}</p></div>
+  </aside>
+</section>
+<section class="interests" aria-labelledby="interests-title"><h2 id="interests-title" class="eyebrow">Areas of interest</h2><div>{% for interest in profile.interests %}<span>{{ interest }}</span>{% endfor %}</div></section>
+<section class="section" aria-labelledby="research-title"><div class="section-heading"><div><p class="eyebrow">01 / Research</p><h2 id="research-title">Selected research<span>.</span></h2></div><a class="section-link" href="{{ base }}/research/">All research ↗</a></div>{{ components.publications(selected_papers, base, profile, compact=true) }}</section>
+<section class="section" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">02 / Engineering</p><h2 id="projects-title">Engineering projects<span>.</span></h2></div><a class="section-link" href="{{ base }}/projects/">All projects ↗</a></div>{{ components.projects(projects, base) }}</section>
+<section class="section honors-section" aria-labelledby="honors-title"><div class="section-heading"><div><p class="eyebrow">03 / Recognition</p><h2 id="honors-title">Selected Honors & Awards<span>.</span></h2></div></div>{{ components.honors(awards) }}</section>
+<section class="blog-section section" aria-labelledby="blog-title"><div><p class="eyebrow">04 / Field notes</p><h2 id="blog-title">The other side of the work<span>.</span></h2><p>Technical notes, experiments, and lessons learned along the way.</p><a class="blog-name" href="{{ base }}/blog/">BillySturate の秘密基地 ↗</a><p class="blog-meta">{{ post_count }} archived articles · Original blog, preserved</p></div><div class="blog-latest">{% for post in latest_posts %}<a href="{{ base }}/blog/{{ post.path }}"><time>{{ post.date }}</time><span>{{ post.title }}</span><span aria-hidden="true">↗</span></a>{% endfor %}<a class="browse-blog" href="{{ base }}/blog/">Enter the blog <span>→</span></a></div></section>
+{% endblock %}

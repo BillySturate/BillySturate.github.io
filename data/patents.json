@@ -1,0 +1,85 @@
+[
+  {
+    "id": "uncertainty-aware-collaborative-bci-patent",
+    "title": "A Method and System for Target Detection in Group Brain–Computer Interfaces Based on Uncertainty-Aware Collaborative Graphs",
+    "original_title": "一种基于不确定性感知协作图的群体脑机接口目标检测方法及系统",
+    "inventors": [
+      "Wanzeng Kong",
+      "Hao Liu",
+      "Bingfeng He",
+      "Kehan Wang"
+    ],
+    "original_inventors": [
+      "孔万增",
+      "刘浩",
+      "何秉峰",
+      "王柯翰"
+    ],
+    "inventor_position": 2,
+    "student_inventor_position": 1,
+    "inventor_role": "First student inventor",
+    "year": 2026,
+    "status": "Substantive examination",
+    "application_number": "202610576996.3",
+    "jurisdiction": "China",
+    "url": null
+  },
+  {
+    "id": "hierarchical-eeg-visual-recognition-patent",
+    "title": "A Method and System for EEG-Based Visual Target Recognition Using Hierarchical Representations and Target-Gated Fusion",
+    "original_title": "一种基于分层表征与目标门控融合的脑电视觉目标识别方法及系统",
+    "inventors": [
+      "Hao Liu",
+      "Wanzeng Kong",
+      "Bingfeng He",
+      "Dongjun Liu",
+      "Lingfei Zeng",
+      "Kehan Wang"
+    ],
+    "original_inventors": [
+      "刘浩",
+      "孔万增",
+      "何秉峰",
+      "刘栋军",
+      "曾令菲",
+      "王柯翰"
+    ],
+    "inventor_position": 1,
+    "student_inventor_position": 1,
+    "inventor_role": "First inventor",
+    "year": 2026,
+    "status": "Preliminary examination passed",
+    "application_number": "2026116165825",
+    "jurisdiction": "China",
+    "url": null,
+    "filing_date": "2026-10-19",
+    "status_date": "2026-11-12",
+    "status_basis": "Owner-provided preliminary examination qualification notice screenshot; full inventor order visible",
+    "status_verified_at": "2026-11-14"
+  },
+  {
+    "id": "two-level-temporal-eeg-depression-patent",
+    "title": "A Method and System for EEG-Based Depression Detection with Two-Level Temporal Coordination Constrained by Brain Connectivity Priors",
+    "original_title": "一种脑连接先验约束的双级时序协同脑电抑郁检测方法及系统",
+    "inventors": [
+      "Yong Peng",
+      "Lingfei Zeng",
+      "Hao Liu",
+      "Wanzeng Kong"
+    ],
+    "original_inventors": [
+      "彭勇",
+      "曾令菲",
+      "刘浩",
+      "孔万增"
+    ],
+    "inventor_position": 3,
+    "student_inventor_position": 2,
+    "inventor_role": "Second student inventor",
+    "year": 2026,
+    "status": "Application in progress",
+    "application_number": null,
+    "jurisdiction": "China",
+    "url": null
+  }
+]

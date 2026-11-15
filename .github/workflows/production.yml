@@ -1,0 +1,56 @@
+name: Publish approved production site
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'After preview approval, type PUBLISH www.billysturate.top'
+        required: true
+        type: string
+  push:
+    branches: [master, main]
+permissions:
+  contents: read
+concurrency:
+  group: production-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: >-
+      github.repository == 'BillySturate/BillySturate.github.io' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.confirmation == 'PUBLISH www.billysturate.top') ||
+      (github.event_name == 'push' && vars.PRODUCTION_DEPLOY_ENABLED == 'true'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Build and verify one production artifact
+        run: |
+          python scripts/build.py --production --site-url https://www.billysturate.top --output dist-production
+          python scripts/validate.py --directory dist-production
+          python scripts/browser_test.py --directory dist-production
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: production-verification
+          path: reports/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist-production
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/deploy-pages@v4
+        id: deployment

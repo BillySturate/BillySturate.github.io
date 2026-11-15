@@ -1,0 +1,47 @@
+{
+  "robocup-3d": {
+    "root": "robocup/occ-main",
+    "files": {
+      "worldmodel/worldmodel.cc": "8e8427db0e91e7d1e6a6f7fad0d461c2f3bd4bba18697063eefc69d047b56d3f",
+      "worldmodel/Hungarian.cpp": "26c7c4bb2f99000cacec4f275156edb2e89555e82a2f029f490c6aba850e89e0",
+      "behaviors/strategy.cc": "db8122a55d824929e0731fb35ddb1d717252681aa2c311bf3699959071203496",
+      "behaviors/naobehavior.cc": "df941f5764453d502413a3f1a7423f88d7dacf6c9e3dc4371b0b6d27d2ffb1b5",
+      "CMakeLists.txt": "9fb758ebec594dfe49d82250602923666f73cb95f8ff05dc84ad6fcb0dc1b5cf"
+    }
+  },
+  "driveguard-rt": {
+    "root": "DriveGuard-RT/DriveGuard-RT-Ubuntu24-NoRoot-v2-fixed",
+    "files": {
+      "core/include/driveguard/queue.hpp": "317306cddd2bcc9882ef0f38c3f266c5a9c85440b09c15d1d93d764d0624d0d8",
+      "core/src/aeb.cpp": "ab8c4c7140284f158da186cc039550b7c53066228c0ed61e42668b5a0d512101",
+      "ros_ws/src/driveguard_cpp/src/perception_node.cpp": "ff0b03b717e40938ac29d82d6f29d7eca1153d08b042856635fa0711f9a8cdc9",
+      "ros_ws/src/driveguard_cpp/src/control_node.cpp": "7fe6f0e1a83fa9faa3162db31ac98bc39150d6a27c8ad639173f566a7274fc6c",
+      "apps/offline_bench.cpp": "0a610ebd4651af2fea7fc8da98bd67fc4b6a4a452f746f05b756de8331e45b36",
+      "tests/test_core.cpp": "fe6418a32e613bc7e3067ff136ca994bbf63584bd097c799d6414da5cfb660be",
+      "tests/check_offline.py": "5af9712cd4cd5e7edbbfe44796f3cd327d6b58eb77c5a28c4db36e623c464ccb",
+      "tests/test_protocol.py": "6b4904b28ec40a6c0ecf0f2b734f3b6c7706763c22d59e2a4f779853b58b430f"
+    }
+  },
+  "cpp-reactor": {
+    "root": "高并发【Reactor】服务器/项目代码",
+    "files": {
+      "ReactorHttp-Cpp/ReactorHttp-Cpp/EventLoop.cpp": "185e1bf20e62d12d0aa9c24e9a377b3346a7ed42f160ffdb4e2dbddaea5ffeb5",
+      "ReactorHttp-Cpp/ReactorHttp-Cpp/ThreadPool.cpp": "0211e1076b8fc5836b5826c7175986fa8a11030d27519549d69f584f1a6a76ec",
+      "ReactorHttp-Cpp/ReactorHttp-Cpp/HttpRequest.cpp": "f7123e1465166d5ef953367c91167ba671ece69fefe5865cc6c48ed50d9b7156",
+      "ReactorHttp-Cpp/ReactorHttp-Cpp/Buffer.cpp": "53bcdd3b5ec95d083b6c5da029be62d32d51096b07c9ec998108b0966e00b5d6",
+      "benchmark-results/2026-11-01-limited/REPORT.md": "c696e5fa4c49249709dadbf5947926ec1bcfc3722a7568fc8c9f0bb42e059ace"
+    }
+  },
+  "agentops": {
+    "root": "agent/AgentOps-Final",
+    "files": {
+      "demo-service/src/main.cpp": "5d9b8f91ce8e292a3b043e66ffc9c8574cf075cdd913b56db919e6c0750a502b",
+      "backend/app/agent.py": "e1ef1dfb16f8f9d97331128748626bd3b3ad13f3dc00f52ce5cf8eb9ad03c801",
+      "backend/app/mcp_server.py": "30752dc19f3d1c810e23a52f89c09ad9d39e1cb66c590a007cce8e284b11b4ee",
+      "backend/app/storage.py": "59dec1b494066616bcad688fc1743bcd491125064a1c11079f092519b13fe894",
+      "backend/app/api.py": "84708ef2c5d13665d1a3197e7f9a7b71add22e5391661c865539c583958b78bf",
+      "tests/test_rules.py": "e7d6412ab1b72c2eeb6b0589257507e1a88ae33a10b5f5d855e9a58dfec77af6",
+      "compose.yaml": "937fbc8519934a5bb15c4b499695e05047ab88148c53c6f487e5a038984725d9"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "changed_existing_output_files": [
+    "assets/blog-about.css",
+    "blog/about/index.html"
+  ],
+  "other_existing_output_files_identical": 640,
+  "other_timeline_stages_unchanged": true,
+  "third_stage_title_and_story_unchanged": true,
+  "hero_story_icons_philosophy_unchanged": true
+}
